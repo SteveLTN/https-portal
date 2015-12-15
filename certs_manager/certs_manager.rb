@@ -1,42 +1,28 @@
+require_relative 'lib/acme'
+require_relative 'lib/commands'
+require_relative 'lib/nginx'
+
 class CertsManager
   def entrypoint
-    entrypoint_sh = <<-EOS
-      openssl genrsa 4096 > /root/account.key
+    Commands.gen_keys
+    Commands.create_csr
+    Nginx.start
+    Nginx.config_http
 
-      openssl genrsa 4096 > /root/domain.key
+    ACME.sign
 
-      openssl req -new -sha256 -key /root/domain.key -subj "/CN=nginx-acme.steveltn.me" > /root/domain.csr
+    Commands.download_intermediate_cert
+    Commands.cat_keys
+    Nginx.config_ssl
+    Commands.start_cron
 
-      cp /root/nginx-conf/nginx-acme.steveltn.me.conf /etc/nginx/conf.d/ && nginx -q
-
-      acme_tiny.py --account-key /root/account.key --csr /root/domain.csr --acme-dir /var/www/challenges/ --ca https://acme-staging.api.letsencrypt.org > /root/signed.crt
-
-      wget -q -O - https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem > /root/intermediate.pem
-      cat /root/signed.crt /root/intermediate.pem > /root/chained.pem
-
-      cp /root/nginx-conf/nginx-acme.steveltn.me.ssl.conf /etc/nginx/conf.d/ && nginx -s reload
-
-      cron
-    EOS
-
-    system(entrypoint_sh) && sleep
+    sleep
   end
 
   def renew
-    renew_sh = <<-EOS
-      acme_tiny.py \
-      --account-key /root/account.key \
-      --csr /root/domain.csr \
-      --ca https://acme-staging.api.letsencrypt.org \
-      --acme-dir /var/www/challenges/ > /tmp/signed.crt || exit
-
-      wget -q -O - https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem > /root/intermediate.pem
-
-      cat /tmp/signed.crt /root/intermediate.pem > /root/chained.pem
-
-      nginx -s reload
-    EOS
-
-    system(renew_sh)
+    ACME.sign
+    Commands.download_intermediate_cert
+    Commands.cat_keys
+    Nginx.reload
   end
 end
