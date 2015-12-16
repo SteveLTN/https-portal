@@ -1,7 +1,7 @@
 module ACME
   def self.sign(domain)
     command = <<-EOC
-      acme_tiny.py \
+      acme_tiny \
         --account-key /var/lib/nginx-acme/account.key \
         --csr #{domain.csr_path} \
         --acme-dir /var/www/challenges/ \
