@@ -1,0 +1,9 @@
+nginx-acme:
+  build: ./
+  ports:
+    - 80:80
+    - 443:443
+  environment:
+    # Redirect letsencrypt.steveltn.me to https:://letsencrypt.org
+    # FORWARD_LETSENCRYPT.STEVELTN.ME to any value to enable
+    - "FORWARD_LETSENCRYPT.STEVELTN.ME=true"
