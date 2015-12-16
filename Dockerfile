@@ -6,7 +6,7 @@ WORKDIR /root
 
 RUN mkdir -p /var/www/challenges/ && \
     apt-get update && \
-    apt-get install -y python ruby wget cron && \
+    apt-get install -y python ruby cron && \
     rm -rf /var/lib/apt/lists/*
 
 COPY ./bin/acme_tiny ./bin/setup ./bin/init /usr/local/bin/

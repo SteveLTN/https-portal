@@ -1,6 +1,12 @@
+require 'open-uri'
+
 module Commands
   def download_intermediate_cert
-    system 'wget -q -O - https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem > /var/lib/nginx-acme/intermediate.pem'
+    File.open('/var/lib/nginx-acme/intermediate.pem', 'wb') do |saved_file|
+      open('https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem', "rb") do |read_file|
+        saved_file.write(read_file.read)
+      end
+    end
   end
 
   def chain_keys(domain)
