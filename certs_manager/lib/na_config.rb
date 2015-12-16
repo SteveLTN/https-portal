@@ -6,10 +6,14 @@ module NAConfig
   end
 
   def self.ca
-    if ENV['PRODUCTION'] && ENV['PRODUCTION'].downcase == 'true'
+    if production?
       'https://acme-v01.api.letsencrypt.org'
     else
       'https://acme-staging.api.letsencrypt.org'
     end
+  end
+
+  def self.production?
+    ENV['PRODUCTION'] && ENV['PRODUCTION'].downcase == 'true'
   end
 end

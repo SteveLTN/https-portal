@@ -24,6 +24,10 @@ class Domain
   end
 
   def dir
-    "/var/lib/nginx-acme/#{name}"
+    if NAConfig.production?
+      "/var/lib/nginx-acme/#{name}"
+    else
+      "/var/lib/nginx-acme/#{name}-staging/"
+    end
   end
 end
