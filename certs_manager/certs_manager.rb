@@ -4,7 +4,7 @@ require_relative 'models/domain'
 class CertsManager
   include Commands
 
-  def entrypoint
+  def setup
     OpenSSL.gen_account_key
     download_intermediate_cert
     Nginx.start
@@ -27,7 +27,6 @@ class CertsManager
     end
 
     start_cron
-    sleep
   end
 
   def renew

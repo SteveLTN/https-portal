@@ -9,18 +9,16 @@ RUN mkdir -p /var/www/challenges/ && \
     apt-get install -y python ruby wget cron && \
     rm -rf /var/lib/apt/lists/*
 
-COPY ./bin/acme_tiny /usr/local/bin/acme_tiny
+COPY ./bin/acme_tiny ./bin/setup ./bin/init /usr/local/bin/
 COPY ./bin/renew_certs /etc/cron.weekly/renew_certs
-COPY ./bin/entrypoint /usr/local/bin/entrypoint
+
 COPY ./certs_manager /opt/certs_manager
 
-RUN chmod a+x /usr/local/bin/acme_tiny && \
-    chmod a+x /etc/cron.weekly/renew_certs && \
-    chmod a+x /usr/local/bin/entrypoint
+RUN chmod a+x /usr/local/bin/* && \
+    chmod a+x /etc/cron.weekly/renew_certs
 
 VOLUME /var/lib/nginx-acme
-RUN mkdir -p /var/lib/nginx-acme
 
 COPY ./nginx-conf /var/lib/nginx-conf
 
-ENTRYPOINT /usr/local/bin/entrypoint
+ENTRYPOINT ["/usr/local/bin/init"]
