@@ -1,28 +1,36 @@
-require_relative 'lib/acme'
-require_relative 'lib/commands'
-require_relative 'lib/nginx'
+Dir[File.dirname(__FILE__) + '/lib/*.rb'].each {|file| require file }
+require_relative 'models/domain'
 
 class CertsManager
+  include Commands
+
   def entrypoint
-    Commands.gen_keys
-    Commands.create_csr
+    OpenSSL.gen_account_key
+    download_intermediate_cert
     Nginx.start
-    Nginx.config_http
 
-    ACME.sign
+    NAConfig.domains.each do |domain|
+      mkdir(domain)
+      OpenSSL.gen_domain_key(domain)
+      OpenSSL.create_csr(domain)
+      Nginx.config_http(domain)
+      ACME.sign(domain)
+      chain_keys(domain)
+      Nginx.config_ssl(domain)
+    end
 
-    Commands.download_intermediate_cert
-    Commands.cat_keys
-    Nginx.config_ssl
-    Commands.start_cron
-
+    start_cron
     sleep
   end
 
   def renew
-    ACME.sign
-    Commands.download_intermediate_cert
-    Commands.cat_keys
+    download_intermediate_cert
+
+    NAConfig.domains.each do |domain|
+      ACME.sign(domain)
+      chain_keys(domain)
+    end
+
     Nginx.reload
   end
 end

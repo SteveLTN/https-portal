@@ -18,6 +18,9 @@ RUN chmod a+x /usr/local/bin/acme_tiny.py && \
     chmod a+x /etc/cron.monthly/renew_certs && \
     chmod a+x /usr/local/bin/entrypoint.rb
 
-COPY ./nginx-conf /root/nginx-conf
+VOLUME /var/lib/nginx-acme
+RUN mkdir -p /var/lib/nginx-acme
+
+COPY ./nginx-conf /var/lib/nginx-conf
 
 ENTRYPOINT /usr/local/bin/entrypoint.rb

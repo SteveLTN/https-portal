@@ -1,0 +1,15 @@
+module NAConfig
+  def self.domains
+    ENV.select{ |k| k.start_with? 'FORWARD_' }.map do |k,v|
+      Domain.new(k.sub('FORWARD_', '').downcase, v)
+    end
+  end
+
+  def self.ca
+    if ENV['PRODUCTION'] && ENV['PRODUCTION'].downcase == 'true'
+      'https://acme-v01.api.letsencrypt.org'
+    else
+      'https://acme-staging.api.letsencrypt.org'
+    end
+  end
+end
