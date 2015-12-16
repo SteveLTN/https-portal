@@ -10,12 +10,19 @@ class CertsManager
     Nginx.start
 
     NAConfig.domains.each do |domain|
-      mkdir(domain)
-      OpenSSL.gen_domain_key(domain)
-      OpenSSL.create_csr(domain)
       Nginx.config_http(domain)
-      ACME.sign(domain)
-      chain_keys(domain)
+
+      if OpenSSL.need_to_sign_or_renew? domain
+        mkdir(domain)
+        OpenSSL.gen_domain_key(domain)
+        OpenSSL.create_csr(domain)
+        ACME.sign(domain)
+        chain_keys(domain)
+        puts "Signed key for #{domain.name}"
+      else
+        puts "No need to re-sign certs for #{domain.name}, it will expire after #{OpenSSL.expires_in_days(domain.chained_cert_path)} days"
+      end
+
       Nginx.config_ssl(domain)
     end
 
@@ -27,10 +34,15 @@ class CertsManager
     download_intermediate_cert
 
     NAConfig.domains.each do |domain|
-      ACME.sign(domain)
-      chain_keys(domain)
+      if OpenSSL.need_to_sign_or_renew? domain
+        ACME.sign(domain)
+        chain_keys(domain)
+        Nginx.reload
+        puts "Renewed certs for #{domain.name}"
+      else
+        puts "No need to renew certs for #{domain.name}, it will expire after #{OpenSSL.expires_in_days(domain.chained_cert_path)} days"
+      end
     end
 
-    Nginx.reload
   end
 end

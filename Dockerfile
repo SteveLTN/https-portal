@@ -10,12 +10,12 @@ RUN mkdir -p /var/www/challenges/ && \
     rm -rf /var/lib/apt/lists/*
 
 COPY ./bin/acme_tiny /usr/local/bin/acme_tiny
-COPY ./bin/renew_certs /etc/cron.monthly/renew_certs
+COPY ./bin/renew_certs /etc/cron.weekly/renew_certs
 COPY ./bin/entrypoint /usr/local/bin/entrypoint
 COPY ./certs_manager /opt/certs_manager
 
 RUN chmod a+x /usr/local/bin/acme_tiny && \
-    chmod a+x /etc/cron.monthly/renew_certs && \
+    chmod a+x /etc/cron.weekly/renew_certs && \
     chmod a+x /usr/local/bin/entrypoint
 
 VOLUME /var/lib/nginx-acme
