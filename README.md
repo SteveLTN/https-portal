@@ -10,6 +10,12 @@ This project is in a very early stage. Do NOT use it in production!
 
 Nginx-acme is a Docker container with Nginx installed, together with a ACME client to obtain free SSL certificates from [Let's Encrypt](https://letsencrypt.org) automatically. 
 
+It:
+
+* obtains an SSL certificate for each of your domains from [Let's Encrypt](https://letsencrypt.org)
+* configures Nginx to forward HTTPS requests
+* sets up cron jobs to automatically renew your certificates every month
+
 This project includes a copy of the fantastic project [acme-tiny](https://github.com/diafygi/acme-tiny) by Daniel Roesler. Thank you Daniel!
 
 ## Usage
