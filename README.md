@@ -2,6 +2,8 @@
 
 A Docker image with Nginx and Let's Encrypt automatic SSL configuration shipped.
 
+DockerHub: [https://hub.docker.com/r/steveltn/nginx-acme/](https://hub.docker.com/r/steveltn/nginx-acme/)
+
 ## Warning
 
 This project is in a very early stage. Do NOT use it in production!
@@ -18,7 +20,7 @@ It:
 
 This project includes a copy of the fantastic project [acme-tiny](https://github.com/diafygi/acme-tiny) by Daniel Roesler. Thank you Daniel!
 
-## About Rate Limit
+## About Rate Limits of Let's Encrypt
 
 Let's Encrypt is in public beta at the moment. According to [this](https://community.letsencrypt.org/t/public-beta-rate-limits/4772) and [this discussion](https://community.letsencrypt.org/t/public-beta-rate-limits/4772/42), the rate limit is
 
@@ -39,9 +41,13 @@ With simple configuration, you can easily set up your HTTPS server in seconds. H
 
 1. Configure your DNS server
 
-1. Run the container. I recommend running it by using [docker-compose](https://docs.docker.com/compose/).
+1. Run the container. I recommend running it by using [docker-compose](https://docs.docker.com/compose/). [Here](https://github.com/SteveLTN/nginx-acme/blob/master/examples/wordpress/docker-compose.yml) is an example `docker-compose.yml` for setting up a WordPress site.
 
-1. Visit your site in HTTPS!
+1. Visit your site in HTTPS. Since we use the staging api of Let's Encrypt, the certificate is not trusted by your browser. However you can still do a test and make sure that everything works. (See above about production rate limits)
+
+1. Turn on the production flag by setting the environment variable `PRODUCTION=true` and restart the container.
+
+1. Your site is ready with HTTPS!
 
 [Here](https://github.com/SteveLTN/nginx-acme/blob/master/examples/wordpress/docker-compose.yml) is an example `docker-compose.yml` for setting up a WordPress site.
 
@@ -53,7 +59,7 @@ For a domain `example.com`, Nginx-ACME will first try to use `example.com.conf` 
 
 When you do experiments, please do not turn on `PRODUCTION` flag to prevent you from hitting the rate limit of Let's Encrypt.
 
-the Nginx config files will be parsed by [ERB](http://www.stuartellis.eu/articles/erb/) for each domain. The ERB tags will be replaced accordingly. Currently there are a few helpers available:
+The Nginx config template files will be parsed by [ERB](http://www.stuartellis.eu/articles/erb/) for each domain. The ERB tags will be replaced accordingly. Currently there are a few helpers available:
 
 * `<%= domain.name %>`
 * `<%= domain.chained_cert_path %>`
