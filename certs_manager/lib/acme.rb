@@ -1,5 +1,7 @@
 module ACME
   def self.sign(domain)
+    puts "Signing certificates from #{NAConfig.ca} ..."
+
     command = <<-EOC
       acme_tiny \
         --account-key /var/lib/nginx-acme/account.key \
