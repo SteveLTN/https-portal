@@ -14,8 +14,9 @@ module OpenSSL
   end
 
   def self.need_to_sign_or_renew?(domain)
-    skip_conditions = NAConfig.production? &&
-                      File.exist?(domain.key_path) &&
+    return true if NAConfig.force_renew?
+
+    skip_conditions = File.exist?(domain.key_path) &&
                       File.exist?(domain.chained_cert_path) &&
                       expires_in_days(domain.chained_cert_path) > 30
 

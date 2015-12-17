@@ -16,4 +16,8 @@ module NAConfig
   def self.production?
     ENV['PRODUCTION'] && ENV['PRODUCTION'].downcase == 'true'
   end
+
+  def self.force_renew?
+    ENV['FORCE_RENEW'] && ENV['FORCE_RENEW'].downcase == 'true'
+  end
 end

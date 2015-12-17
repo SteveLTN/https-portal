@@ -27,7 +27,7 @@ Let's Encrypt is in public beta at the moment. According to [this](https://commu
 
 The former is not usually a problem, however the latter could be if you want to use multiple subdomains on a single domain. Let's Encrypt does support SAN certificates, however it requires careful planning and is hard to automate. So in Nginx-ACME we only deal with CN certificates. 
 
-The image stores your certificates in a data volume and will not re-sign certificates until 30 days before expiration if one exists (in production mode). However if you play around with the image a lot, you can hit the limit. That's why `PRODUCTION` flag is off by default, and we use the Let's Encrypt staging server. When you feel everything is good, you can set `PRODUCTION=true` as an environment variable.
+The image stores your certificates in a data volume and will not re-sign certificates until 30 days before expiration if one exists (you can force renew certificates by using `FORCE_RENEW=true` environment variable). However if you play around with the image a lot, you can hit the limit. That's why `PRODUCTION` flag is off by default, and we use the Let's Encrypt staging server. When you feel everything is good, you can set `PRODUCTION=true` as an environment variable.
 
 Let's Encrypt says the restrict will be loosen as the beta goes.
 
