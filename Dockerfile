@@ -4,6 +4,8 @@ MAINTAINER Weiyan Shao "lighteningman@gmail.com"
 
 WORKDIR /root
 
+RUN rm /etc/nginx/conf.d/default.conf
+
 RUN mkdir -p /var/www/challenges/ && \
     apt-get update && \
     apt-get install -y python ruby cron && \
