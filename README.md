@@ -1,4 +1,4 @@
-# nginx-acme
+# Nginx-ACME
 
 A Docker image with Nginx and Let's Encrypt automatic SSL configuration shipped.
 
@@ -8,12 +8,12 @@ This project is in a very early stage. Do NOT use it in production!
 
 ## Introduction
 
-Nginx-acme is a Docker container with Nginx installed, together with an ACME client to obtain free SSL certificates from [Let's Encrypt](https://letsencrypt.org) automatically.
+Nginx-ACME is a Docker container with Nginx installed, together with an ACME client to obtain free SSL certificates from [Let's Encrypt](https://letsencrypt.org) automatically.
 
 It:
 
 * obtains an SSL certificate for each of your subdomains from [Let's Encrypt](https://letsencrypt.org)
-* configures Nginx to use HTTPS 
+* configures Nginx to use HTTPS
 * sets up a cron job that checks your certificates every week, and renew them if they will expire in 30 days
 
 This project includes a copy of the fantastic project [acme-tiny](https://github.com/diafygi/acme-tiny) by Daniel Roesler. Thank you Daniel!
@@ -25,7 +25,7 @@ Let's Encrypt is in public beta at the moment. According to [this](https://commu
 * 10 registrations per IP per 3 hours
 * 5 certificates per domain (not subdomain) per 7 days
 
-The former is not usually a problem, however the latter could be if you want to use multiple subdomains on a single domain. Let's Encrypt does support SAN certificates, however it requires careful planning and is hard to automate. So in Nginx-ACME we only deal with CN certificates. 
+The former is not usually a problem, however the latter could be if you want to use multiple subdomains on a single domain. Let's Encrypt does support SAN certificates, however it requires careful planning and is hard to automate. So in Nginx-ACME we only deal with CN certificates.
 
 The image stores your certificates in a data volume and will not re-sign certificates until 30 days before expiration if one exists (you can force renew certificates by using `FORCE_RENEW=true` environment variable). However if you play around with the image a lot, you can hit the limit. That's why `PRODUCTION` flag is off by default, and we use the Let's Encrypt staging server. When you feel everything is good, you can set `PRODUCTION=true` as an environment variable.
 
