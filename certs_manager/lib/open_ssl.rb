@@ -1,8 +1,10 @@
 require 'date'
 
 module OpenSSL
-  def self.gen_account_key
-    system 'openssl genrsa 4096 > /var/lib/nginx-acme/account.key'
+  def self.ensure_account_key
+    unless File.exist? "/var/lib/nginx-acme/account.key"
+      system 'openssl genrsa 4096 > /var/lib/nginx-acme/account.key'
+    end
   end
 
   def self.ensure_domain_key(domain)

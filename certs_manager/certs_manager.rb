@@ -5,7 +5,7 @@ class CertsManager
   include Commands
 
   def setup
-    OpenSSL.gen_account_key
+    OpenSSL.ensure_account_key
     download_intermediate_cert
     Nginx.start
 
