@@ -8,19 +8,19 @@ class Domain
   end
 
   def csr_path
-    "#{dir}/domain.csr"
+    File.join(dir, 'domain.csr')
   end
 
   def signed_cert_path
-    "#{dir}/signed.crt"
+    File.join(dir, 'signed.crt')
   end
 
   def chained_cert_path
-    "#{dir}/chained.pem"
+    File.join(dir, 'chained.pem')
   end
 
   def key_path
-    "#{dir}/domain.key"
+    File.join(dir, 'domain.key')
   end
 
   def dir

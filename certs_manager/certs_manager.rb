@@ -14,7 +14,7 @@ class CertsManager
 
       if OpenSSL.need_to_sign_or_renew? domain
         mkdir(domain)
-        OpenSSL.gen_domain_key(domain)
+        OpenSSL.ensure_domain_key(domain)
         OpenSSL.create_csr(domain)
         ACME.sign(domain)
         chain_keys(domain)

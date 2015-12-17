@@ -5,8 +5,10 @@ module OpenSSL
     system 'openssl genrsa 4096 > /var/lib/nginx-acme/account.key'
   end
 
-  def self.gen_domain_key(domain)
-    system "openssl genrsa 4096 > #{domain.key_path}"
+  def self.ensure_domain_key(domain)
+    unless File.exist? domain.key_path
+      system "openssl genrsa 4096 > #{domain.key_path}"
+    end
   end
 
   def self.create_csr(domain)
