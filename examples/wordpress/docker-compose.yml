@@ -7,7 +7,11 @@ nginx-acme:
     - wordpress
   environment:
     # Forward wordpress.steveltn.me to the WordPress container
-    - "FORWARD_WORDPRESS.STEVELTN.ME=http://wordpress"
+    - "NGINX_ACME_WORDPRESS.STEVELTN.ME=http://wordpress"
+
+    # Using staging server by default, for there is a rate limit on production
+    # Uncomment to use Let's Encrypt production server
+    # - "PRODUCTION=true"
 
 wordpress:
   image: wordpress
@@ -17,4 +21,4 @@ wordpress:
 db:
   image: mariadb
   environment:
-    MYSQL_ROOT_PASSWORD: example
+    MYSQL_ROOT_PASSWORD: gohJoom2quai8hac
