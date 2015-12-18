@@ -15,8 +15,8 @@ Nginx-ACME is a Docker container with Nginx installed, together with an ACME cli
 It:
 
 * obtains an SSL certificate for each of your subdomains from [Let's Encrypt](https://letsencrypt.org)
-* configures Nginx to use HTTPS
-* sets up a cron job that checks your certificates every week, and renew them if they will expire in 30 days
+* configures Nginx to use HTTPS (and force HTTPS by redirecting HTTP to HTTPS)
+* sets up a cron job that checks your certificates every week, and renew them if they expire in 30 days
 
 This project includes a copy of the fantastic project [acme-tiny](https://github.com/diafygi/acme-tiny) by Daniel Roesler. Thank you Daniel!
 
@@ -37,6 +37,10 @@ Let's Encrypt says the restrict will be loosen as the beta goes.
 
 With simple configuration, you can easily set up your HTTPS server in seconds. HTTP requests will be redirected to HTTPS, and HTTPS requests will be forwarded to a given URL. You can set up multiple domains in simple configuration.
 
+A step-by-step guide for setting up a WordPress site can be found [here](http://steveltn.me/blog/2015/12/18/nginx-acme/).
+
+For setting up an arbituary site:
+
 1. Create a Linux machine with Docker daemon installed
 
 1. Configure your DNS server
@@ -50,8 +54,6 @@ With simple configuration, you can easily set up your HTTPS server in seconds. H
 1. Turn on the production flag by setting the environment variable `PRODUCTION=true` and restart the container.
 
 1. Your site is ready with HTTPS!
-
-[Here](https://github.com/SteveLTN/nginx-acme/blob/master/examples/wordpress/docker-compose.yml) is an example `docker-compose.yml` for setting up a WordPress site.
 
 ## Advanced Configuration
 
