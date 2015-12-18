@@ -5,5 +5,5 @@ nginx-acme:
     - 443:443
   environment:
     # Redirect my.example.com to https:://letsencrypt.org
-    # NGINX_ACME_MY.EXAMPLE.COM to any value to enable
-    - "NGINX_ACME_MY.EXAMPLE.COM=true"
+    # NGINX-ACME_MY.EXAMPLE.COM to any value to enable
+    - "NGINX-ACME_MY.EXAMPLE.COM=true"
