@@ -22,7 +22,8 @@ class ERBBinding
   def compile
     fake_binding = FakeBinding.new(
       domain: @domain,
-      acme_challenge_location: acme_challenge_location_snippet
+      acme_challenge_location: acme_challenge_location_snippet,
+      dhparam_path: NAConfig.dhparam_path
     )
 
     ERB.new(@template).result(fake_binding.get)

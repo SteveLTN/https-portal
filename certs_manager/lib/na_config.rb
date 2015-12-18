@@ -20,4 +20,8 @@ module NAConfig
   def self.force_renew?
     ENV['FORCE_RENEW'] && ENV['FORCE_RENEW'].downcase == 'true'
   end
+
+  def self.dhparam_path
+    "/var/lib/nginx-acme/dhparam.pem"
+  end
 end

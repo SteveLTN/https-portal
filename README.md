@@ -41,7 +41,9 @@ With simple configuration, you can easily set up your HTTPS server in seconds. H
 
 1. Configure your DNS server
 
-1. Run the container. I recommend running it by using [docker-compose](https://docs.docker.com/compose/). [Here](https://github.com/SteveLTN/nginx-acme/blob/master/examples/wordpress/docker-compose.yml) is an example `docker-compose.yml` for setting up a WordPress site.
+1. Run the container. I recommend running it by using [docker-compose](https://docs.docker.com/compose/). [Here](https://github.com/SteveLTN/nginx-acme/blob/master/examples/wordpress/docker-compose.yml) is an example `docker-compose.yml` for setting up a WordPress site. If you want to set the upstream to a port on the Docker host machine, you can use `dockerhost`. It is already set up in your `/etc/hosts`.
+
+1. Be patient. On first deploy, Nginx-acme will generate [DH parameter](https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html) for SSL. This will take approx. 2 minutes. Then it is stored in a data volume, and will not require regeneration if you restart the container.
 
 1. Visit your site in HTTPS. Since we use the staging api of Let's Encrypt, the certificate is not trusted by your browser. However you can still do a test and make sure that everything works. (See above about production rate limits)
 
@@ -50,8 +52,6 @@ With simple configuration, you can easily set up your HTTPS server in seconds. H
 1. Your site is ready with HTTPS!
 
 [Here](https://github.com/SteveLTN/nginx-acme/blob/master/examples/wordpress/docker-compose.yml) is an example `docker-compose.yml` for setting up a WordPress site.
-
-P.S. The Docker host machine is defined as `dockerhost` in `/etc/hosts`.
 
 ## Advanced Configuration
 

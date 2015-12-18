@@ -31,6 +31,12 @@ module OpenSSL
     (expires_at(pem) - Date.today).to_i
   end
 
+  def self.gen_dhparam
+    unless File.exist? NAConfig.dhparam_path
+      system "mkdir -p #{File.dirname(NAConfig.dhparam_path)} && openssl dhparam -out #{NAConfig.dhparam_path} 2048"
+    end
+  end
+
   private
 
   def self.expires_at(pem)

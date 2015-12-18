@@ -6,6 +6,7 @@ class CertsManager
 
   def setup
     add_dockerhost_to_hosts
+    OpenSSL.gen_dhparam
     OpenSSL.ensure_account_key
     download_intermediate_cert
     Nginx.start
