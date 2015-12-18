@@ -51,6 +51,8 @@ With simple configuration, you can easily set up your HTTPS server in seconds. H
 
 [Here](https://github.com/SteveLTN/nginx-acme/blob/master/examples/wordpress/docker-compose.yml) is an example `docker-compose.yml` for setting up a WordPress site.
 
+P.S. The Docker host machine is defined as `dockerhost` in `/etc/hosts`.
+
 ## Advanced Configuration
 
 If you want to set up your own Nginx configuration, you can build another image on top of Nginx-ACME. All you need to do is to add your nginx configurations to `/var/lib/nginx-conf` folder inside the container.

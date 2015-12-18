@@ -20,4 +20,12 @@ module Commands
   def mkdir(domain)
     system "mkdir -p #{domain.dir}"
   end
+
+  def add_dockerhost_to_hosts
+    docker_host_ip = `/sbin/ip route|awk '/default/ { print $3 }'`.strip
+
+    File.open('/etc/hosts', 'a') do |f|
+      f.puts "#{docker_host_ip}\tdockerhost"
+    end
+  end
 end

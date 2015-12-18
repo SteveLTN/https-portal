@@ -5,6 +5,7 @@ class CertsManager
   include Commands
 
   def setup
+    add_dockerhost_to_hosts
     OpenSSL.ensure_account_key
     download_intermediate_cert
     Nginx.start
@@ -20,7 +21,7 @@ class CertsManager
         chain_keys(domain)
         puts "Signed key for #{domain.name}"
       else
-        puts "No need to re-sign certs for #{domain.name}, it will not expire until #{OpenSSL.expires_in_days(domain.chained_cert_path)} days later."
+        puts "No need to re-sign certs for #{domain.name}, it will not expire until #{OpenSSL.expires_in_days(domain.chained_cert_path)} days from now."
       end
 
       Nginx.config_ssl(domain)
@@ -39,7 +40,7 @@ class CertsManager
         Nginx.reload
         puts "Renewed certs for #{domain.name}"
       else
-        puts "No need to renew certs for #{domain.name}, it will not expire until #{OpenSSL.expires_in_days(domain.chained_cert_path)} days later."
+        puts "No need to renew certs for #{domain.name}, it will not expire until #{OpenSSL.expires_in_days(domain.chained_cert_path)} days from now."
       end
     end
 
