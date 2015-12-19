@@ -2,4 +2,7 @@
 
 setup
 
-sleep infinity
+trap 'trap - TERM; kill -s TERM -- -$$' TERM
+sleep infinity &
+wait
+exit 0
