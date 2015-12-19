@@ -33,13 +33,42 @@ The image stores your certificates in a data volume and will not re-sign certifi
 
 Let's Encrypt says the restrict will be loosen as the beta goes.
 
+## Getting Started
+
+If you are not familiar with `docker-compose`, I recommend you read [this blog post](http://steveltn.me/blog/2015/12/18/nginx-acme/), it is a step-by-step guide showing you how to set up a WordPress using Nginx-ACME.
+
 ## Simple Configuration
 
-With simple configuration, you can easily set up your HTTPS server in seconds. HTTP requests will be redirected to HTTPS, and HTTPS requests will be forwarded to a given URL. You can set up multiple domains in simple configuration.
+Set up ssl for `example.com` and forward the requests to `upstream`, run:
 
-A step-by-step guide for setting up a WordPress site can be found [here](http://steveltn.me/blog/2015/12/18/nginx-acme/).
+```
+docker run -p 80:80 -p 443:443 -e "DOMAINS=example.com->http://upstream" steveltn/nginx-acme
+```
+You can also set up SSL for non-dockerized web services or containers that are not linked with Nginx-ACME. The Docker host machine is available as upstread `dockerhost`. For example, if you have a Rails application running of port `3000` on the host:
 
-## Advanced Configuration
+```
+docker run -p 80:80 -p 443:443 -e "DOMAINS=example.com->http://dockerhost:3000" steveltn/nginx-acme
+```
+
+Nginx-ACME supports multiple domains. A single-domain certificate will be obtained for each given domain.
+
+```
+docker run -p 80:80 -p 443:443 \
+	-e "DOMAINS=example1.com -> http://upstream1, example2.com -> http://upstream2" \
+	steveltn/nginx-acme
+```
+
+You can mount a folder on the host machine to store keys and certificates:
+
+```
+docker run -p 80:80 -p 443:443 \
+	-e "DOMAINS=example.com->http://upstream" \
+	-v /path/to/certs:/var/lib/nginx-acme \
+	steveltn/nginx-acme
+```
+Even if you don't mount volume to `/var/lib/nginx-acme`, this folder is a data volume. You can run `docker inspect <container>` to find the volume on the host filesystem.
+
+## Customizing Nginx Configurations
 
 If you want to set up your own Nginx configuration, you can build another image on top of Nginx-ACME. All you need to do is to add your nginx configurations to `/var/lib/nginx-conf` folder inside the container.
 
