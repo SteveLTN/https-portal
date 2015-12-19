@@ -66,8 +66,10 @@ When you do experiments, please do not turn on `PRODUCTION` flag to prevent you 
 The Nginx config template files will be parsed by [ERB](http://www.stuartellis.eu/articles/erb/) for each domain. The ERB tags will be replaced accordingly. Currently there are a few helpers available:
 
 * `<%= domain.name %>`
+* `<%= domain.target %>`
 * `<%= domain.chained_cert_path %>`
 * `<%= domain.key_path %>`
 * `<%= acme_challenge_location %>`
+* `<%= dhparam_path %>`
 
 Please see the examples [here](https://github.com/SteveLTN/nginx-acme/tree/master/examples/custom_config).
