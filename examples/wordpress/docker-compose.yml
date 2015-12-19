@@ -7,7 +7,8 @@ nginx-acme:
     - wordpress
   environment:
     # Forward wordpress.example.com to the WordPress container
-    - "NGINX-ACME_WORDPRESS.EXAMPLE.COM=http://wordpress"
+    # You can set up multiple domains at once
+    - "DOMAINS=wordpress.example.com -> http://wordpress"
 
     # Using staging server by default, for there is a rate limit on production
     # Uncomment to use Let's Encrypt production server

@@ -39,22 +39,6 @@ With simple configuration, you can easily set up your HTTPS server in seconds. H
 
 A step-by-step guide for setting up a WordPress site can be found [here](http://steveltn.me/blog/2015/12/18/nginx-acme/).
 
-For setting up an arbituary site:
-
-1. Create a Linux machine with Docker daemon installed
-
-1. Configure your DNS server
-
-1. Run the container. I recommend running it by using [docker-compose](https://docs.docker.com/compose/). [Here](https://github.com/SteveLTN/nginx-acme/blob/master/examples/wordpress/docker-compose.yml) is an example `docker-compose.yml` for setting up a WordPress site. If you want to set the upstream to a port on the Docker host machine, you can use `dockerhost`. It is already set up in your `/etc/hosts`.
-
-1. Be patient. On first deploy, Nginx-acme will generate [DH parameter](https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html) for SSL. This will take approx. 2 minutes. Then it is stored in a data volume, and will not require regeneration if you restart the container.
-
-1. Visit your site in HTTPS. Since we use the staging api of Let's Encrypt, the certificate is not trusted by your browser. However you can still do a test and make sure that everything works. (See above about production rate limits)
-
-1. Turn on the production flag by setting the environment variable `PRODUCTION=true` and restart the container.
-
-1. Your site is ready with HTTPS!
-
 ## Advanced Configuration
 
 If you want to set up your own Nginx configuration, you can build another image on top of Nginx-ACME. All you need to do is to add your nginx configurations to `/var/lib/nginx-conf` folder inside the container.
@@ -66,7 +50,7 @@ When you do experiments, please do not turn on `PRODUCTION` flag to prevent you 
 The Nginx config template files will be parsed by [ERB](http://www.stuartellis.eu/articles/erb/) for each domain. The ERB tags will be replaced accordingly. Currently there are a few helpers available:
 
 * `<%= domain.name %>`
-* `<%= domain.target %>`
+* `<%= domain.upstream %>`
 * `<%= domain.chained_cert_path %>`
 * `<%= domain.key_path %>`
 * `<%= acme_challenge_location %>`

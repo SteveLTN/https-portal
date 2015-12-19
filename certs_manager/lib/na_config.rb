@@ -1,7 +1,8 @@
 module NAConfig
   def self.domains
-    ENV.select{ |k| k.start_with? 'NGINX-ACME_' }.map do |k,v|
-      Domain.new(k.sub('NGINX-ACME_', '').downcase, v)
+    ENV['DOMAINS'].split(',').map(&:strip).map do |domain|
+      name, upstream = domain.split('->').map(&:strip)
+      Domain.new(name, upstream)
     end
   end
 

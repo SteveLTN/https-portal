@@ -1,10 +1,10 @@
 class Domain
   attr_accessor :name
-  attr_accessor :proxy_target
+  attr_accessor :upstream
 
-  def initialize(name, proxy_target)
+  def initialize(name, upstream)
     @name = name
-    @proxy_target = proxy_target
+    @upstream = upstream
   end
 
   def csr_path
