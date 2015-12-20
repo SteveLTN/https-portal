@@ -1,0 +1,4 @@
+#!/usr/bin/ruby
+require '/opt/certs_manager/certs_manager'
+
+CertsManager.new.reconfig

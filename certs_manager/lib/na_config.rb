@@ -1,9 +1,6 @@
 module NAConfig
   def self.domains
-    ENV['DOMAINS'].split(',').map(&:strip).map do |domain|
-      name, upstream = domain.split('->').map(&:strip)
-      Domain.new(name, upstream)
-    end
+    env_domains + auto_discovered_domains
   end
 
   def self.ca
@@ -24,5 +21,30 @@ module NAConfig
 
   def self.dhparam_path
     "/var/lib/nginx-acme/dhparam.pem"
+  end
+
+  def self.env_domains
+    if ENV['DOMAINS']
+      parse ENV['DOMAINS']
+    else
+      []
+    end
+  end
+
+  def self.auto_discovered_domains
+    if File.exist? "/var/run/domains"
+      parse File.read("/var/run/domains")
+    else
+      []
+    end
+  end
+
+  private
+
+  def self.parse(domain_desc)
+    domain_desc.split(',').map(&:strip).delete_if{ |s| s == "" }.map do |domain|
+      name, upstream = domain.split('->').map(&:strip)
+      Domain.new(name, upstream)
+    end
   end
 end

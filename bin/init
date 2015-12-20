@@ -2,6 +2,8 @@
 
 setup
 
+docker-gen -watch -only-exposed -notify reconfig /etc/docker-gen/domains.tmpl /var/run/domains &
+
 trap 'trap - TERM; kill -s TERM -- -$$' TERM
 sleep infinity &
 wait
