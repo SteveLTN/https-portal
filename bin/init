@@ -2,7 +2,9 @@
 
 setup
 
-docker-gen -watch -only-exposed -notify reconfig /etc/docker-gen/domains.tmpl /var/run/domains &
+if [ -S /var/run/docker.sock ]; then
+  docker-gen -watch -only-exposed -notify reconfig /etc/docker-gen/domains.tmpl /var/run/domains &
+fi
 
 trap 'trap - TERM; kill -s TERM -- -$$' TERM
 sleep infinity &
