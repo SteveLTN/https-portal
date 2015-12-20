@@ -35,7 +35,7 @@ Let's Encrypt says the restrict will be loosen as the beta goes.
 
 ## Getting Started
 
-If you are not familiar with `docker-compose`, I recommend you read [this blog post](http://steveltn.me/blog/2015/12/18/nginx-acme/), it is a step-by-step guide showing you how to set up a WordPress using Nginx-ACME.
+If you are not familiar with `docker-compose`, I recommend you read [this blog post](http://steveltn.me/2015/12/18/nginx-acme/), it is a step-by-step guide showing you how to set up a WordPress using Nginx-ACME.
 
 ## Simple Configuration
 
@@ -70,7 +70,7 @@ Even if you don't mount volume to `/var/lib/nginx-acme`, this folder is a data v
 
 ## Automatic Container Discovery (experimental)
 
-Automatic container discovery allows you to run Nginx-ACME with a standalone docker-compose file first, and then add/remove upstream web service containers without restarting Nginx-ACME container. 
+Automatic container discovery allows you to run Nginx-ACME with a standalone docker-compose file first, and then add/remove upstream web service containers without restarting Nginx-ACME container.
 
 This function is greatly inspired by [nginx-proxy](https://github.com/jwilder/nginx-proxy) project. Nginx-ACME uses the same tool [docker-gen](https://github.com/jwilder/docker-gen) as nginx-proxy to discover new containers with exposed ports. Many thanks to [Jason Wilder](https://github.com/jwilder) for creating both docker-gen and nginx-proxy, they are awesome projects.
 
@@ -89,7 +89,7 @@ docker run --link some-mysql:mysql \
   -e VIRTUAL_HOST=example.com \
   -p 8080:80 \
   wordpress
-``` 
+```
 
 If the web service exposes more than one port, you can use `VIRTUAL_PORT` to indicate which port you want Nginx-ACME to use as upstream:
 
@@ -98,7 +98,7 @@ docker run --link some-mysql:mysql \
   -e VIRTUAL_HOST=example.com VIRTUAL_PORT=8080\
   -p 8080:80 -p 2222:22 \
   wordpress
-``` 
+```
 
 ## Customizing Nginx Configurations
 
