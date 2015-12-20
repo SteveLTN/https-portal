@@ -68,6 +68,38 @@ docker run -p 80:80 -p 443:443 \
 ```
 Even if you don't mount volume to `/var/lib/nginx-acme`, this folder is a data volume. You can run `docker inspect <container>` to find the volume on the host filesystem.
 
+## Automatic Container Discovery (experimental)
+
+Automatic container discovery allows you to run Nginx-ACME with a standalone docker-compose file first, and then add/remove upstream web service containers without restarting Nginx-ACME container. 
+
+This function is greatly inspired by [nginx-proxy](https://github.com/jwilder/nginx-proxy) project. Nginx-ACME uses the same tool [docker-gen](https://github.com/jwilder/docker-gen) as nginx-proxy to discover new containers with exposed ports. Many thanks to [Jason Wilder](https://github.com/jwilder) for creating both docker-gen and nginx-proxy, they are awesome projects.
+
+If you mount the Docker API socket into the Nginx-ACME container as a volume, Nginx-ACME would be watching for other containers:
+
+```
+docker run -p 80:80 -p 443:443 \
+	-v /var/run/docker.sock:/var/run/docker.sock:ro \
+	steveltn/nginx-acme
+```
+
+Then if you start your upstream web service container with an exposed port, and you set environment variable `VIRTUAL_HOST` of the web service container, then Nginx-ACME will discover it and set up HTTPS proxy. The domain will be as indicated in `VIRTUAL_HOST`, the upstream will be the exposed port. For instance, to launch a WordPress and make it the upstream of `example.com`:
+
+```
+docker run --link some-mysql:mysql \
+  -e VIRTUAL_HOST=example.com \
+  -p 8080:80 \
+  wordpress
+``` 
+
+If the web service exposes more than one port, you can use `VIRTUAL_PORT` to indicate which port you want Nginx-ACME to use as upstream:
+
+```
+docker run --link some-mysql:mysql \
+  -e VIRTUAL_HOST=example.com VIRTUAL_PORT=8080\
+  -p 8080:80 -p 2222:22 \
+  wordpress
+``` 
+
 ## Customizing Nginx Configurations
 
 If you want to set up your own Nginx configuration, you can build another image on top of Nginx-ACME. All you need to do is to add your nginx configurations to `/var/lib/nginx-conf` folder inside the container.
