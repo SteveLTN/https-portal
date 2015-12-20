@@ -28,4 +28,10 @@ module Commands
       f.puts "#{docker_host_ip}\tdockerhost"
     end
   end
+
+  def start_docker_gen
+    if File.socket? "/var/run/docker.sock"
+      system "docker-gen -watch -only-exposed -notify reconfig /etc/docker-gen/domains.tmpl /var/run/domains &"
+    end
+  end
 end

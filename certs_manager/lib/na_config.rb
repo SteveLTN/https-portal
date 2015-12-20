@@ -1,6 +1,6 @@
 module NAConfig
   def self.domains
-    env_domains + auto_discovered_domains
+    (env_domains + auto_discovered_domains).uniq(&:name)
   end
 
   def self.ca

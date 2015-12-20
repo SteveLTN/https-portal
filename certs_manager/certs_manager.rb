@@ -4,11 +4,14 @@ require_relative 'models/domain'
 class CertsManager
   include Commands
 
+  attr_accessor :lock
+
   def setup
     add_dockerhost_to_hosts
-    OpenSSL.gen_dhparam
+    OpenSSL.ensure_dhparam
     OpenSSL.ensure_account_key
     download_intermediate_cert
+    start_docker_gen
     Nginx.start
 
     ensure_signed(NAConfig.domains)
@@ -17,6 +20,8 @@ class CertsManager
   end
 
   def renew
+    obtain_lock
+
     download_intermediate_cert
 
     NAConfig.domains.each do |domain|
@@ -26,17 +31,22 @@ class CertsManager
         Nginx.reload
         puts "Renewed certs for #{domain.name}"
       else
-        puts "No need to renew certs for #{domain.name}, it will not expire until #{OpenSSL.expires_in_days(domain.chained_cert_path)} days from now."
+        puts "No need to renew certs for #{domain.name}, it will not expire in #{OpenSSL.expires_in_days(domain.chained_cert_path)} days."
       end
     end
-
+  ensure
+    release_lock
   end
 
   def reconfig
     ensure_signed(NAConfig.auto_discovered_domains)
   end
 
+  private
+
   def ensure_signed(domains)
+    obtain_lock
+
     domains.each do |domain|
       Nginx.config_http(domain)
 
@@ -48,10 +58,24 @@ class CertsManager
         chain_keys(domain)
         puts "Signed key for #{domain.name}"
       else
-        puts "No need to re-sign certs for #{domain.name}, it will not expire until #{OpenSSL.expires_in_days(domain.chained_cert_path)} days from now."
+        puts "No need to re-sign certs for #{domain.name}, it will not expire in #{OpenSSL.expires_in_days(domain.chained_cert_path)} days."
       end
 
       Nginx.config_ssl(domain)
     end
+
+  ensure
+    release_lock
+  end
+
+  def obtain_lock
+    self.lock = File.open("/tmp/nginx-acme.lock", File::CREAT)
+
+    lock.flock File::LOCK_EX
+  end
+
+  def release_lock
+    lock.flock File::LOCK_UN
+    lock.close
   end
 end
