@@ -16,7 +16,7 @@ RUN rm /etc/nginx/conf.d/default.conf && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY ./root_dir /
+COPY ./fs_root /
 
 RUN chmod a+x /bin/* && \
     chmod a+x /etc/cron.weekly/renew_certs
