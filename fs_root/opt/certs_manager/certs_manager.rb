@@ -26,10 +26,13 @@ class CertsManager
 
     NAConfig.domains.each do |domain|
       if OpenSSL.need_to_sign_or_renew? domain
-        ACME.sign(domain)
-        chain_keys(domain)
-        Nginx.reload
-        puts "Renewed certs for #{domain.name}"
+        if ACME.sign(domain)
+          chain_keys(domain)
+          Nginx.reload
+          puts "Renewed certs for #{domain.name}"
+        else
+          puts("Failed to renew certs for #{domain.name}")
+        end
       else
         puts "No need to renew certs for #{domain.name}, it will not expire in #{OpenSSL.expires_in_days(domain.chained_cert_path)} days."
       end
@@ -54,14 +57,17 @@ class CertsManager
         mkdir(domain)
         OpenSSL.ensure_domain_key(domain)
         OpenSSL.create_csr(domain)
-        ACME.sign(domain)
-        chain_keys(domain)
-        puts "Signed key for #{domain.name}"
+        if ACME.sign(domain)
+          chain_keys(domain)
+          Nginx.config_ssl(domain)
+          puts "Signed key for #{domain.name}"
+        else
+          puts("Failed to obtain certs for #{domain.name}")
+        end
       else
         puts "No need to re-sign certs for #{domain.name}, it will not expire in #{OpenSSL.expires_in_days(domain.chained_cert_path)} days."
       end
 
-      Nginx.config_ssl(domain)
     end
 
   ensure

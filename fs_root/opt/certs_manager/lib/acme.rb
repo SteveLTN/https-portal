@@ -10,9 +10,6 @@ module ACME
         --ca #{NAConfig.ca} > #{domain.signed_cert_path}
     EOC
 
-    unless system(command)
-      puts("Failed to obtain certs for #{domain.name}")
-      exit(1)
-    end
+    system(command)
   end
 end
