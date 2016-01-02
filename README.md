@@ -1,11 +1,14 @@
 # Nginx-ACME
 
-Nginx-ACME is a Nginx distribution with self-configured HTTPS support, which
-available as a Docker image.
+Nginx-ACME is a fully automated HTTPS server powered by
+[Nginx](http://nginx.org), [Let's Encrypt](https://letsencrypt.org) and
+[Docker](https://www.docker.com). By using it, you can run any existing web
+application over HTTPS, with only one extra line of configuration.
 
-The SSL certificates are obtain, and renew from [Let's Encrypt](https://letsencrypt.org) automatically.
+The SSL certificates are obtain, and renew from Let's Encrypt automatically.
 
-Docker Hub page: [https://hub.docker.com/r/steveltn/nginx-acme/](https://hub.docker.com/r/steveltn/nginx-acme/)
+Docker Hub page:
+[https://hub.docker.com/r/steveltn/nginx-acme/](https://hub.docker.com/r/steveltn/nginx-acme/)
 
 ## Warning
 
@@ -13,8 +16,10 @@ This project is in active development stage. Use it in production with CAUTION.
 
 ## Quick Start
 
-Create a `docker-compose.yml` file with the following content in any
-directory:
+Nginx-ACME shipped as a Docker image, so before use it, you need a Linux
+machine (either local or remote host) with Docker installed. We recommand use
+[Docker Compose](https://docs.docker.com/compose/) to run it. Create a
+`docker-compose.yml` file with the following content in any directory:
 
 ```yaml
 nginx-acme:
