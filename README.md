@@ -2,6 +2,7 @@
 
 Nginx-ACME is a fully automated HTTPS server powered by
 [Nginx](http://nginx.org), [Let's Encrypt](https://letsencrypt.org) and
+
 [Docker](https://www.docker.com). By using it, you can run any existing web
 application over HTTPS, with only one extra line of configuration.
 
