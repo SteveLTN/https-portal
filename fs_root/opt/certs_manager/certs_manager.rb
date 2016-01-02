@@ -65,6 +65,7 @@ class CertsManager
           puts("Failed to obtain certs for #{domain.name}")
         end
       else
+        Nginx.config_ssl(domain)
         puts "No need to re-sign certs for #{domain.name}, it will not expire in #{OpenSSL.expires_in_days(domain.chained_cert_path)} days."
       end
 
