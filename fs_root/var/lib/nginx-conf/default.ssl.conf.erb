@@ -22,5 +22,9 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
     }
     <% else %>
+    location / {
+        root   /var/www;
+        index  index.html;
+    }
     <% end %>
 }
