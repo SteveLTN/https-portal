@@ -2,7 +2,7 @@ require 'erb'
 
 class ERBBinding
 
-  class FakeBinding
+  class CleanBinding
     def initialize(hash)
       hash.each do |key, value|
         singleton_class.send(:define_method, key) { value }
@@ -20,7 +20,7 @@ class ERBBinding
   end
 
   def compile
-    fake_binding = FakeBinding.new(
+    fake_binding = CleanBinding.new(
       domain: @domain,
       acme_challenge_location: acme_challenge_location_snippet,
       dhparam_path: NAConfig.dhparam_path
