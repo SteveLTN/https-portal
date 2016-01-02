@@ -32,8 +32,8 @@ module Nginx
   def self.template_for(domain, ssl)
     ssl_ext = ssl ? '.ssl' : ''
 
-    override = "/var/lib/nginx-conf/#{domain.name}#{ssl_ext}.conf"
-    default = "/var/lib/nginx-conf/default#{ssl_ext}.conf"
+    override = "/var/lib/nginx-conf/#{domain.name}#{ssl_ext}.conf.erb"
+    default = "/var/lib/nginx-conf/default#{ssl_ext}.conf.erb"
 
     if File.exist? override
       File.read override
