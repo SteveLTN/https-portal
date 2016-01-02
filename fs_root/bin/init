@@ -1,8 +1,0 @@
-#!/bin/bash
-
-setup
-
-trap 'trap - TERM; kill -s TERM -- -$$' TERM
-sleep infinity &
-wait
-exit 0

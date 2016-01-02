@@ -1,0 +1,5 @@
+#!/bin/sh
+
+if ! [ -S /var/run/docker.sock ]; then
+  touch /etc/services.d/10-docker-gen/down
+fi

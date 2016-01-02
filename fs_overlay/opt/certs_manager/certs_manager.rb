@@ -11,12 +11,12 @@ class CertsManager
     OpenSSL.ensure_dhparam
     OpenSSL.ensure_account_key
     download_intermediate_cert
-    start_docker_gen
     Nginx.start
 
     ensure_signed(NAConfig.domains)
 
-    start_cron
+    Nginx.stop
+    sleep 0.1
   end
 
   def renew

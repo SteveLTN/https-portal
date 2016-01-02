@@ -13,10 +13,6 @@ module Commands
     system "cat #{domain.signed_cert_path} /var/lib/nginx-acme/intermediate.pem > #{domain.chained_cert_path}"
   end
 
-  def start_cron
-    system 'cron'
-  end
-
   def mkdir(domain)
     system "mkdir -p #{domain.dir}"
   end
@@ -26,12 +22,6 @@ module Commands
 
     File.open('/etc/hosts', 'a') do |f|
       f.puts "#{docker_host_ip}\tdockerhost"
-    end
-  end
-
-  def start_docker_gen
-    if File.socket? "/var/run/docker.sock"
-      system "docker-gen -watch -only-exposed -notify reconfig /etc/docker-gen/domains.tmpl /var/run/domains &"
     end
   end
 end

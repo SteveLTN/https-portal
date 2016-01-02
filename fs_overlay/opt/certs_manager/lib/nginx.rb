@@ -23,6 +23,10 @@ module Nginx
     system 'nginx -s reload'
   end
 
+  def self.stop
+    system 'nginx -s stop'
+  end
+
   private
 
   def self.compiled_config(domain, ssl)
