@@ -2,7 +2,7 @@ require "minitest/autorun"
 require_relative "../test_helper"
 
 class TestRenewal < Minitest::Test
-  def test_auto_discovery
+  def test_renewal
     `cd ./compositions/minimal-setup/ && docker-compose build && docker-compose up -d`
 
     read_https_content

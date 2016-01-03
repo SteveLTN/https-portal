@@ -13,7 +13,7 @@ wordpress:
   links:
     - db:mysql
   environment:
-    VIRTUAL_HOST: test.https-portal.site
+    VIRTUAL_HOST: test.nginx-acme.site
 
 db:
   image: mariadb
