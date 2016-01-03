@@ -14,12 +14,19 @@ Docker Hub page:
 
 This project is in active development stage. Use it in production with CAUTION.
 
+## Prerequisite
+
+HTTPS-PORTAL shipped as a Docker image. To use it, you need a Linux machine (either local or remote host) which:
+
+* 80 and 443 port can be publicly accessed.
+* Has [Docker Engine](https://docs.docker.com/engine/installation/) installed. [Docker Compose](https://docs.docker.com/compose/) is highly recommended, it will simplify your life, and our docs are mainly written for Docker Compose.
+
+Altough it is recommended, but knowledge of Docker is not required to use HTTPS-PORTAL.
+
 ## Quick Start
 
-HTTPS-PORTAL shipped as a Docker image, so before use it, you need a Linux
-machine (either local or remote host) with Docker installed. We recommand use
-[Docker Compose](https://docs.docker.com/compose/) to run it. Create a
-`docker-compose.yml` file with the following content in any directory:
+
+Create a `docker-compose.yml` file with the following content in any directory:
 
 ```yaml
 https-portal:
