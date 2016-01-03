@@ -1,18 +1,22 @@
 nginx-acme:
   image: steveltn/nginx-acme
+  # You can build from source code rather than use the prebuilt image from Docker Hub.
+  # build: ../..
   ports:
     - 80:80
     - 443:443
   links:
     - wordpress
+  # Restart nginx-acme on failure or after Docker host restart.
+  restart: always
   environment:
-    # Forward wordpress.example.com to the WordPress container
-    # You can set up multiple domains at once
-    - "DOMAINS=wordpress.example.com -> http://wordpress"
+    # Forward wordpress.example.com to the WordPress container.
+    # You can set up multiple domains at once.
+    DOMAINS: 'wordpress.example.com -> http://wordpress'
 
-    # Using staging server by default, for there is a rate limit on production
-    # Uncomment to use Let's Encrypt production server
-    # - "PRODUCTION=true"
+    # Using staging server by default, for there is a rate limit on production.
+    # Uncomment to use Let's Encrypt production server.
+    # PRODUCTION: 'true'
 
 wordpress:
   image: wordpress
@@ -22,4 +26,4 @@ wordpress:
 db:
   image: mariadb
   environment:
-    MYSQL_ROOT_PASSWORD: gohJoom2quai8hac
+    MYSQL_ROOT_PASSWORD: '<a secure password>'

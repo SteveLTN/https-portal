@@ -6,4 +6,4 @@ nginx-acme:
   environment:
     # Redirect my.example.com to https:://letsencrypt.org
     # The upsteams will be available as <%= domain.upstream %> in Nginx config
-    - "DOMAINS=my.example.domain -> https://letsencrypt.org, another.example.domain -> https://another.upstream"
+    DOMAINS: 'my.example.domain -> https://letsencrypt.org, another.example.domain -> https://another.upstream'

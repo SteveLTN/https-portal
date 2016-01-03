@@ -1,0 +1,10 @@
+nginx-acme:
+  image: steveltn/nginx-acme
+  # You can build from source code rather than use the prebuilt image from Docker Hub.
+  # build: ../..
+  ports:
+    - 80:80
+    - 443:443
+  environment:
+    DOMAINS: 'example.com'
+    PRODUCTION: 'true'

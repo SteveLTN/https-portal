@@ -30,9 +30,10 @@ nginx-acme:
     - 443:443
   links:
     - wordpress
+  restart: always
   environment:
     DOMAINS: 'wordpress.example.com -> http://wordpress'
-    # PRODUCTION: 'true'
+    PRODUCTION: 'true'
     # FORCE_RENEW: 'true'
 
 wordpress:
@@ -43,21 +44,23 @@ wordpress:
 db:
   image: mariadb
   environment:
-    MYSQL_ROOT_PASSWORD: 'a secure password'
+    MYSQL_ROOT_PASSWORD: '<a secure password>'
 ```
 
 Then run `docker-compose up` command in the same directory, moment later
 you'll get a WordPress running on
 [https://wordpress.example.com](https://wordpress.example.com).
 
-In the above example, only environment variables under `nginx-acme` section are Nginx-ACME specific configurations.
+In the above example, only environment variables under `nginx-acme` section
+are Nginx-ACME specific configurations.
 
 Note: `PRODUCTION` flag is `false` by default, which results in a test
 (untrusted) certificate from Let's Encrypt.
 
 ## Minimal Setup
 
-In case you simply want to quickly get a running HTTPS server, you can use the following `docker-compose.yml` file:
+In case you simply want to quickly get a running HTTPS server, you can use the
+following `docker-compose.yml` file:
 
 ```yaml
 nginx-acme:
@@ -67,7 +70,7 @@ nginx-acme:
     - 443:443
   environment:
     DOMAINS: 'example.com'
-    # PRODUCTION: 'true'
+    PRODUCTION: 'true'
 ```
 
 Then run `docker-compose up`, now you'll have a welcome page running in
@@ -103,8 +106,7 @@ nginx-acme:
     - /data/ssl_certs:/var/lib/nginx-acme
 ```
 
-Now your certificates are available in `/data/ssl_certs` of your Docker
-host.
+Now your certificates are available in `/data/ssl_certs` of your Docker host.
 
 ## Advanced Usage: Customizing Nginx Configurations
 
@@ -115,9 +117,11 @@ You can provide a config segament of nginx.conf which contain a valid
 
 It:
 
-* obtains an SSL certificate for each of your subdomains from [Let's Encrypt](https://letsencrypt.org)
+* obtains an SSL certificate for each of your subdomains from
+  [Let's Encrypt](https://letsencrypt.org)
 * configures Nginx to use HTTPS (and force HTTPS by redirecting HTTP to HTTPS)
-* sets up a cron job that checks your certificates every week, and renew them if they expire in 30 days
+* sets up a cron job that checks your certificates every week, and renew them
+  if they expire in 30 days
 
 ## About Rate Limits of Let's Encrypt
 
@@ -136,9 +140,9 @@ in Nginx-ACME we only deal with CN certificates.
 
 Nginx-ACME stores your certificates in a data volume and will not re-sign
 certificates until 30 days before expiration if one exists (you can force
-renew certificates by using `FORCE_RENEW: 'true'` environment variable). However
-if you play around with the image a lot, you can hit the limit. That's why
-`PRODUCTION` flag is off by default, and we use the Let's Encrypt staging
+renew certificates by using `FORCE_RENEW: 'true'` environment variable).
+However if you play around with the image a lot, you can hit the limit. That's
+why `PRODUCTION` flag is off by default, and we use the Let's Encrypt staging
 server. When you feel everything is good, you can turn on the flag with
 `PRODUCTION: 'true'`.
 
