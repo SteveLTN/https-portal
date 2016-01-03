@@ -1,4 +1,4 @@
-nginx-acme:
+https-portal:
   build: ./
   ports:
     - 80:80

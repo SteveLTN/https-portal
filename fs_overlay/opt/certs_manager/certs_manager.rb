@@ -76,7 +76,7 @@ class CertsManager
   end
 
   def obtain_lock
-    self.lock = File.open("/tmp/nginx-acme.lock", File::CREAT)
+    self.lock = File.open("/tmp/https-portal.lock", File::CREAT)
 
     lock.flock File::LOCK_EX
   end

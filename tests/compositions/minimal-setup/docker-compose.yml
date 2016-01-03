@@ -1,7 +1,7 @@
-nginx-acme:
+https-portal:
   build: ../../..
   ports:
     - 80:80
     - 443:443
   environment:
-    DOMAINS: test.nginx-acme.site
+    DOMAINS: test.https-portal.site

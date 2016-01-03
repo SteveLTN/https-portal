@@ -1,15 +1,14 @@
-# Nginx-ACME
+# HTTPS-PORTAL
 
-Nginx-ACME is a fully automated HTTPS server powered by
+HTTPS-PORTAL is a fully automated HTTPS server powered by
 [Nginx](http://nginx.org), [Let's Encrypt](https://letsencrypt.org) and
-
 [Docker](https://www.docker.com). By using it, you can run any existing web
 application over HTTPS, with only one extra line of configuration.
 
 The SSL certificates are obtain, and renew from Let's Encrypt automatically.
 
 Docker Hub page:
-[https://hub.docker.com/r/steveltn/nginx-acme/](https://hub.docker.com/r/steveltn/nginx-acme/)
+[https://hub.docker.com/r/steveltn/https-portal/](https://hub.docker.com/r/steveltn/https-portal/)
 
 ## Warning
 
@@ -17,14 +16,14 @@ This project is in active development stage. Use it in production with CAUTION.
 
 ## Quick Start
 
-Nginx-ACME shipped as a Docker image, so before use it, you need a Linux
+HTTPS-PORTAL shipped as a Docker image, so before use it, you need a Linux
 machine (either local or remote host) with Docker installed. We recommand use
 [Docker Compose](https://docs.docker.com/compose/) to run it. Create a
 `docker-compose.yml` file with the following content in any directory:
 
 ```yaml
-nginx-acme:
-  image: steveltn/nginx-acme
+https-portal:
+  image: steveltn/https-portal
   ports:
     - 80:80
     - 443:443
@@ -51,8 +50,8 @@ Then run `docker-compose up` command in the same directory, moment later
 you'll get a WordPress running on
 [https://wordpress.example.com](https://wordpress.example.com).
 
-In the above example, only environment variables under `nginx-acme` section
-are Nginx-ACME specific configurations.
+In the above example, only environment variables under `https-portal` section
+are HTTPS-PORTAL specific configurations.
 
 Note: `PRODUCTION` flag is `false` by default, which results in a test
 (untrusted) certificate from Let's Encrypt.
@@ -63,8 +62,8 @@ In case you simply want to quickly get a running HTTPS server, you can use the
 following `docker-compose.yml` file:
 
 ```yaml
-nginx-acme:
-  image: steveltn/nginx-acme
+https-portal:
+  image: steveltn/https-portal
   ports:
     - 80:80
     - 443:443
@@ -87,7 +86,7 @@ Then run `docker-compose up`, now you'll have a welcome page running in
 You can specify multiple domains by splitting them with comma:
 
 ```yaml
-nginx-acme:
+https-portal:
   # ...
   environment:
     DOMAINS: 'wordpress.example.com -> http://wordpress, gitlab.example.com
@@ -96,14 +95,14 @@ nginx-acme:
 
 ### Share Certificates with Other Apps
 
-You can mount an arbitrary host directory to `/var/lib/nginx-acme` as a
+You can mount an arbitrary host directory to `/var/lib/https-portal` as a
 [data volume](https://docs.docker.com/engine/userguide/dockervolumes/).
 
 ```yaml
-nginx-acme:
+https-portal:
   # ...
   volumes:
-    - /data/ssl_certs:/var/lib/nginx-acme
+    - /data/ssl_certs:/var/lib/https-portal
 ```
 
 Now your certificates are available in `/data/ssl_certs` of your Docker host.
@@ -136,9 +135,9 @@ the rate limit is
 The former is not usually a problem, however the latter could be if you want
 to use multiple sub-domains on a single domain. Let's Encrypt does support SAN
 certificates, however it requires careful planning and is hard to automate. So
-in Nginx-ACME we only deal with CN certificates.
+in HTTPS-PORTAL we only deal with CN certificates.
 
-Nginx-ACME stores your certificates in a data volume and will not re-sign
+HTTPS-PORTAL stores your certificates in a data volume and will not re-sign
 certificates until 30 days before expiration if one exists (you can force
 renew certificates by using `FORCE_RENEW: 'true'` environment variable).
 However if you play around with the image a lot, you can hit the limit. That's

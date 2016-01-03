@@ -1,4 +1,4 @@
-TEST_DOMAIN = "test.nginx-acme.site"
+TEST_DOMAIN = "test.https-portal.site"
 
 require "open-uri"
 require "openssl"

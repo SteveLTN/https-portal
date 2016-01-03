@@ -1,4 +1,4 @@
-nginx-acme:
+https-portal:
   build: ../../..
   ports:
     - 80:80
@@ -6,7 +6,7 @@ nginx-acme:
   links:
     - wordpress
   environment:
-    DOMAINS: test.nginx-acme.site->http://wordpress
+    DOMAINS: test.https-portal.site->http://wordpress
 
 wordpress:
   image: wordpress

@@ -25,6 +25,6 @@ COPY ./fs_overlay /
 RUN chmod a+x /bin/* && \
     chmod a+x /etc/cron.weekly/renew_certs
 
-VOLUME /var/lib/nginx-acme
+VOLUME /var/lib/https-portal
 
 ENTRYPOINT ["/init"]

@@ -25,9 +25,9 @@ class Domain
 
   def dir
     if NAConfig.production?
-      "/var/lib/nginx-acme/#{name}"
+      "/var/lib/https-portal/#{name}"
     else
-      "/var/lib/nginx-acme/#{name}-staging/"
+      "/var/lib/https-portal/#{name}-staging/"
     end
   end
 end

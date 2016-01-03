@@ -2,8 +2,8 @@ require 'date'
 
 module OpenSSL
   def self.ensure_account_key
-    unless File.exist? "/var/lib/nginx-acme/account.key"
-      system 'openssl genrsa 4096 > /var/lib/nginx-acme/account.key'
+    unless File.exist? "/var/lib/https-portal/account.key"
+      system 'openssl genrsa 4096 > /var/lib/https-portal/account.key'
     end
   end
 

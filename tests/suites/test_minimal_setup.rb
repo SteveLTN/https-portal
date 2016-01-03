@@ -11,13 +11,13 @@ class TestMinimalSetup < Minitest::Test
     `cd ./compositions/minimal-setup/ && docker-compose build && docker-compose up -d`
 
     page = read_https_content
-    assert page.include?("Welcome to Nginx-ACME!")
+    assert page.include?("Welcome to HTTPS-PORTAL!")
 
     # When certificates are stored in a data volume
     `cd ./compositions/minimal-setup/ && docker-compose build && docker-compose up -d`
 
     page = read_https_content
-    assert page.include?("Welcome to Nginx-ACME!")
+    assert page.include?("Welcome to HTTPS-PORTAL!")
   end
 
   def teardown

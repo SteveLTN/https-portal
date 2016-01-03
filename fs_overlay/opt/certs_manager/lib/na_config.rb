@@ -20,7 +20,7 @@ module NAConfig
   end
 
   def self.dhparam_path
-    "/var/lib/nginx-acme/dhparam.pem"
+    "/var/lib/https-portal/dhparam.pem"
   end
 
   def self.env_domains
