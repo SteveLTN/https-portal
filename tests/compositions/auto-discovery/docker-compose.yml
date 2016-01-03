@@ -1,0 +1,21 @@
+nginx-acme:
+  build: ../../..
+  ports:
+    - 80:80
+    - 443:443
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+
+wordpress:
+  image: wordpress
+  ports:
+    - 8080:80
+  links:
+    - db:mysql
+  environment:
+    VIRTUAL_HOST: test.nginx-acme.site
+
+db:
+  image: mariadb
+  environment:
+    MYSQL_ROOT_PASSWORD: asecretpassword

@@ -1,0 +1,19 @@
+nginx-acme:
+  build: ../../..
+  ports:
+    - 80:80
+    - 443:443
+  links:
+    - wordpress
+  environment:
+    DOMAINS: test.nginx-acme.site->http://wordpress
+
+wordpress:
+  image: wordpress
+  links:
+    - db:mysql
+
+db:
+  image: mariadb
+  environment:
+    MYSQL_ROOT_PASSWORD: gohJoom2quai8hac
