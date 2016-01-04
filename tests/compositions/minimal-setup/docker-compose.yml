@@ -4,4 +4,4 @@ https-portal:
     - 80:80
     - 443:443
   environment:
-    DOMAINS: test.nginx-acme.site
+    DOMAINS: $TEST_DOMAIN

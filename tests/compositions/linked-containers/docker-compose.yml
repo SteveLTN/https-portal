@@ -6,7 +6,7 @@ https-portal:
   links:
     - wordpress
   environment:
-    DOMAINS: test.nginx-acme.site->http://wordpress
+    DOMAINS: $TEST_DOMAIN->http://wordpress
 
 wordpress:
   image: wordpress

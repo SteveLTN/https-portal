@@ -1,4 +1,4 @@
-TEST_DOMAIN = "test.nginx-acme.site"
+TEST_DOMAIN = ENV["TEST_DOMAIN"] || "test.nginx-acme.site"
 
 require "open-uri"
 require "openssl"

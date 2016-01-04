@@ -8,19 +8,19 @@ class TestLinkedContainers < Minitest::Test
 
   def test_linked_containers
     # When no certificates are stored
-    `cd ./compositions/linked-containers/ && docker-compose build && docker-compose up -d`
+    system({ "TEST_DOMAIN" => TEST_DOMAIN }, "cd ./compositions/linked-containers/ && docker-compose build && docker-compose up -d")
 
     page = read_https_content
     assert page.include?("WordPress")
 
     # When certificates are stored in a data volume
-    `cd ./compositions/linked-containers/ && docker-compose build && docker-compose up -d`
+    system({ "TEST_DOMAIN" => TEST_DOMAIN }, "cd ./compositions/linked-containers/ && docker-compose build && docker-compose up -d")
 
     page = read_https_content
     assert page.include?("WordPress")
   end
 
   def teardown
-    `cd ./compositions/linked-containers/ && docker-compose stop`
+    system({ "TEST_DOMAIN" => TEST_DOMAIN }, "cd ./compositions/linked-containers/ && docker-compose stop")
   end
 end
