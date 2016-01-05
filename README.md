@@ -52,7 +52,7 @@ db:
     MYSQL_ROOT_PASSWORD: '<a secure password>'
 ```
 
-Then run `docker-compose up` command in the same directory. Moment later
+Then run `docker-compose up` command in the same directory. A moment later
 you'll get a WordPress running on
 [https://wordpress.example.com](https://wordpress.example.com).
 
@@ -64,7 +64,8 @@ Note: `PRODUCTION` flag is `false` by default, which results in a test
 
 ## Minimal Setup
 
-In case you simply want to get a running HTTPS server with minimal effort, you can use the
+In case you simply want to get a running HTTPS server and
+see a welcome page with minimal effort, you can use the
 following `docker-compose.yml` file:
 
 ```yaml
@@ -85,7 +86,70 @@ Then run `docker-compose up`, and you'll have a welcome page running in
 
 ### Automatic Container Discovery
 
-### Hybrid Setup with Non-Docker Apps
+HTTPS-PORTAL is capable of discovering other Docker containers running on the same host,
+as long as Docker API socket is accessible within the container.
+In order to make it so, launch HTTPS-PORTAL using the following `docker-compose.yml`:
+
+```yaml
+https-portal:
+  # ...
+  volume:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+```
+
+and launch one or more web applications with:
+
+```yaml
+a-web-application:
+  # ...
+  ports:
+    - '8080:80'
+  environment:
+    # tell HTTPS-PORTAL to set up "example.com"
+    VIRTUAL_HOST: example.com
+```
+
+As you can see, there is no need to link your web service to HTTPS-PORTAL.
+This feature allows you to deploy multiple web application on the same host
+without restarting HTTPS-PORTAL while adding/removing web applications.
+
+If your web service has more than one port exposed,
+use environment variable `VIRTUAL_PORT` to specify which port accepts HTTP request:
+
+```yaml
+a-multi-port-web-application:
+  # ...
+  ports:
+    - '8080:80'
+    - '2222:22'
+  environment:
+    VIRTUAL_HOST: example.com
+    VIRTUAL_PORT: "8080"
+```
+
+Of course container discovery works in combination with ENV specified domains:
+
+```
+https-portal:
+  # ...
+  volume:
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+  environment:
+    DOMAINS: 'example.com -> http://upstream'
+```
+
+### Hybrid Setup with Non-Dockerized Apps
+
+Web applications that run directly on host machine instead of in Docker containers are available at `dockerhost`.
+For instance, if an application accepts HTTP requests on port 8080 of the host machine,
+you can start HTTPS-PORTAL by:
+
+```yaml
+https-portal:
+  # ...
+  environment:
+    DOMAINS: 'example.com -> http://dockerhost:8080'
+```
 
 ### Multiple Domains
 
@@ -116,8 +180,19 @@ Now your certificates are available in `/data/ssl_certs` of your Docker host.
 
 ## Advanced Usage: Customizing Nginx Configurations
 
-You can provide a config segment of nginx.conf containing a valid
-`server` block.
+You can override default nginx settings by providing a config segment of nginx.conf containing a valid
+`server` block. The custom nginx configurations are [ERB](http://www.stuartellis.eu/articles/erb/) templates and will be rendered before usage.
+For instance, to override both HTTPS and HTTP settings for `my.example.com`, you can launch HTTPS-PORTAL by:
+
+```yaml
+https-portal:
+  # ...
+  volumes:
+    - '/path/to/http_config:/var/lib/nginx-conf/my.example.com.conf.erb:ro'
+    - '/path/to/https_config:/var/lib/nginx-conf/my.example.com.ssl.conf.erb:ro'
+```
+
+An example can be found [here](https://github.com/SteveLTN/nginx-acme/tree/master/examples/custom_config).
 
 ## How It Works
 
@@ -134,7 +209,7 @@ It:
 Let's Encrypt is in public beta at the moment. According to
 [this](https://community.letsencrypt.org/t/public-beta-rate-limits/4772) and
 [this discussion](https://community.letsencrypt.org/t/public-beta-rate-limits/4772/42),
-the rate limit is
+the rate limits are
 
 * 10 registrations per IP per 3 hours.
 * 5 certificates per domain (not sub-domain) per 7 days.
