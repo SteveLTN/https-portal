@@ -81,11 +81,13 @@ db:
     MYSQL_ROOT_PASSWORD: '<a secure password>'
 ```
 
-Run `docker-compose up` command. A moment later you'll get a WordPress running
-on [https://wordpress.example.com](https://wordpress.example.com).
+Run `docker-compose up -d` command. A moment later you'll get a WordPress
+running on [https://wordpress.example.com](https://wordpress.example.com).
 
 In the example above, only the environment variables under `https-portal`
-section are HTTPS-PORTAL specific configurations.
+section are HTTPS-PORTAL specific configurations. This time we added an extra
+parameter `-d`, it will tell Docker Compose to run the apps defined in
+`docker-compose.yml` in background.
 
 Note: `PRODUCTION` flag is `false` by default, which results in a test
 (untrusted) certificate from Let's Encrypt.
