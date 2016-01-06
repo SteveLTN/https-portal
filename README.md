@@ -110,8 +110,9 @@ a-web-application:
 ```
 
 As you can see, there is no need to link your web service to HTTPS-PORTAL.
-This feature allows you to deploy multiple web application on the same host
-without restarting HTTPS-PORTAL while adding/removing web applications.
+This feature allows you to deploy multiple web applications on the same host
+without restarting HTTPS-PORTAL itself or interrupting other application while
+adding/removing web applications.
 
 If your web service has more than one port exposed,
 use environment variable `VIRTUAL_PORT` to specify which port accepts HTTP request:
