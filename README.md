@@ -16,16 +16,43 @@ This project is in active development. Use it in production with CAUTION.
 
 ## Prerequisite
 
-HTTPS-PORTAL is shipped as a Docker image. To use it, you need a Linux machine (either local or remote host) which:
+HTTPS-PORTAL is shipped as a Docker image. To use it, you need a Linux machine
+(either local or remote host) which:
 
 * Has 80 and 443 port available and exposed.
-* Has [Docker Engine](https://docs.docker.com/engine/installation/) installed. In addition, [Docker Compose](https://docs.docker.com/compose/) is highly recommended, for it makes your life easier. Examples in our documents are mainly in Docker Compose format.
+* Has [Docker Engine](https://docs.docker.com/engine/installation/) installed.
+  In addition, [Docker Compose](https://docs.docker.com/compose/) is highly
+  recommended, for it makes your life easier. Examples in our documents are
+  mainly in Docker Compose format.
+* Has all domains you're going to use in the following examples resolving to
+  it.
 
 Though it is good to have, knowledge about Docker is not required to use HTTPS-PORTAL.
 
+## See It Work
+
+Create a `docker-compose.yml` file with the following content in any directory
+of your choice:
+
+```yaml
+https-portal:
+  image: steveltn/https-portal
+  ports:
+    - '80:80'
+    - '443:443'
+  environment:
+    DOMAINS: 'yourdomain.com'
+    PRODUCTION: 'true'
+```
+
+Run `docker-compose up` command in the same directory. A moment later you'll
+have a welcome page running in
+[https://yourdomain.com](https://yourdomain.com).
+
 ## Quick Start
 
-Create a `docker-compose.yml` file with the following content in any directory of your choice:
+This is a more real-world example `docker-compose.yml`, create it in another
+directory:
 
 ```yaml
 https-portal:
@@ -37,7 +64,7 @@ https-portal:
     - wordpress
   restart: always
   environment:
-    DOMAINS: 'wordpress.example.com -> http://wordpress'
+    DOMAINS: 'wordpress.yourdomain.com -> http://wordpress'
     PRODUCTION: 'true'
     # FORCE_RENEW: 'true'
 
@@ -52,35 +79,14 @@ db:
     MYSQL_ROOT_PASSWORD: '<a secure password>'
 ```
 
-Then run `docker-compose up` command in the same directory. A moment later
-you'll get a WordPress running on
-[https://wordpress.example.com](https://wordpress.example.com).
+Run `docker-compose up` command. A moment later you'll get a WordPress running
+on [https://wordpress.yourdomain.com](https://wordpress.yourdomain.com).
 
 In the example above, only the environment variables under `https-portal` section
 are HTTPS-PORTAL specific configurations.
 
 Note: `PRODUCTION` flag is `false` by default, which results in a test
 (untrusted) certificate from Let's Encrypt.
-
-## Minimal Setup
-
-In case you simply want to get a running HTTPS server and
-see a welcome page with minimal effort, you can use the
-following `docker-compose.yml` file:
-
-```yaml
-https-portal:
-  image: steveltn/https-portal
-  ports:
-    - 80:80
-    - 443:443
-  environment:
-    DOMAINS: 'example.com'
-    PRODUCTION: 'true'
-```
-
-Then run `docker-compose up`, and you'll have a welcome page running in
-[https://example.com](https://example.com).
 
 ## Features
 
@@ -177,7 +183,7 @@ https-portal:
     - /data/ssl_certs:/var/lib/https-portal
 ```
 
-Now your certificates are available in `/data/ssl_certs` of your Docker host.
+Now your certificates are available in `/data/ssl_certs` of your host.
 
 ## Advanced Usage: Customizing Nginx Configurations
 
