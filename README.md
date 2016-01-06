@@ -5,7 +5,8 @@ HTTPS-PORTAL is a fully automated HTTPS server powered by
 [Docker](https://www.docker.com). By using it, you can run any existing web
 application over HTTPS, with only one extra line of configuration.
 
-The SSL certificates are obtained, and renewed from Let's Encrypt automatically.
+The SSL certificates are obtained, and renewed from Let's Encrypt
+automatically.
 
 Docker Hub page:
 [https://hub.docker.com/r/steveltn/https-portal/](https://hub.docker.com/r/steveltn/https-portal/)
@@ -27,7 +28,8 @@ HTTPS-PORTAL is shipped as a Docker image. To use it, you need a Linux machine
 * Has all domains you're going to use in the following examples resolving to
   it.
 
-Though it is good to have, knowledge about Docker is not required to use HTTPS-PORTAL.
+Though it is good to have, knowledge about Docker is not required to use
+HTTPS-PORTAL.
 
 ## See It Work
 
@@ -41,13 +43,13 @@ https-portal:
     - '80:80'
     - '443:443'
   environment:
-    DOMAINS: 'yourdomain.com'
+    DOMAINS: 'example.com'
     PRODUCTION: 'true'
 ```
 
 Run `docker-compose up` command in the same directory. A moment later you'll
 have a welcome page running in
-[https://yourdomain.com](https://yourdomain.com).
+[https://example.com](https://example.com).
 
 ## Quick Start
 
@@ -64,7 +66,7 @@ https-portal:
     - wordpress
   restart: always
   environment:
-    DOMAINS: 'wordpress.yourdomain.com -> http://wordpress'
+    DOMAINS: 'wordpress.example.com -> http://wordpress'
     PRODUCTION: 'true'
     # FORCE_RENEW: 'true'
 
@@ -80,10 +82,10 @@ db:
 ```
 
 Run `docker-compose up` command. A moment later you'll get a WordPress running
-on [https://wordpress.yourdomain.com](https://wordpress.yourdomain.com).
+on [https://wordpress.example.com](https://wordpress.example.com).
 
-In the example above, only the environment variables under `https-portal` section
-are HTTPS-PORTAL specific configurations.
+In the example above, only the environment variables under `https-portal`
+section are HTTPS-PORTAL specific configurations.
 
 Note: `PRODUCTION` flag is `false` by default, which results in a test
 (untrusted) certificate from Let's Encrypt.
@@ -92,9 +94,11 @@ Note: `PRODUCTION` flag is `false` by default, which results in a test
 
 ### Automatic Container Discovery
 
-HTTPS-PORTAL is capable of discovering other Docker containers running on the same host,
-as long as Docker API socket is accessible within the container.
-In order to make it so, launch HTTPS-PORTAL using the following `docker-compose.yml`:
+HTTPS-PORTAL is capable of discovering other Docker containers running on the
+same host, as long as Docker API socket is accessible within the container.
+
+In order to make it so, launch HTTPS-PORTAL using the following
+`docker-compose.yml`:
 
 ```yaml
 https-portal:
@@ -116,12 +120,13 @@ a-web-application:
 ```
 
 As you can see, there is no need to link your web service to HTTPS-PORTAL.
+
 This feature allows you to deploy multiple web applications on the same host
 without restarting HTTPS-PORTAL itself or interrupting other application while
 adding/removing web applications.
 
-If your web service has more than one port exposed,
-use environment variable `VIRTUAL_PORT` to specify which port accepts HTTP request:
+If your web service has more than one port exposed, use environment variable
+`VIRTUAL_PORT` to specify which port accepts HTTP request:
 
 ```yaml
 a-multi-port-web-application:
@@ -131,12 +136,12 @@ a-multi-port-web-application:
     - '2222:22'
   environment:
     VIRTUAL_HOST: example.com
-    VIRTUAL_PORT: "8080"
+    VIRTUAL_PORT: '8080'
 ```
 
 Of course container discovery works in combination with ENV specified domains:
 
-```
+```yaml
 https-portal:
   # ...
   volume:
@@ -147,9 +152,11 @@ https-portal:
 
 ### Hybrid Setup with Non-Dockerized Apps
 
-Web applications that run directly on host machine instead of in Docker containers are available at `dockerhost`.
-For instance, if an application accepts HTTP requests on port 8080 of the host machine,
-you can start HTTPS-PORTAL by:
+Web applications that run directly on host machine instead of in Docker
+containers are available at `dockerhost`.
+
+For instance, if an application accepts HTTP requests on port 8080 of the host
+machine, you can start HTTPS-PORTAL by:
 
 ```yaml
 https-portal:
@@ -174,6 +181,7 @@ https-portal:
 
 You can mount an arbitrary host directory to `/var/lib/https-portal` as a
 [data volume](https://docs.docker.com/engine/userguide/dockervolumes/).
+
 For instance:
 
 ```yaml
@@ -187,29 +195,34 @@ Now your certificates are available in `/data/ssl_certs` of your host.
 
 ## Advanced Usage: Customizing Nginx Configurations
 
-You can override default nginx settings by providing a config segment of nginx.conf containing a valid
-`server` block. The custom nginx configurations are [ERB](http://www.stuartellis.eu/articles/erb/) templates and will be rendered before usage.
-For instance, to override both HTTPS and HTTP settings for `my.example.com`, you can launch HTTPS-PORTAL by:
+You can override default nginx settings by providing a config segment of
+nginx.conf containing a valid `server` block. The custom nginx configurations
+are [ERB](http://www.stuartellis.eu/articles/erb/) templates and will be
+rendered before usage.
+
+For instance, to override both HTTPS and HTTP settings for `my.example.com`,
+you can launch HTTPS-PORTAL by:
 
 ```yaml
 https-portal:
   # ...
   volumes:
-    - '/path/to/http_config:/var/lib/nginx-conf/my.example.com.conf.erb:ro'
-    - '/path/to/https_config:/var/lib/nginx-conf/my.example.com.ssl.conf.erb:ro'
+    - /path/to/http_config:/var/lib/nginx-conf/my.example.com.conf.erb:ro
+    - /path/to/https_config:/var/lib/nginx-conf/my.example.com.ssl.conf.erb:ro
 ```
 
-An example can be found [here](https://github.com/SteveLTN/nginx-acme/tree/master/examples/custom_config).
+An example can be found
+[here](/examples/custom_config).
 
 ## How It Works
 
 It:
 
 * obtains an SSL certificate for each of your subdomains from
-  [Let's Encrypt](https://letsencrypt.org)
+  [Let's Encrypt](https://letsencrypt.org).
 * configures Nginx to use HTTPS (and force HTTPS by redirecting HTTP to HTTPS)
-* sets up a cron job that checks your certificates every week, and renew them
-  if they expire in 30 days
+* sets up a cron job that checks your certificates every week, and renew them.
+  if they expire in 30 days.
 
 ## About Rate Limits of Let's Encrypt
 
@@ -222,17 +235,18 @@ the rate limits are
 * 5 certificates per domain (not sub-domain) per 7 days.
 
 The former is not usually a problem, however the latter could be, if you want
-to apply certificates for multiple sub-domains on a single domain. Let's Encrypt does support SAN
-certificates, however it requires careful planning and is hard to automate. So
-in HTTPS-PORTAL we only deal with CN certificates.
+to apply certificates for multiple sub-domains on a single domain. Let's
+Encrypt does support SAN certificates, however it requires careful planning
+and is hard to automate. So in HTTPS-PORTAL we only deal with CN certificates.
 
 HTTPS-PORTAL stores your certificates in a data volume and will not re-sign
-certificates until 30 days before expiration if a valid certificate is found (you can force
-renew certificates by using `FORCE_RENEW: 'true'` environment variable).
-However if you play around with the image a lot, you can hit the limit. That's
-why `PRODUCTION` flag is off by default, and thus we use the Let's Encrypt staging
-server. When you made your experiments and feel everything is good, you can switch to production mode with
-`PRODUCTION: 'true'`.
+certificates until 30 days before expiration if a valid certificate is found
+(you can force renew certificates by using `FORCE_RENEW: 'true'` environment
+variable).  However if you play around with the image a lot, you can hit the
+limit. That's why `PRODUCTION` flag is off by default, and thus we use the
+Let's Encrypt staging server. When you made your experiments and feel
+everything is good, you can switch to production mode with `PRODUCTION:
+'true'`.
 
 According to Let's Encrypt, the restrictions will be loosen as the beta goes.
 
