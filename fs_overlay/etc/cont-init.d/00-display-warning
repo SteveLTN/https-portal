@@ -1,0 +1,10 @@
+#!/usr/bin/with-contenv ruby
+
+puts <<-WARNING_MESSAGE
+================================================================================
+=================================== Warning ====================================
+Nginx-ACME has been renamed to HTTPS-PORTAL.
+The image `steveltn/nginx-acme` won't be updated any more.
+Visit https://hub.docker.com/r/steveltn/https-portal/ for more details.
+================================================================================
+WARNING_MESSAGE
