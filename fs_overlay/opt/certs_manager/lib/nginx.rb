@@ -1,7 +1,15 @@
 module Nginx
+  def self.setup
+    compiled_basic_config = ERBBinding.new('/var/lib/nginx-conf/nginx.conf.erb').compile
+
+    File.open("/etc/nginx/nginx.conf" , 'w') do |f|
+      f.write compiled_basic_config
+    end
+  end
+
   def self.config_http(domain)
     File.open("/etc/nginx/conf.d/#{domain.name}.conf" , 'w') do |f|
-      f.write compiled_config(domain, false)
+      f.write compiled_domain_config(domain, false)
     end
 
     reload
@@ -9,7 +17,7 @@ module Nginx
 
   def self.config_ssl(domain)
     File.open("/etc/nginx/conf.d/#{domain.name}.ssl.conf" , 'w') do |f|
-      f.write compiled_config(domain, true)
+      f.write compiled_domain_config(domain, true)
     end
 
     reload
@@ -29,20 +37,35 @@ module Nginx
 
   private
 
-  def self.compiled_config(domain, ssl)
-    ERBBinding.new(domain, template_for(domain, ssl)).compile
+  def self.compiled_domain_config(domain, ssl)
+    binding_hash = {
+      domain: domain,
+      acme_challenge_location: acme_challenge_location_snippet,
+      dhparam_path: NAConfig.dhparam_path
+    }
+
+    ERBBinding.new(template_path(domain, ssl), binding_hash).compile
   end
 
-  def self.template_for(domain, ssl)
+  def self.template_path(domain, ssl)
     ssl_ext = ssl ? '.ssl' : ''
 
     override = "/var/lib/nginx-conf/#{domain.name}#{ssl_ext}.conf.erb"
     default = "/var/lib/nginx-conf/default#{ssl_ext}.conf.erb"
 
     if File.exist? override
-      File.read override
+      override
     else
-      File.read default
+      default
     end
+  end
+
+  def self.acme_challenge_location_snippet
+    <<-SNIPPET
+      location /.well-known/acme-challenge/ {
+          alias /var/www/challenges/;
+          try_files $uri =404;
+      }
+    SNIPPET
   end
 end

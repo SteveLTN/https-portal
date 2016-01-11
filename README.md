@@ -23,7 +23,9 @@ Docker Hub page:
     - [Hybrid Setup with Non-Dockerized Apps](#hybrid-setup-with-non-dockerized-apps)
     - [Multiple Domains](#multiple-domains)
     - [Share Certificates with Other Apps](#share-certificates-with-other-apps)
-  - [Advanced Usage: Customizing Nginx Configurations](#advanced-usage-customizing-nginx-configurations)
+  - [Advanced Usage](#advanced-usage)
+    - [Configure Nginx through Environment Variables](#configure-nginx-through-environment-variables)
+    - [Override Nginx Configuration Files](#override-nginx-configuration-files)
   - [How It Works](#how-it-works)
   - [About Rate Limits of Let's Encrypt](#about-rate-limits-of-lets-encrypt)
   - [Credits](#credits)
@@ -212,7 +214,24 @@ https-portal:
 
 Now your certificates are available in `/data/ssl_certs` of your host.
 
-## Advanced Usage: Customizing Nginx Configurations
+## Advanced Usage
+
+### Configure Nginx through Environment Variables
+
+There are several additional environment variables that you can use to config Nginx.
+They are coressponding to the configuration options that you would normally supply in `nginx.conf`.
+The following are the config keys with default values:
+
+```
+WORKER_PROCESSES=1
+WORKER_CONNECTIONS=1024
+KEEPALIVE_TIMEOUT=65
+GZIP=off
+SERVER_NAMES_HASH_MAX_SIZE=512
+SERVER_NAMES_HASH_BUCKET_SIZE=32        # defaults to 32 or 64 based on your CPU
+```
+
+### Override Nginx Configuration Files
 
 You can override default nginx settings by providing a config segment of
 nginx.conf containing a valid `server` block. The custom nginx configurations
@@ -273,3 +292,4 @@ According to Let's Encrypt, the restrictions will be loosen as the beta goes.
 
 * [acme-tiny](https://github.com/diafygi/acme-tiny) by Daniel Roesler.
 * [docker-gen](https://github.com/jwilder/docker-gen) by Jason Wilder.
+* [s6-overlay](https://github.com/just-containers/s6-overlay).
