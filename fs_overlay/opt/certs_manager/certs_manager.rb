@@ -11,6 +11,7 @@ class CertsManager
     OpenSSL.ensure_dhparam
     OpenSSL.ensure_account_key
     download_intermediate_cert
+    Nginx.setup
     Nginx.start
 
     ensure_signed(NAConfig.domains)

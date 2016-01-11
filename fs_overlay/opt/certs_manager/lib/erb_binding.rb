@@ -14,30 +14,15 @@ class ERBBinding
     end
   end
 
-  def initialize(domain, template)
-    @domain = domain
-    @template = template
+  def initialize(template_path, **binding_hash)
+    @template = File.read(template_path)
+    @binding_hash = binding_hash
   end
 
   def compile
-    fake_binding = CleanBinding.new(
-      domain: @domain,
-      acme_challenge_location: acme_challenge_location_snippet,
-      dhparam_path: NAConfig.dhparam_path
-    )
+    clean_binding = CleanBinding.new(@binding_hash)
 
-    ERB.new(@template).result(fake_binding.get)
-  end
-
-  private
-
-  def acme_challenge_location_snippet
-    <<-SNIPPET
-      location /.well-known/acme-challenge/ {
-          alias /var/www/challenges/;
-          try_files $uri =404;
-      }
-    SNIPPET
+    ERB.new(@template).result(clean_binding.get)
   end
 
 end
