@@ -14,7 +14,7 @@ def read_https_content
   end
 rescue Errno::ECONNREFUSED
   if (tries -= 1) > 0
-    sleep 5
+    sleep 10
     retry
   end
 end
