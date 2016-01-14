@@ -124,7 +124,7 @@ In order to make it so, launch HTTPS-PORTAL using the following
 ```yaml
 https-portal:
   # ...
-  volume:
+  volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
 ```
 
@@ -165,7 +165,7 @@ Of course container discovery works in combination with ENV specified domains:
 ```yaml
 https-portal:
   # ...
-  volume:
+  volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
   environment:
     DOMAINS: 'example.com -> http://upstream'
