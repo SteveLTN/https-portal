@@ -1,15 +1,22 @@
 https-portal:
   build: ../../..
   ports:
-    - 80:80
-    - 443:443
+    - '80:80'
+    - '443:443'
+  environment:
+    FORCE_RENEW: $FORCE_RENEW
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock:ro
+  links:
+    - wordpress # to make sure wordpress starts first
 
 wordpress:
   image: wordpress
   ports:
-    - 8080:80
+    - '8080:80'
+  expose:
+    - '80'
+    - '81'
   links:
     - db:mysql
   environment:

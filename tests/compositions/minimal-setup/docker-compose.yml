@@ -5,3 +5,4 @@ https-portal:
     - 443:443
   environment:
     DOMAINS: $TEST_DOMAIN
+    FORCE_RENEW: $FORCE_RENEW
