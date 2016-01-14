@@ -146,8 +146,8 @@ This feature allows you to deploy multiple web applications on the same host
 without restarting HTTPS-PORTAL itself or interrupting other application while
 adding/removing web applications.
 
-If your web service has more than one port exposed, use environment variable
-`VIRTUAL_PORT` to specify which port accepts HTTP request:
+If your web service has more than one port exposed (mind that ports can be exposed in your web service Dockerfile),
+use environment variable `VIRTUAL_PORT` to specify which port accepts HTTP request:
 
 ```yaml
 a-multi-port-web-application:
