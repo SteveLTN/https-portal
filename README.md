@@ -63,7 +63,7 @@ https-portal:
     - '443:443'
   environment:
     DOMAINS: 'example.com'
-    PRODUCTION: 'true'
+    # PRODUCTION: 'true'
 ```
 
 Run `docker-compose up` command in the same directory. A moment later you'll
@@ -86,7 +86,7 @@ https-portal:
   restart: always
   environment:
     DOMAINS: 'wordpress.example.com -> http://wordpress'
-    PRODUCTION: 'true'
+    # PRODUCTION: 'true'
     # FORCE_RENEW: 'true'
 
 wordpress:
