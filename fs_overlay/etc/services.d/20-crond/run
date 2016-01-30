@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/with-contenv sh
 
 echo 'Starting crond ...'
 cron -f
