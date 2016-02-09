@@ -10,7 +10,7 @@ module ACME
         acme_tiny \
           --account-key /var/lib/https-portal/account.key \
           --csr #{domain.csr_path} \
-          --acme-dir /var/www/challenges/ \
+          --acme-dir /var/www/default/challenges/ \
           --ca #{NAConfig.ca} > #{domain.signed_cert_path}
       EOC
 

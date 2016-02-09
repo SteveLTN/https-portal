@@ -23,7 +23,7 @@ server {
     }
     <% else %>
     location / {
-        root   /var/www;
+        root   <%= domain.www_root %>;
         index  index.html;
     }
     <% end %>

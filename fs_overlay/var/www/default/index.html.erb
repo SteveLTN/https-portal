@@ -17,6 +17,15 @@
   <a href="https://letsencrypt.org">Let's Encrypt</a>.
 </p>
 <p>
+  You can replace this page with your own static files, by mounting your own www
+  root directory as a data volume at <strong><%= domain.www_root %></strong>.
+</p>
+<p>
+  For more detailed information about static sites, check
+  <a href="https://github.com/SteveLTN/https-portal#serving-static-sites">Serving
+     Static Sites</a> section of the documents.
+</p>
+<p>
   If you did not turn on "PRODUCTION" flag in HTTPS-PORTAL config, you are using
   a test certificate issued by Let's Encrypt staging server which might not be
   trusted by your browser.

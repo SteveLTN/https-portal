@@ -22,6 +22,7 @@ Docker Hub page:
     - [Automatic Container Discovery](#automatic-container-discovery)
     - [Hybrid Setup with Non-Dockerized Apps](#hybrid-setup-with-non-dockerized-apps)
     - [Multiple Domains](#multiple-domains)
+    - [Serving Static Sites](#serving-static-sites)
     - [Share Certificates with Other Apps](#share-certificates-with-other-apps)
   - [Advanced Usage](#advanced-usage)
     - [Configure Nginx through Environment Variables](#configure-nginx-through-environment-variables)
@@ -197,6 +198,34 @@ https-portal:
     DOMAINS: 'wordpress.example.com -> http://wordpress, gitlab.example.com
     -> http://gitlab'
 ```
+
+### Serving Static Sites
+
+Instead of forwarding requests to web applications, HTTPS-PORTAL can also serve
+(multiple) static sites directly:
+
+```yaml
+https-portal:
+  # ...
+  environment:
+    DOMAINS: 'hexo.example.com, octopress.example.com'
+  volumes:
+    - /data/https-portal/vhosts:/var/www/vhosts
+```
+
+After HTTPS-PORTAL started, it will create corresponding sub-directories for
+each virtual host in `/data/https-portal/vhosts` directory on the host machine:
+
+```
+/data/https-portal/vhosts
+├── hexo.example.com
+│  └── index.html
+└── octopress.example.com
+    └── index.html
+```
+
+You can place your own static files in this directory hierarchy, they will not
+be overwritten.
 
 ### Share Certificates with Other Apps
 
