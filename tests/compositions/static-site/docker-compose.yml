@@ -1,0 +1,9 @@
+https-portal:
+  build: ../../..
+  ports:
+    - 80:80
+    - 443:443
+  environment:
+    DOMAINS: $TEST_DOMAIN
+  volumes:
+    - /data/https-portal/vhosts:/var/www/vhosts
