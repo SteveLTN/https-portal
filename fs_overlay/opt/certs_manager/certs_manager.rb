@@ -8,7 +8,7 @@ class CertsManager
 
   def setup
     add_dockerhost_to_hosts
-    NAConfig.domains.each(&:generate_welcome_page)
+    NAConfig.domains.each(&:ensure_welcome_page)
 
     OpenSSL.ensure_dhparam
     OpenSSL.ensure_account_key

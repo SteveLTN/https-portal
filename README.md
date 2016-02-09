@@ -210,7 +210,7 @@ https-portal:
   environment:
     DOMAINS: 'hexo.example.com, octopress.example.com'
   volumes:
-    - /data/https-portal/vhosts:/var/www/vhosts:ro
+    - /data/https-portal/vhosts:/var/www/vhosts
 ```
 
 After HTTPS-PORTAL started, it will create corresponding sub-directories for

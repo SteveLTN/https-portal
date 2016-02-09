@@ -6,7 +6,7 @@ class Domain
 
   def initialize(name, upstream)
     @name = name
-    @upstream = upstream
+    @upstream = upstream if upstream.to_s != ''
   end
 
   def csr_path
@@ -37,7 +37,7 @@ class Domain
     "/var/www/vhosts/#{name}"
   end
 
-  def generate_welcome_page
+  def ensure_welcome_page
     return if upstream
 
     index_html = File.join(www_root, 'index.html')
