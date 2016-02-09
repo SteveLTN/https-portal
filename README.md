@@ -201,8 +201,8 @@ https-portal:
 
 ### Serving Static Sites
 
-Instead of forward requests to web applications, you can also serve static
-sites directly:
+Instead of forwarding requests to web applications, HTTPS-PORTAL can also serve
+(multiple) static sites directly:
 
 ```yaml
 https-portal:
