@@ -41,9 +41,23 @@ class Domain
     return if upstream
 
     index_html = File.join(www_root, 'index.html')
+
     unless File.exists?(index_html)
       FileUtils.mkdir_p www_root
-      FileUtils.cp '/var/www/default/index.html', index_html
+
+      File.open(index_html, 'w') do |file|
+        file.write compiled_welcome_page
+      end
     end
+  end
+
+  private
+
+  def compiled_welcome_page
+    binding_hash = {
+      domain: self,
+    }
+
+    ERBBinding.new('/var/www/default/index.html.erb', binding_hash).compile
   end
 end
