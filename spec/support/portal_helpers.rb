@@ -8,13 +8,12 @@ module PortalHelpers
       command = 'up -d'
     end
 
-    puts "Running `docker-compose #{command}` in #{Dir.pwd}"
     system(env, "docker-compose --project-name portalspec #{command}")
   end
 
-  def read_https_content
+  def read_https_content(path = nil)
     tries = 60
-    open("https://#{ENV['TEST_DOMAIN']}", ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE) do |f|
+    open("https://#{ENV['TEST_DOMAIN']}/#{path}", ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE) do |f|
       f.read
     end
   rescue Errno::ECONNREFUSED
