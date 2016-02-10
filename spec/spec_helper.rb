@@ -16,6 +16,16 @@
 # users commonly want.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
+
+require 'pathname'
+
+TEST_DOMAIN = ENV['TEST_DOMAIN'] || 'test.nginx-acme.site'
+
+RootPath = Pathname(File.expand_path('../..', __FILE__))
+CompositionsPath = RootPath.join('spec/compositions')
+
+Dir[RootPath.join('spec/support/**/*.rb')].each { |f| require f }
+
 RSpec.configure do |config|
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
@@ -85,11 +95,13 @@ RSpec.configure do |config|
   # order dependency and want to debug it, you can fix the order by providing
   # the seed, which is printed after each run.
   #     --seed 1234
-  config.order = :random
+  config.order = :defined
 
   # Seed global randomization in this process using the `--seed` CLI option.
   # Setting this allows you to use `--seed` to deterministically reproduce
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
   Kernel.srand config.seed
+
+  config.include PortalHelpers
 end
