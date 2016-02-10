@@ -109,16 +109,21 @@ RSpec.configure do |config|
   config.before :suite do
     puts "TEST_DOMAIN: #{ENV['TEST_DOMAIN']}"
 
-    puts 'Purging existing containers and their data volumes...'
-    CompositionsPath.each_child do |composition|
-      next unless composition.directory?
-
-      Dir.chdir(composition) do
-        system 'docker rm --force --volumes $(docker-compose ps -q) 2> /dev/null'
-      end
+    puts 'Rebuilding docker image for spec...'
+    Dir.chdir CompositionsPath.children.first do
+      system 'docker-compose --project-name portalspec build'
     end
+  end
 
-    puts 'Purging existing docker image for spec...'
-    system 'docker rmi portalspec_https-portal 2> /dev/null'
+  config.around :all do |example|
+    Dir.chdir CompositionsPath.join(example.metadata[:composition]) do
+      puts 'Purging existing containers and their data volumes...'
+      system 'docker rm --force --volumes $(docker-compose --project-name portalspec ps -q) 2> /dev/null'
+      example.run
+    end
+  end
+
+  config.after :each do
+    docker_compose :stop
   end
 end
