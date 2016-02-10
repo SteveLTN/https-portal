@@ -19,7 +19,8 @@
 
 require 'pathname'
 
-TEST_DOMAIN = ENV['TEST_DOMAIN'] || 'test.nginx-acme.site'
+ENV['TEST_DOMAIN'] ||= 'test.nginx-acme.site'
+ENV['FORCE_RENEW'] ||= 'false'
 
 RootPath = Pathname(File.expand_path('../..', __FILE__))
 CompositionsPath = RootPath.join('spec/compositions')
@@ -104,4 +105,20 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 
   config.include PortalHelpers
+
+  config.before :suite do
+    puts "TEST_DOMAIN: #{ENV['TEST_DOMAIN']}"
+
+    puts 'Purging existing containers and their data volumes...'
+    CompositionsPath.each_child do |composition|
+      next unless composition.directory?
+
+      Dir.chdir(composition) do
+        system 'docker rm --force --volumes $(docker-compose ps -q) 2> /dev/null'
+      end
+    end
+
+    puts 'Purging existing docker image for spec...'
+    system 'docker rmi portalspec_https-portal 2> /dev/null'
+  end
 end
