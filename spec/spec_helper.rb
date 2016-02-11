@@ -92,23 +92,18 @@ RSpec.configure do |config|
   # particularly slow.
   config.profile_examples = 10
 
-  # Run specs in random order to surface order dependencies. If you find an
-  # order dependency and want to debug it, you can fix the order by providing
-  # the seed, which is printed after each run.
-  #     --seed 1234
+  # Intentional configure RSpec to run ours specs in defined order.
+  # This is important since some example groups reuse existing containers
+  # created by previous example group.
   config.order = :defined
-
-  # Seed global randomization in this process using the `--seed` CLI option.
-  # Setting this allows you to use `--seed` to deterministically reproduce
-  # test failures related to randomization by passing the same `--seed` value
-  # as the one that triggered the failure.
-  Kernel.srand config.seed
 
   config.include PortalHelpers
 
   config.before :suite do
     puts "TEST_DOMAIN: #{ENV['TEST_DOMAIN']}"
 
+    # Ensure the build process have existing cached layers to reuse, by
+    # explicitly rebuild the docker image for spec.
     puts 'Rebuilding docker image for spec...'
     Dir.chdir CompositionsPath.children.first do
       PortalHelpers.docker_compose :build

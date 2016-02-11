@@ -1,5 +1,8 @@
 require 'spec_helper'
 
+# This spec intentionally reuse containers created by previous example group.
+# Since we don't retry the docker command here, to ensure it success, an
+# already initialized https-portal instance is required.
 RSpec.describe 'Renewal', :reuse_container, composition: 'minimal-setup' do
 
   let(:docker_command) { 'docker exec portalspec_https-portal_1 bash -c ' +
