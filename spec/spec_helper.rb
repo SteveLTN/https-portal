@@ -110,14 +110,21 @@ RSpec.configure do |config|
     end
   end
 
-  config.around :all do |example|
+  config.before :all do |example|
+    unless example.class.metadata[:reuse_container]
+      Dir.chdir CompositionsPath.join(example.class.metadata[:composition]) do
+        purge_existing_containers
+      end
+    end
+  end
+
+  config.around :example do |example|
     Dir.chdir CompositionsPath.join(example.metadata[:composition]) do
-      purge_existing_containers unless example.metadata[:reuse_container]
       example.run
     end
   end
 
-  config.after :each do
+  config.after :example do
     docker_compose :stop
   end
 end
