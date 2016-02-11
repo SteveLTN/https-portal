@@ -2,6 +2,8 @@ require 'open-uri'
 require 'openssl'
 
 module PortalHelpers
+  extend self
+
   def docker_compose(command, env: {})
     case command.to_sym
     when :up
@@ -9,6 +11,10 @@ module PortalHelpers
     end
 
     system(env, "docker-compose --project-name portalspec #{command}")
+  end
+
+  def purge_existing_containers
+    system 'docker rm --force --volumes $(docker-compose --project-name portalspec ps -q) &> /dev/null'
   end
 
   def read_https_content(path = nil)

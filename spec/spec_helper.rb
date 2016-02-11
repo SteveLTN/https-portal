@@ -111,14 +111,13 @@ RSpec.configure do |config|
 
     puts 'Rebuilding docker image for spec...'
     Dir.chdir CompositionsPath.children.first do
-      system 'docker-compose --project-name portalspec build'
+      PortalHelpers.docker_compose :build
     end
   end
 
   config.around :all do |example|
     Dir.chdir CompositionsPath.join(example.metadata[:composition]) do
-      puts 'Purging existing containers and their data volumes...'
-      system 'docker rm --force --volumes $(docker-compose --project-name portalspec ps -q) 2> /dev/null'
+      purge_existing_containers unless example.metadata[:reuse_container]
       example.run
     end
   end

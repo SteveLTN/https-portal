@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Renewal', composition: 'minimal-setup' do
+RSpec.describe 'Renewal', :reuse_container, composition: 'minimal-setup' do
 
   let(:docker_command) { 'docker exec portalspec_https-portal_1 bash -c ' +
                          "'test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )'" }
