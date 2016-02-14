@@ -141,7 +141,7 @@ a-web-application:
     VIRTUAL_HOST: example.com
 ```
 
-As you can see, there is no need to link your web service to HTTPS-PORTAL.
+Note that here is **no need** to link your web service to HTTPS-PORTAL, and you **shouldn't** put `example.com` in environment variable `DOMAINS` of HTTP-PORTAL.
 
 This feature allows you to deploy multiple web applications on the same host
 without restarting HTTPS-PORTAL itself or interrupting other application while
