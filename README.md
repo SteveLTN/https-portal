@@ -225,7 +225,7 @@ each virtual host in `/data/https-portal/vhosts` directory on the host machine:
 ```
 
 You can place your own static files in this directory hierarchy, they will not
-be overwritten.
+be overwritten. You need an `index.html` to be served as the homepage.
 
 ### Share Certificates with Other Apps
 
