@@ -19,7 +19,7 @@ server {
     ssl_dhparam <%= dhparam_path %>;
 
     location / {
-       return    301 <%= domain.target %>;
+       return    301 <%= domain.upstream %>;
 
        # Or if you want to hard-code it
        # return    301 https://letsencrypt.org;
