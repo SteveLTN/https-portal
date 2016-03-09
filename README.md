@@ -258,6 +258,7 @@ KEEPALIVE_TIMEOUT=65
 GZIP=off
 SERVER_NAMES_HASH_MAX_SIZE=512
 SERVER_NAMES_HASH_BUCKET_SIZE=32        # defaults to 32 or 64 based on your CPU
+CLIENT_MAX_BODY_SIZE=1M                 # 0 disables checking request body size
 ```
 
 ### Override Nginx Configuration Files
