@@ -31,6 +31,9 @@ http {
     <% if ENV['SERVER_NAMES_HASH_BUCKET_SIZE'] %>
     server_names_hash_bucket_size <%= ENV['SERVER_NAMES_HASH_BUCKET_SIZE'] %>;
     <% end %>
+    <% if ENV['CLIENT_MAX_BODY_SIZE'] %>
+    client_max_body_size <%= ENV['CLIENT_MAX_BODY_SIZE'] %>;
+    <% end %>
 
     include /etc/nginx/conf.d/*.conf;
 }
