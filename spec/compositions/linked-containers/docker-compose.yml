@@ -1,20 +1,27 @@
-https-portal:
-  build: ../../..
-  ports:
-    - 80:80
-    - 443:443
-  links:
-    - wordpress
-  environment:
-    DOMAINS: $TEST_DOMAIN->http://wordpress
-    FORCE_RENEW: $FORCE_RENEW
+version: '2'
 
-wordpress:
-  image: wordpress
-  links:
-    - db:mysql
+services:
+  https-portal:
+    build: ../../..
+    ports:
+      - 80:80
+      - 443:443
+    links:
+      - wordpress
+    environment:
+      DOMAINS: $TEST_DOMAIN->http://wordpress
+      FORCE_RENEW: $FORCE_RENEW
 
-db:
-  image: mariadb
-  environment:
-    MYSQL_ROOT_PASSWORD: gohJoom2quai8hac
+  wordpress:
+    image: wordpress
+    links:
+      - db:mysql
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_PASSWORD: asecretpassword
+
+
+  db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: asecretpassword

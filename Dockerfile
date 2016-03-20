@@ -4,7 +4,7 @@ MAINTAINER Weiyan Shao "lighteningman@gmail.com"
 
 WORKDIR /root
 
-ENV DOCKER_GEN_VERSION 0.5.0
+ENV DOCKER_GEN_VERSION 0.7.0
 
 ADD https://github.com/just-containers/s6-overlay/releases/download/v1.11.0.1/s6-overlay-amd64.tar.gz /tmp/
 ADD https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-linux-amd64-$DOCKER_GEN_VERSION.tar.gz /tmp/

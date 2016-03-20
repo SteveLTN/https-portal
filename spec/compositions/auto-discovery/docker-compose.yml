@@ -21,6 +21,8 @@ wordpress:
     - db:mysql
   environment:
     VIRTUAL_HOST: $TEST_DOMAIN
+    WORDPRESS_DB_HOST: mysql
+    WORDPRESS_DB_PASSWORD: asecretpassword
 
 db:
   image: mariadb

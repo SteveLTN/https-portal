@@ -119,8 +119,10 @@ Note: `PRODUCTION` flag is `false` by default, which results in a test
 HTTPS-PORTAL is capable of discovering other Docker containers running on the
 same host, as long as Docker API socket is accessible within the container.
 
-In order to make it so, launch HTTPS-PORTAL using the following
-`docker-compose.yml`:
+In order to make it so, launch HTTPS-PORTAL using the following `docker-compose.yml`.
+
+**Notice**: Container discovery doesn't work with compose v2 syntax for now, because of an incompatibility between the
+new network interface and docker-gen.
 
 ```yaml
 https-portal:
