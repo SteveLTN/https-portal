@@ -12,6 +12,7 @@ RSpec.describe 'Renewal', :reuse_container, composition: 'minimal-setup' do
     it 'should not renew certs' do
       docker_compose :up
 
+      read_https_content
       output = `#{docker_command}`
 
       expect(output).to include "No need to renew certs for #{ENV['TEST_DOMAIN']}"
@@ -22,6 +23,7 @@ RSpec.describe 'Renewal', :reuse_container, composition: 'minimal-setup' do
     it 'should force renew the certs' do
       docker_compose :up, env: { 'FORCE_RENEW' => 'true' }
 
+      read_https_content
       output = `#{docker_command}`
 
       expect(output).to include "Renewed certs for #{ENV['TEST_DOMAIN']}"
