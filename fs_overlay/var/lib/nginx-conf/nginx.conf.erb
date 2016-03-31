@@ -26,6 +26,7 @@ http {
     keepalive_timeout  <%= ENV['KEEPALIVE_TIMEOUT'] || 65 %>;
 
     gzip  <%= ENV['GZIP'] || 'off' %>;
+    server_tokens <%= ENV['SERVER_TOKENS'] || 'off' %>;
 
     server_names_hash_max_size <%= ENV['SERVER_NAMES_HASH_MAX_SIZE'] || 512 %>;
     <% if ENV['SERVER_NAMES_HASH_BUCKET_SIZE'] %>
