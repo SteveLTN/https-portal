@@ -257,7 +257,7 @@ The following are the config keys with default values:
 WORKER_PROCESSES=1
 WORKER_CONNECTIONS=1024
 KEEPALIVE_TIMEOUT=65
-GZIP=off
+GZIP=on
 SERVER_TOKENS=off
 SERVER_NAMES_HASH_MAX_SIZE=512
 SERVER_NAMES_HASH_BUCKET_SIZE=32        # defaults to 32 or 64 based on your CPU
