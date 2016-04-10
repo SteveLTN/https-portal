@@ -12,24 +12,46 @@
 </head>
 <body>
 <h1>Welcome to HTTPS-PORTAL!</h1>
+
+<% if NAConfig.stage == 'production' %>
 <p>
   Your site is avaible in HTTPS with certificate issued by
   <a href="https://letsencrypt.org">Let's Encrypt</a>.
 </p>
+<% elsif NAConfig.stage == 'staging' %>
+<p>
+  Your site is avaible in HTTPS with certificate issued by
+  <a href="https://letsencrypt.org">Let's Encrypt</a> staging server.
+</p>
+<p>
+
+  This certificate is for testing your setup, and might not be trusted by your browser.
+
+  To run the your website with Let's Encrypt production server, add
+  `STAGE=production` to the container environment.
+</p>
+<% elsif NAConfig.stage == 'local' %>
+<p>
+  Your site is avaible in HTTPS with a self-signed certificate.
+</p>
+
+<p>
+  You can now run the same Docker compose file on your server with Let's Encrypt certificated.
+  Don't forget to set up your DNS and use `STAGE=staging`!
+</p>
+<% end %>
+
 <p>
   You can replace this page with your own static files, by mounting your own www
   root directory as a data volume at <strong><%= domain.www_root %></strong>.
 </p>
+
 <p>
   For more detailed information about static sites, check
   <a href="https://github.com/SteveLTN/https-portal#serving-static-sites">Serving
      Static Sites</a> section of the documents.
 </p>
-<p>
-  If you did not turn on "PRODUCTION" flag in HTTPS-PORTAL config, you are using
-  a test certificate issued by Let's Encrypt staging server which might not be
-  trusted by your browser.
-</p>
+
 <p>
   Documents are available at
   <a href="https://github.com/SteveLTN/https-portal">https://github.com/SteveLTN/https-portal</a>.

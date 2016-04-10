@@ -26,11 +26,7 @@ class Domain
   end
 
   def dir
-    if NAConfig.production?
-      "/var/lib/https-portal/#{name}"
-    else
-      "/var/lib/https-portal/#{name}-staging/"
-    end
+    "/var/lib/https-portal/#{name}/#{NAConfig.stage}/"
   end
 
   def www_root
@@ -56,6 +52,7 @@ class Domain
   def compiled_welcome_page
     binding_hash = {
       domain: self,
+      NAConfig: NAConfig
     }
 
     ERBBinding.new('/var/www/default/index.html.erb', binding_hash).compile

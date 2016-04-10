@@ -19,6 +19,7 @@ Docker Hub page:
   - [See It Work](#see-it-work)
   - [Quick Start](#quick-start)
   - [Features](#features)
+    - [Test Locally](#test-locally)
     - [Automatic Container Discovery](#automatic-container-discovery)
     - [Hybrid Setup with Non-Dockerized Apps](#hybrid-setup-with-non-dockerized-apps)
     - [Multiple Domains](#multiple-domains)
@@ -64,7 +65,7 @@ https-portal:
     - '443:443'
   environment:
     DOMAINS: 'example.com'
-    # PRODUCTION: 'true'
+    # STAGE: 'production'
 ```
 
 Run `docker-compose up` command in the same directory. A moment later you'll
@@ -87,7 +88,7 @@ https-portal:
   restart: always
   environment:
     DOMAINS: 'wordpress.example.com -> http://wordpress'
-    # PRODUCTION: 'true'
+    # STAGE: 'production'
     # FORCE_RENEW: 'true'
 
 wordpress:
@@ -109,10 +110,28 @@ section are HTTPS-PORTAL specific configurations. This time we added an extra
 parameter `-d`, it will tell Docker Compose to run the apps defined in
 `docker-compose.yml` in background.
 
-Note: `PRODUCTION` flag is `false` by default, which results in a test
+Note: `STAGE` is `staging` by default, which results in a test
 (untrusted) certificate from Let's Encrypt.
 
 ## Features
+
+### Test Locally
+
+You can test HTTPS-PORTAL with your application stack locally.
+
+```yaml
+https-portal:
+  # ...
+  environment:
+    STAGE: local
+```
+
+When doing it, HTTPS-PORTAL will create a self-signed certificate.
+This certificated is not likely to be trusted by your browser, but you can
+use it to test your docker-compose file, make sure it works with your application
+stack.
+
+Once you are done, you can deploy your application stack to the server.
 
 ### Automatic Container Discovery
 
@@ -318,10 +337,10 @@ HTTPS-PORTAL stores your certificates in a data volume and will not re-sign
 certificates until 30 days before expiration if a valid certificate is found
 (you can force renew certificates by using `FORCE_RENEW: 'true'` environment
 variable).  However if you play around with the image a lot, you can hit the
-limit. That's why `PRODUCTION` flag is off by default, and thus we use the
+limit. That's why `STAGE` is `staging` by default, and thus we use the
 Let's Encrypt staging server. When you made your experiments and feel
-everything is good, you can switch to production mode with `PRODUCTION:
-'true'`.
+everything is good, you can switch to production mode with `STAGE:
+'production'`.
 
 According to Let's Encrypt, the restrictions will be loosen as the beta goes.
 

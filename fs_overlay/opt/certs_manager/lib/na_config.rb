@@ -4,14 +4,36 @@ module NAConfig
   end
 
   def self.ca
-    if production?
+    case stage
+    when 'production'
       'https://acme-v01.api.letsencrypt.org'
-    else
+    when 'local'
+      nil
+    when 'staging'
       'https://acme-staging.api.letsencrypt.org'
     end
   end
 
-  def self.production?
+  def self.stage
+    stages = ['production', 'staging', 'local']
+
+    if ENV['STAGE']
+      if stages.include?(ENV['STAGE'])
+        ENV['STAGE']
+      else
+        puts "Error: Invalid stage #{ENV['STAGE']}"
+        nil
+      end
+    else #legacy
+      if production_key?
+        'production'
+      else
+        'staging'
+      end
+    end
+  end
+
+  def self.production_key?
     ENV['PRODUCTION'] && ENV['PRODUCTION'].downcase == 'true'
   end
 

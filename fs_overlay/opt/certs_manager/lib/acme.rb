@@ -2,6 +2,16 @@ require 'timeout'
 
 module ACME
   def self.sign(domain)
+    if NAConfig.stage == 'local'
+      OpenSSL.self_sign(domain)
+    else
+      le_sign(domain)
+    end
+  end
+
+  private
+
+  def self.le_sign(domain)
     Timeout::timeout(30) do
 
       puts "Signing certificates from #{NAConfig.ca} ..."
