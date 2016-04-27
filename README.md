@@ -124,6 +124,7 @@ https-portal:
   # ...
   environment:
     STAGE: local
+    DOMAINS: 'example.com'
 ```
 
 When doing it, HTTPS-PORTAL will create a self-signed certificate.
@@ -131,7 +132,16 @@ This certificated is not likely to be trusted by your browser, but you can
 use it to test your docker-compose file, make sure it works with your application
 stack.
 
-Once you are done, you can deploy your application stack to the server.
+Note that HTTPS-PORTAL only listens to `example.com`, as you specified in the compose file.
+In order to make HTTPS-PORTAL respond to your connection, you need to either:
+
+* modify your `hosts` file to have `example.com` resolving to your docker host
+
+or
+
+* set up DNSMasq on your computer/router, this method provides more flexibility
+
+Once you are done testing, you can deploy your application stack to the server.
 
 ### Automatic Container Discovery
 
