@@ -293,6 +293,14 @@ SERVER_NAMES_HASH_BUCKET_SIZE=32        # defaults to 32 or 64 based on your CPU
 CLIENT_MAX_BODY_SIZE=1M                 # 0 disables checking request body size
 ```
 
+You can also add
+
+```
+WEBSOCKET=true
+```
+
+to make HTTPS-PORTAL proxy WEBSOCKET connections.
+
 ### Override Nginx Configuration Files
 
 You can override default nginx settings by providing a config segment of
