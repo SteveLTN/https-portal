@@ -27,7 +27,11 @@ module ACME
       system(command)
 
     end
-  rescue Timeout::Error => e
-    puts 'Signing certificates timed out. Is DNS set up properly?'
+  rescue
+    puts <<-HERE
+================================================================================
+Failed to sign #{domain.name}, is DNS set up properly?
+================================================================================
+    HERE
   end
 end
