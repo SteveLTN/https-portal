@@ -3,27 +3,9 @@ module NAConfig
     (env_domains + auto_discovered_domains).uniq(&:name)
   end
 
-  def self.ca
-    case stage
-    when 'production'
-      'https://acme-v01.api.letsencrypt.org'
-    when 'local'
-      nil
-    when 'staging'
-      'https://acme-staging.api.letsencrypt.org'
-    end
-  end
-
   def self.stage
-    stages = ['production', 'staging', 'local']
-
     if ENV['STAGE']
-      if stages.include?(ENV['STAGE'])
-        ENV['STAGE']
-      else
-        puts "Error: Invalid stage #{ENV['STAGE']}"
-        nil
-      end
+      ENV['STAGE']
     else #legacy
       if production_key?
         'production'
@@ -64,9 +46,8 @@ module NAConfig
   private
 
   def self.parse(domain_desc)
-    domain_desc.split(',').map(&:strip).delete_if{ |s| s == "" }.map do |domain|
-      name, upstream = domain.split('->').map(&:strip)
-      Domain.new(name, upstream)
+    domain_desc.split(',').map(&:strip).delete_if{ |s| s == "" }.map do |descriptor|
+      Domain.new(descriptor)
     end
   end
 end

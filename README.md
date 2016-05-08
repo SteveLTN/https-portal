@@ -230,6 +230,12 @@ https-portal:
     -> http://gitlab'
 ```
 
+You can also specify the stage (`local`, `staging`, or `production`) for each individual site, note that stages of individual sites overrides the global stage:
+
+```yaml
+DOMAINS: 'wordpress.example.com -> http://wordpress #local, gitlab.example.com #production'
+```
+
 ### Serving Static Sites
 
 Instead of forwarding requests to web applications, HTTPS-PORTAL can also serve
@@ -247,7 +253,7 @@ https-portal:
 After HTTPS-PORTAL started, it will create corresponding sub-directories for
 each virtual host in `/data/https-portal/vhosts` directory on the host machine:
 
-```
+```yaml
 /data/https-portal/vhosts
 ├── hexo.example.com
 │  └── index.html

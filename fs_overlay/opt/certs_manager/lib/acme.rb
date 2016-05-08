@@ -2,7 +2,7 @@ require 'timeout'
 
 module ACME
   def self.sign(domain)
-    if NAConfig.stage == 'local'
+    if domain.stage == 'local'
       OpenSSL.self_sign(domain)
     else
       le_sign(domain)
@@ -14,14 +14,14 @@ module ACME
   def self.le_sign(domain)
     Timeout::timeout(30) do
 
-      puts "Signing certificates from #{NAConfig.ca} ..."
+      puts "Signing certificates from #{domain.ca} ..."
 
       command = <<-EOC
         acme_tiny \
           --account-key /var/lib/https-portal/account.key \
           --csr #{domain.csr_path} \
           --acme-dir /var/www/default/challenges/ \
-          --ca #{NAConfig.ca} > #{domain.signed_cert_path}
+          --ca #{domain.ca} > #{domain.signed_cert_path}
       EOC
 
       system(command)

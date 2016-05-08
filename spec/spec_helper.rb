@@ -100,17 +100,19 @@ RSpec.configure do |config|
   config.include PortalHelpers
 
   config.before :suite do
-    puts "TEST_DOMAIN: #{ENV['TEST_DOMAIN']}"
+    unless ENV['SKIP_BUILD']
+      puts "TEST_DOMAIN: #{ENV['TEST_DOMAIN']}"
 
-    # Ensure the build process have existing cached layers to reuse, by
-    # explicitly rebuild the docker image for spec.
-    puts 'Rebuilding docker image for spec...'
-    Dir.chdir CompositionsPath.children.first do
-      PortalHelpers.docker_compose :build
+      # Ensure the build process have existing cached layers to reuse, by
+      # explicitly rebuild the docker image for spec.
+      puts 'Rebuilding docker image for spec...'
+      Dir.chdir CompositionsPath.children.first do
+        PortalHelpers.docker_compose :build
+      end
     end
   end
 
-  config.before :all do |example|
+  config.before :all, type: :feature do |example|
     unless example.class.metadata[:reuse_container]
       Dir.chdir CompositionsPath.join(example.class.metadata[:composition]) do
         purge_existing_containers
@@ -118,13 +120,13 @@ RSpec.configure do |config|
     end
   end
 
-  config.around :example do |example|
+  config.around :example, type: :feature do |example|
     Dir.chdir CompositionsPath.join(example.metadata[:composition]) do
       example.run
     end
   end
 
-  config.after :example do
+  config.after :example, type: :feature do
     docker_compose :stop
   end
 end

@@ -1,0 +1,5 @@
+test/
+spec/
+examples/
+Gemfile
+Gemfile.lock

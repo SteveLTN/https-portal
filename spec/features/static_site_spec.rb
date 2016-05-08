@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Serving static site', composition: 'static-site' do
+RSpec.describe 'Serving static site', composition: 'static-site', type: :feature do
   before :all do
     system 'docker-machine ssh $DOCKER_MACHINE_NAME rm -rf /data/https-portal'
   end

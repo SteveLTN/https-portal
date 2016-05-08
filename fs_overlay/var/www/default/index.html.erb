@@ -13,12 +13,12 @@
 <body>
 <h1>Welcome to HTTPS-PORTAL!</h1>
 
-<% if NAConfig.stage == 'production' %>
+<% if domain.stage == 'production' %>
 <p>
   Your site is avaible in HTTPS with certificate issued by
   <a href="https://letsencrypt.org">Let's Encrypt</a>.
 </p>
-<% elsif NAConfig.stage == 'staging' %>
+<% elsif domain.stage == 'staging' %>
 <p>
   Your site is avaible in HTTPS with certificate issued by
   <a href="https://letsencrypt.org">Let's Encrypt</a> staging server.
@@ -30,7 +30,7 @@
   To run the your website with Let's Encrypt production server, add
   `STAGE=production` to the container environment.
 </p>
-<% elsif NAConfig.stage == 'local' %>
+<% elsif domain.stage == 'local' %>
 <p>
   Your site is avaible in HTTPS with a self-signed certificate.
 </p>
