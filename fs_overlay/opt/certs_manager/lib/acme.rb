@@ -19,6 +19,7 @@ module ACME
       command = <<-EOC
         acme_tiny \
           --account-key /var/lib/https-portal/account.key \
+          --no-verify \
           --csr #{domain.csr_path} \
           --acme-dir /var/www/default/challenges/ \
           --ca #{domain.ca} > #{domain.signed_cert_path}
