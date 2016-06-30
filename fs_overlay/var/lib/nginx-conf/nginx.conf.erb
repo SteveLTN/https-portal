@@ -41,6 +41,12 @@ http {
     <% if ENV['CLIENT_MAX_BODY_SIZE'] %>
     client_max_body_size <%= ENV['CLIENT_MAX_BODY_SIZE'] %>;
     <% end %>
+    <% if ENV['PROXY_BUFFERS'] %>
+    proxy_buffers <%= ENV['PROXY_BUFFERS'] %>;
+    <% end %>
+    <% if ENV['PROXY_BUFFER_SIZE'] %>
+    proxy_buffer_size <%= ENV['PROXY_BUFFER_SIZE'] %>;
+    <% end %>
 
     include /etc/nginx/conf.d/*.conf;
 }
