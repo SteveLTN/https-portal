@@ -27,11 +27,13 @@ module ACME
       system(command)
 
     end
-  rescue
+  rescue Exception => e
     puts <<-HERE
 ================================================================================
 Failed to sign #{domain.name}, is DNS set up properly?
 ================================================================================
     HERE
+
+    raise e
   end
 end
