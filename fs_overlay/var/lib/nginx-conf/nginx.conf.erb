@@ -47,9 +47,8 @@ http {
     <% if ENV['PROXY_BUFFER_SIZE'] %>
     proxy_buffer_size <%= ENV['PROXY_BUFFER_SIZE'] %>;
     <% end %>
-    
-    <% if ENV['RESOLVER_ON'] %>
-    resolver <% ENV['RESOLVER_IP'] || '127.0.0.11' %> valid=<% ENV['RESOLVER_VALID'] || '60s' %>;
+    <% if ENV['RESOLVER'] %>
+    resolver <%= ENV['RESOLVER'] %>;
     <% end %>
 
     include /etc/nginx/conf.d/*.conf;

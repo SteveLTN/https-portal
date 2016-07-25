@@ -299,6 +299,7 @@ SERVER_NAMES_HASH_BUCKET_SIZE=32        # defaults to 32 or 64 based on your CPU
 CLIENT_MAX_BODY_SIZE=1M                 # 0 disables checking request body size
 PROXY_BUFFERS="8 4k"                    # Either 4k or 8k depending on the platform
 PROXY_BUFFER_SIZE="4k"                  # Either 4k or 8k depending on the platform
+RESOLVER="Your custom solver string"
 ```
 
 You can also add
