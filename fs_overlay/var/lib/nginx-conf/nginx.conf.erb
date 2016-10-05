@@ -35,20 +35,37 @@ http {
     server_tokens <%= ENV['SERVER_TOKENS'] || 'off' %>;
 
     server_names_hash_max_size <%= ENV['SERVER_NAMES_HASH_MAX_SIZE'] || 512 %>;
+
     <% if ENV['SERVER_NAMES_HASH_BUCKET_SIZE'] %>
     server_names_hash_bucket_size <%= ENV['SERVER_NAMES_HASH_BUCKET_SIZE'] %>;
     <% end %>
+
     <% if ENV['CLIENT_MAX_BODY_SIZE'] %>
     client_max_body_size <%= ENV['CLIENT_MAX_BODY_SIZE'] %>;
     <% end %>
+
     <% if ENV['PROXY_BUFFERS'] %>
     proxy_buffers <%= ENV['PROXY_BUFFERS'] %>;
     <% end %>
+
     <% if ENV['PROXY_BUFFER_SIZE'] %>
     proxy_buffer_size <%= ENV['PROXY_BUFFER_SIZE'] %>;
     <% end %>
+
     <% if ENV['RESOLVER'] %>
     resolver <%= ENV['RESOLVER'] %>;
+    <% end %>
+
+    <% if ENV['PROXY_CONNECT_TIMEOUT'] %>
+    proxy_connect_timeout <%= ENV['PROXY_CONNECT_TIMEOUT'] %>;
+    <% end %>
+
+    <% if ENV['PROXY_SEND_TIMEOUT'] %>
+    proxy_send_timeout <%= ENV['PROXY_SEND_TIMEOUT'] %>;
+    <% end %>
+
+    <% if ENV['PROXY_READ_TIMEOUT'] %>
+    proxy_read_timeout <%= ENV['PROXY_READ_TIMEOUT'] %>;
     <% end %>
 
     include /etc/nginx/conf.d/*.conf;
