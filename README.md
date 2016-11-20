@@ -368,7 +368,7 @@ certificates until 30 days before expiration if a valid certificate is found
 (you can force renew certificates by using `FORCE_RENEW: 'true'` environment
 variable).  However if you play around with the image a lot, you can hit the
 limit. That's why `STAGE` is `staging` by default, and thus we use the
-Let's Encrypt staging server. When you made your experiments and feel
+Let's Encrypt staging server. When you have finished your experiments and feel
 everything is good, you can switch to production mode with `STAGE:
 'production'`.
 
