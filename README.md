@@ -332,7 +332,7 @@ https-portal:
 ```
 
 [This file](https://github.com/SteveLTN/https-portal/blob/master/fs_overlay/var/lib/nginx-conf/default.conf.erb) and [this file](https://github.com/SteveLTN/https-portal/blob/master/fs_overlay/var/lib/nginx-conf/default.ssl.conf.erb) are the default configuration files used by HTTPS-PORTAL.
-You can probably start by copying these files and make modifications on them.
+You can probably start by copying these files and make modifications to them.
 
 Another example can be found [here](/examples/custom_config).
 
