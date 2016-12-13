@@ -68,13 +68,13 @@ https-portal:
     # STAGE: 'production'
 ```
 
-Run `docker-compose up` command in the same directory. A moment later you'll
+Run the `docker-compose up` command in the same directory. A moment later you'll
 have a welcome page running in
 [https://example.com](https://example.com).
 
 ## Quick Start
 
-This is a more real-world example `docker-compose.yml`, create it in another
+Here is a more real-world example: Create the file `docker-compose.yml` in another
 directory:
 
 ```yaml
@@ -102,13 +102,13 @@ db:
     MYSQL_ROOT_PASSWORD: '<a secure password>'
 ```
 
-Run `docker-compose up -d` command. A moment later you'll get a WordPress
+Run the `docker-compose up -d` command. A moment later you'll get a WordPress
 running on [https://wordpress.example.com](https://wordpress.example.com).
 
-In the example above, only the environment variables under `https-portal`
+In the example above, only the environment variables under the `https-portal`
 section are HTTPS-PORTAL specific configurations. This time we added an extra
-parameter `-d`, it will tell Docker Compose to run the apps defined in
-`docker-compose.yml` in background.
+parameter `-d`, which will tell Docker Compose to run the apps defined in
+`docker-compose.yml` in the background.
 
 Note: `STAGE` is `staging` by default, which results in a test
 (untrusted) certificate from Let's Encrypt.
@@ -127,26 +127,26 @@ https-portal:
     DOMAINS: 'example.com'
 ```
 
-When doing it, HTTPS-PORTAL will create a self-signed certificate.
-This certificated is not likely to be trusted by your browser, but you can
-use it to test your docker-compose file, make sure it works with your application
+By doing this, HTTPS-PORTAL will create a self-signed certificate.
+This certificate is not likely to be trusted by your browser, but you can
+use it to test your docker-compose file. Make sure it works with your application
 stack.
 
 Note that HTTPS-PORTAL only listens to `example.com`, as you specified in the compose file.
 In order to make HTTPS-PORTAL respond to your connection, you need to either:
 
-* modify your `hosts` file to have `example.com` resolving to your docker host
+* modify your `hosts` file to have `example.com` resolving to your docker host,
 
 or
 
-* set up DNSMasq on your computer/router, this method provides more flexibility
+* set up DNSMasq on your computer/router. This method provides more flexibility.
 
 Once you are done testing, you can deploy your application stack to the server.
 
 ### Automatic Container Discovery
 
 HTTPS-PORTAL is capable of discovering other Docker containers running on the
-same host, as long as Docker API socket is accessible within the container.
+same host, as long as the Docker API socket is accessible within the container.
 
 In order to make it so, launch HTTPS-PORTAL using the following `docker-compose.yml`.
 
@@ -175,11 +175,11 @@ a-web-application:
 Note that here is **no need** to link your web service to HTTPS-PORTAL, and you **shouldn't** put `example.com` in environment variable `DOMAINS` of HTTP-PORTAL.
 
 This feature allows you to deploy multiple web applications on the same host
-without restarting HTTPS-PORTAL itself or interrupting other application while
+without restarting HTTPS-PORTAL itself or interrupting any other application while
 adding/removing web applications.
 
 If your web service has more than one port exposed (mind that ports can be exposed in your web service Dockerfile),
-use environment variable `VIRTUAL_PORT` to specify which port accepts HTTP request:
+use the environment variable `VIRTUAL_PORT` to specify which port accepts HTTP requests:
 
 ```yaml
 a-multi-port-web-application:
@@ -205,7 +205,7 @@ https-portal:
 
 ### Hybrid Setup with Non-Dockerized Apps
 
-Web applications that run directly on host machine instead of in Docker
+Web applications that run directly on the host machine instead of in Docker
 containers are available at `dockerhost`.
 
 For instance, if an application accepts HTTP requests on port 8080 of the host
@@ -250,8 +250,8 @@ https-portal:
     - /data/https-portal/vhosts:/var/www/vhosts
 ```
 
-After HTTPS-PORTAL started, it will create corresponding sub-directories for
-each virtual host in `/data/https-portal/vhosts` directory on the host machine:
+After HTTPS-PORTAL is started, it will create corresponding sub-directories for
+each virtual host in the `/data/https-portal/vhosts` directory on the host machine:
 
 ```yaml
 /data/https-portal/vhosts
@@ -278,14 +278,14 @@ https-portal:
     - /data/ssl_certs:/var/lib/https-portal
 ```
 
-Now your certificates are available in `/data/ssl_certs` of your host.
+Now your certificates are available in `/data/ssl_certs` on your host.
 
 ## Advanced Usage
 
 ### Configure Nginx through Environment Variables
 
 There are several additional environment variables that you can use to config Nginx.
-They are coressponding to the configuration options that you would normally supply in `nginx.conf`.
+They correspond to the configuration options that you would normally supply in `nginx.conf`.
 The following are the config keys with default values:
 
 ```
@@ -332,7 +332,7 @@ https-portal:
 ```
 
 [This file](https://github.com/SteveLTN/https-portal/blob/master/fs_overlay/var/lib/nginx-conf/default.conf.erb) and [this file](https://github.com/SteveLTN/https-portal/blob/master/fs_overlay/var/lib/nginx-conf/default.ssl.conf.erb) are the default configuration files used by HTTPS-PORTAL.
-You can probably start by copying these files and make modifications on them.
+You can probably start by copying these files and make modifications to them.
 
 Another example can be found [here](/examples/custom_config).
 
@@ -368,11 +368,11 @@ certificates until 30 days before expiration if a valid certificate is found
 (you can force renew certificates by using `FORCE_RENEW: 'true'` environment
 variable).  However if you play around with the image a lot, you can hit the
 limit. That's why `STAGE` is `staging` by default, and thus we use the
-Let's Encrypt staging server. When you made your experiments and feel
+Let's Encrypt staging server. When you have finished your experiments and feel
 everything is good, you can switch to production mode with `STAGE:
 'production'`.
 
-According to Let's Encrypt, the restrictions will be loosen as the beta goes.
+According to Let's Encrypt, the restrictions will be loosened over time.
 
 ## Credits
 
