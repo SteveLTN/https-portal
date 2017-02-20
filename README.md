@@ -14,7 +14,6 @@ Docker Hub page:
 ##Table of Contents
 
 - [HTTPS-PORTAL](#https-portal)
-  - [Warning](#warning)
   - [Prerequisite](#prerequisite)
   - [See It Work](#see-it-work)
   - [Quick Start](#quick-start)
@@ -31,10 +30,6 @@ Docker Hub page:
   - [How It Works](#how-it-works)
   - [About Rate Limits of Let's Encrypt](#about-rate-limits-of-lets-encrypt)
   - [Credits](#credits)
-
-## Warning
-
-This project is in active development. Use it in production with CAUTION.
 
 ## Prerequisite
 
