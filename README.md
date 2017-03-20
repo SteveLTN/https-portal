@@ -54,7 +54,7 @@ of your choice:
 
 ```yaml
 https-portal:
-  image: steveltn/https-portal:1.0.0
+  image: steveltn/https-portal:1
   ports:
     - '80:80'
     - '443:443'
@@ -74,7 +74,7 @@ directory:
 
 ```yaml
 https-portal:
-  image: steveltn/https-portal:1.0.0
+  image: steveltn/https-portal:1
   ports:
     - '80:80'
     - '443:443'

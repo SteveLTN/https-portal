@@ -2,12 +2,16 @@ require 'timeout'
 require 'fileutils'
 
 module ACME
+  class FailedToSignException < Exception; end
+
   def self.sign(domain)
     if domain.stage == 'local'
       OpenSSL.self_sign(domain)
     else
       le_sign(domain)
     end
+  rescue FailedToSignException, Timeout::Error => e
+    false
   end
 
   private
@@ -25,7 +29,7 @@ module ACME
           --ca #{domain.ca} > #{domain.ongoing_cert_path}
       EOC
 
-      system(command)
+      raise FailedToSignException unless system(command)
 
       rename_ongoing_cert(domain)
     end
