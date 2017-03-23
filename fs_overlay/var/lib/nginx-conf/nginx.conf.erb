@@ -3,7 +3,6 @@
 user  nginx;
 worker_processes  <%= ENV['WORKER_PROCESSES'] || 1 %>;
 
-error_log  /var/log/nginx/error.log warn;
 pid        /var/run/nginx.pid;
 
 events {
