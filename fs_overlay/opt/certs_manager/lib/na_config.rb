@@ -46,7 +46,7 @@ module NAConfig
   private
 
   def self.parse(domain_desc)
-    domain_desc.split(',').map(&:strip).delete_if{ |s| s == "" }.map do |descriptor|
+    domain_desc.split(',').map(&:strip).delete_if{ |s| s == "" }.delete_if{ |s| s[0..1] == '->' }.map do |descriptor|
       Domain.new(descriptor)
     end
   end
