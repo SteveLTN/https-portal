@@ -2,13 +2,13 @@ module Nginx
   def self.setup
     compiled_basic_config = ERBBinding.new('/var/lib/nginx-conf/nginx.conf.erb').compile
 
-    File.open("/etc/nginx/nginx.conf" , 'w') do |f|
+    File.open('/etc/nginx/nginx.conf', 'w') do |f|
       f.write compiled_basic_config
     end
   end
 
   def self.config_http(domain)
-    File.open("/etc/nginx/conf.d/#{domain.name}.conf" , 'w') do |f|
+    File.open("/etc/nginx/conf.d/#{domain.name}.conf", 'w') do |f|
       f.write compiled_domain_config(domain, false)
     end
 
@@ -16,7 +16,7 @@ module Nginx
   end
 
   def self.config_ssl(domain)
-    File.open("/etc/nginx/conf.d/#{domain.name}.ssl.conf" , 'w') do |f|
+    File.open("/etc/nginx/conf.d/#{domain.name}.ssl.conf", 'w') do |f|
       f.write compiled_domain_config(domain, true)
     end
 
@@ -35,8 +35,6 @@ module Nginx
     system 'nginx -s stop'
   end
 
-  private
-
   def self.compiled_domain_config(domain, ssl)
     binding_hash = {
       domain: domain,
@@ -53,11 +51,7 @@ module Nginx
     override = "/var/lib/nginx-conf/#{domain.name}#{ssl_ext}.conf.erb"
     default = "/var/lib/nginx-conf/default#{ssl_ext}.conf.erb"
 
-    if File.exist? override
-      override
-    else
-      default
-    end
+    File.exist?(override) ? override : default
   end
 
   def self.acme_challenge_location_snippet
