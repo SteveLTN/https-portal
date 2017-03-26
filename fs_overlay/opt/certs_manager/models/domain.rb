@@ -1,7 +1,7 @@
 require 'fileutils'
 
 class Domain
-  STAGES = ['production', 'staging', 'local']
+  STAGES = %w(production staging local).freeze
 
   attr_reader :descriptor
 
@@ -42,12 +42,11 @@ class Domain
 
     index_html = File.join(www_root, 'index.html')
 
-    unless File.exists?(index_html)
-      FileUtils.mkdir_p www_root
+    return if File.exist?(index_html)
+    FileUtils.mkdir_p www_root
 
-      File.open(index_html, 'w') do |file|
-        file.write compiled_welcome_page
-      end
+    File.open(index_html, 'w') do |file|
+      file.write compiled_welcome_page
     end
   end
 
@@ -63,41 +62,20 @@ class Domain
   end
 
   def name
-    if @name
-      @name
-    else
-      @name = descriptor.split('->').first.split(' ').first.strip
-    end
+    @name ||= descriptor.split('->').first.split(' ').first.strip
   end
 
   def upstream
-    if @upstream
-      @upstream
-    else
-      match = descriptor.match(/->\s*([^#\s][\S]*)/)
-      @upstream = match[1] if match
-    end
+    @upstream ||= descriptor.match(/->\s*([^#\s][\S]*)/) { |match| match[1] }
   end
 
   def stage
-    if @stage
-      @stage
-    else
-      match = descriptor.match(/\s#(\S+)$/)
-
-      if match
-        @stage = match[1]
-      else
-        @stage = NAConfig.stage
-      end
-
-      if STAGES.include?(@stage)
-        @stage
-      else
-        puts "Error: Invalid stage #{@stage}"
-        nil
-      end
+    stage = descriptor.match(/\s#(\S+)$/) { |match| match[1] } || NAConfig.stage
+    unless STAGES.include?(stage)
+      puts "Error: Invalid stage #{stage}"
+      return nil
     end
+    @stage = stage
   end
 
   private
