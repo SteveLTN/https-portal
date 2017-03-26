@@ -2,7 +2,7 @@ require 'date'
 
 module OpenSSL
   def self.ensure_account_key
-    unless File.exist? "/var/lib/https-portal/account.key"
+    unless File.exist? '/var/lib/https-portal/account.key'
       system 'openssl genrsa 4096 > /var/lib/https-portal/account.key'
     end
   end
@@ -32,9 +32,8 @@ module OpenSSL
   end
 
   def self.ensure_dhparam
-    unless File.exist? NAConfig.dhparam_path
-      system "mkdir -p #{File.dirname(NAConfig.dhparam_path)} && openssl dhparam -out #{NAConfig.dhparam_path} 2048"
-    end
+    return if File.exist? NAConfig.dhparam_path
+    system "mkdir -p #{File.dirname(NAConfig.dhparam_path)} && openssl dhparam -out #{NAConfig.dhparam_path} 2048"
   end
 
   def self.self_sign(domain)
@@ -53,8 +52,6 @@ module OpenSSL
 
     system "cp #{domain.signed_cert_path} #{domain.chained_cert_path}"
   end
-
-  private
 
   def self.expires_at(pem)
     date_str = `openssl x509 -enddate -noout -in #{pem}`.sub('notAfter=', '')

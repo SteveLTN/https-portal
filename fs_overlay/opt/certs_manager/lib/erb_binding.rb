@@ -1,7 +1,6 @@
 require 'erb'
 
 class ERBBinding
-
   class CleanBinding
     def initialize(hash)
       hash.each do |key, value|
@@ -24,5 +23,4 @@ class ERBBinding
 
     ERB.new(@template).result(clean_binding.get)
   end
-
 end
