@@ -2,7 +2,7 @@ require 'timeout'
 require 'fileutils'
 
 module ACME
-  class FailedToSignException < Exception; end
+  class FailedToSignException < RuntimeError; end
 
   def self.sign(domain)
     if domain.stage == 'local'
@@ -17,8 +17,7 @@ module ACME
   private
 
   def self.le_sign(domain)
-    Timeout::timeout(30) do
-
+    Timeout.timeout(30) do
       puts "Signing certificates from #{domain.ca} ..."
 
       command = <<-EOC

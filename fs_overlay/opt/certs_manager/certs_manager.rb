@@ -1,4 +1,4 @@
-Dir[File.dirname(__FILE__) + '/lib/*.rb'].each {|file| require file }
+Dir[File.dirname(__FILE__) + '/lib/*.rb'].each { |file| require file }
 require_relative 'models/domain'
 
 class CertsManager
@@ -68,15 +68,13 @@ class CertsManager
         Nginx.config_ssl(domain)
         puts "No need to re-sign certs for #{domain.name}, it will not expire in #{OpenSSL.expires_in_days(domain.chained_cert_path)} days."
       end
-
     end
-
   ensure
     release_lock
   end
 
   def obtain_lock
-    self.lock = File.open("/tmp/https-portal.lock", File::CREAT)
+    self.lock = File.open('/tmp/https-portal.lock', File::CREAT)
 
     lock.flock File::LOCK_EX
   end

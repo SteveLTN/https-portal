@@ -122,5 +122,3 @@ RSpec.describe Domain do
     end
   end
 end
-
-

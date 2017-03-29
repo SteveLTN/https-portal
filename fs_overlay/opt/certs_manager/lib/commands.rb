@@ -4,7 +4,7 @@ module Commands
   def download_intermediate_cert
     unless File.exist? intermediate_cert_path
       File.open(intermediate_cert_path, 'wb') do |saved_file|
-        open('https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem', "rb") do |read_file|
+        open('https://letsencrypt.org/certs/lets-encrypt-x3-cross-signed.pem', 'rb') do |read_file|
           saved_file.write(read_file.read)
         end
       end
@@ -28,6 +28,6 @@ module Commands
   end
 
   def intermediate_cert_path
-    "/var/lib/https-portal/intermediate.pem"
+    '/var/lib/https-portal/intermediate.pem'
   end
 end

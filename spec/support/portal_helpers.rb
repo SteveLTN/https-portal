@@ -19,9 +19,7 @@ module PortalHelpers
 
   def read_https_content(path = nil)
     tries = 60
-    open("https://#{ENV['TEST_DOMAIN']}/#{path}", ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE) do |f|
-      f.read
-    end
+    open("https://#{ENV['TEST_DOMAIN']}/#{path}", ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE, &:read)
   rescue Errno::ECONNREFUSED
     if (tries -= 1) > 0
       sleep 10

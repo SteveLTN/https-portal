@@ -6,7 +6,7 @@ module NAConfig
   def self.stage
     if ENV['STAGE']
       ENV['STAGE']
-    else #legacy
+    else # legacy
       if production_key?
         'production'
       else
@@ -16,15 +16,15 @@ module NAConfig
   end
 
   def self.production_key?
-    ENV['PRODUCTION'] && ENV['PRODUCTION'].downcase == 'true'
+    ENV['PRODUCTION'] && ENV['PRODUCTION'].casecmp('true').zero?
   end
 
   def self.force_renew?
-    ENV['FORCE_RENEW'] && ENV['FORCE_RENEW'].downcase == 'true'
+    ENV['FORCE_RENEW'] && ENV['FORCE_RENEW'].casecmp('true').zero?
   end
 
   def self.dhparam_path
-    "/var/lib/https-portal/dhparam.pem"
+    '/var/lib/https-portal/dhparam.pem'
   end
 
   def self.env_domains
@@ -36,8 +36,8 @@ module NAConfig
   end
 
   def self.auto_discovered_domains
-    if File.exist? "/var/run/domains"
-      parse File.read("/var/run/domains")
+    if File.exist? '/var/run/domains'
+      parse File.read('/var/run/domains')
     else
       []
     end
@@ -46,7 +46,7 @@ module NAConfig
   private
 
   def self.parse(domain_desc)
-    domain_desc.split(',').map(&:strip).delete_if{ |s| s == "" }.map do |descriptor|
+    domain_desc.split(',').map(&:strip).delete_if { |s| s == '' }.map do |descriptor|
       Domain.new(descriptor)
     end
   end

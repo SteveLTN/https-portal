@@ -1,7 +1,7 @@
 require 'fileutils'
 
 class Domain
-  STAGES = ['production', 'staging', 'local']
+  STAGES = %w(production staging local).freeze
 
   attr_reader :descriptor
 
@@ -42,7 +42,7 @@ class Domain
 
     index_html = File.join(www_root, 'index.html')
 
-    unless File.exists?(index_html)
+    unless File.exist?(index_html)
       FileUtils.mkdir_p www_root
 
       File.open(index_html, 'w') do |file|
@@ -85,11 +85,11 @@ class Domain
     else
       match = descriptor.match(/\s#(\S+)$/)
 
-      if match
-        @stage = match[1]
-      else
-        @stage = NAConfig.stage
-      end
+      @stage = if match
+                 match[1]
+               else
+                 NAConfig.stage
+               end
 
       if STAGES.include?(@stage)
         @stage

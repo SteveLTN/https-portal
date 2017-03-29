@@ -4,9 +4,10 @@ require 'spec_helper'
 # Since we don't retry the docker command here, to ensure it success, an
 # already initialized https-portal instance is required.
 RSpec.describe 'Renewal', :reuse_container, composition: 'minimal-setup', type: :feature do
-
-  let(:docker_command) { 'docker exec portalspec_https-portal_1 bash -c ' +
-                         "'test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )'" }
+  let(:docker_command) do
+    'docker exec portalspec_https-portal_1 bash -c ' \
+    "'test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )'"
+  end
 
   context 'when certs already signed and no FORCE_RENEW specified' do
     it 'should not renew certs' do
