@@ -4,8 +4,10 @@
     {{ if and .Container.Node.ID .Address.HostPort }}
 http://{{ .Container.Node.Address.IP }}:{{ .Address.HostPort }}
     {{/* If there is no swarm node or the port is not published on host, use containers IP:PORT */}}
-    {{ else }}
+    {{ else if .Address.IP }}
 http://{{ .Address.IP }}:{{ .Address.Port }}
+    {{ else }}
+http://{{ .Container.Name }}:{{ .Address.Port }}
     {{ end }}
   {{ end }}
 {{ end }}
