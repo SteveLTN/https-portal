@@ -145,27 +145,32 @@ same host, as long as the Docker API socket is accessible within the container.
 
 In order to make it so, launch HTTPS-PORTAL using the following `docker-compose.yml`.
 
-**Notice**: Container discovery doesn't work with compose v2 syntax for now, because of an incompatibility between the
-new network interface and docker-gen.
-
 ```yaml
-https-portal:
-  # ...
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock:ro
+version: '2'
+
+services:
+  https-portal:
+    # ...
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 ```
 
 and launch one or more web applications with:
 
 ```yaml
-a-web-application:
-  # ...
-  ports:
-    - '8080:80'
-  environment:
-    # tell HTTPS-PORTAL to set up "example.com"
-    VIRTUAL_HOST: example.com
+version: '2'
+
+services:
+  a-web-application:
+    # ...
+    ports:
+      - '8080:80'
+    environment:
+      # tell HTTPS-PORTAL to set up "example.com"
+      VIRTUAL_HOST: example.com
 ```
+
+**Caveat**: Your web application must be created in the same network as HTTPS-PORTAL.
 
 Note that here is **no need** to link your web service to HTTPS-PORTAL, and you **shouldn't** put `example.com` in environment variable `DOMAINS` of HTTP-PORTAL.
 
