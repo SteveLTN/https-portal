@@ -11,7 +11,7 @@ automatically.
 Docker Hub page:
 [https://hub.docker.com/r/steveltn/https-portal/](https://hub.docker.com/r/steveltn/https-portal/)
 
-##Table of Contents
+## Table of Contents
 
 - [HTTPS-PORTAL](#https-portal)
   - [Prerequisite](#prerequisite)
