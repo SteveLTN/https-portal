@@ -13,6 +13,11 @@ server {
 
     ssl_dhparam <%= dhparam_path %>;
 
+    # Prevent Nginx from leaking the first TLS config
+    if ($host != $server_name) {
+        return 444;
+    }
+
     <% if domain.upstream %>
     location / {
         proxy_pass <%= domain.upstream %>;
