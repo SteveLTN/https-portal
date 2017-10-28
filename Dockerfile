@@ -1,4 +1,4 @@
-FROM nginx:1.11
+FROM nginx:1.12.2
 
 MAINTAINER Weiyan Shao "lighteningman@gmail.com"
 
