@@ -313,6 +313,13 @@ WEBSOCKET=true
 
 to make HTTPS-PORTAL proxy WEBSOCKET connections.
 
+To avoid nginx DNS caching activate dynamic upstream
+
+```
+RESOLVER="127.0.0.11 ipv6=off valid=30s"
+DYNAMIC_UPSTREAM=true
+```
+
 ### Override Nginx Configuration Files
 
 You can override default nginx settings by providing a config segment of
