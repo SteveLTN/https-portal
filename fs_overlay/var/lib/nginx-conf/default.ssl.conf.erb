@@ -38,6 +38,10 @@ server {
         proxy_read_timeout 2h;
         <% end %>
     }
+    <% elsif domain.redirect_target_domain %>
+    location / {
+      return    301 https://<%= domain.redirect_target_domain %>$request_uri;
+    }
     <% else %>
     location / {
         root   <%= domain.www_root %>;

@@ -79,6 +79,15 @@ class Domain
     end
   end
 
+  def redirect_target_domain
+    if @redirect_target
+      @redirect_target
+    else
+      match = descriptor.match(/=>\s*([^#\s][\S]*)/)
+      @redirect_target = match[1] if match
+    end
+  end
+
   def stage
     if @stage
       @stage
