@@ -38,7 +38,7 @@ class Domain
   end
 
   def ensure_welcome_page
-    return if upstream
+    return if upstream || redirect_target_domain
 
     index_html = File.join(www_root, 'index.html')
 
@@ -80,11 +80,11 @@ class Domain
   end
 
   def redirect_target_domain
-    if @redirect_target
-      @redirect_target
+    if @redirect_target_domain
+      @redirect_target_domain
     else
       match = descriptor.match(/=>\s*([^#\s][\S]*)/)
-      @redirect_target = match[1] if match
+      @redirect_target_domain = match[1] if match
     end
   end
 
