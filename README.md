@@ -141,15 +141,15 @@ Once you are done testing, you can deploy your application stack to the server.
 
 ### Redirections
 
-HTTPS-PORTAL support quick setup for redirections. For simplicity, it only
-supports 301 redirection to another domain with https protocol.
+HTTPS-PORTAL support quick setup for redirections. It is deliberately made to
+support https targets only because otherwise it'd be against the idea of this project.
 
 ```yaml
 https-portal:
   # ...
   environment:
     STAGE: local
-    DOMAINS: 'example.com => target.example.com' # Notice it's "=>" instead of the normal "->"
+    DOMAINS: 'example.com => target.example.com/foo/bar' # Notice it's "=>" instead of the normal "->"
 ```
 
 ### Automatic Container Discovery
