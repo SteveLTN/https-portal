@@ -1,0 +1,5 @@
+#!/usr/bin/with-contenv sh
+
+# Persist envs for cron jobs to use
+
+printenv | sed 's/^\(.*\)$/export "\1"/g' > /etc/cron_env.sh

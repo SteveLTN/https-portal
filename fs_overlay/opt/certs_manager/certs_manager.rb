@@ -23,6 +23,7 @@ class CertsManager
   end
 
   def renew
+    puts "Renewing ..."
     with_lock do
       download_intermediate_cert
 
@@ -33,10 +34,11 @@ class CertsManager
           Nginx.reload
           puts "Renewed certs for #{domain.name}"
         else
-          puts "No need to renew certs for #{domain.name}, it will not expire in #{OpenSSL.expires_in_days(domain.chained_cert_path)} days."
+          puts "Renewal skipped for #{domain.name}, it expires at #{OpenSSL.expires_in_days(domain.chained_cert_path)} days from now."
         end
       end
     end
+    puts "Renewal done."
   end
 
   def reconfig
@@ -63,7 +65,7 @@ class CertsManager
           end
         else
           Nginx.config_ssl(domain)
-          puts "No need to re-sign certs for #{domain.name}, it will not expire in #{OpenSSL.expires_in_days(domain.chained_cert_path)} days."
+          puts "Signing skipped for #{domain.name}, it expires at #{OpenSSL.expires_in_days(domain.chained_cert_path)} days from now."
         end
       end
     end
