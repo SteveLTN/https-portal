@@ -317,6 +317,7 @@ RESOLVER="Your custom solver string"
 PROXY_CONNECT_TIMEOUT=60;
 PROXY_SEND_TIMEOUT=60;
 PROXY_READ_TIMEOUT=60;
+ACCESS_LOG=off;
 ```
 
 You can also add
