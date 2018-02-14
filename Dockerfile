@@ -22,8 +22,7 @@ RUN tar xzf /tmp/s6-overlay-amd64.tar.gz -C / &&\
 
 COPY ./fs_overlay /
 
-RUN chmod a+x /bin/* && \
-    chmod a+x /etc/cron.daily/renew_certs
+RUN chmod a+x /bin/*
 
 VOLUME /var/lib/https-portal
 
