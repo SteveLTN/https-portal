@@ -25,6 +25,7 @@ module ACME
           --account-key /var/lib/https-portal/account.key \
           --csr #{domain.csr_path} \
           --acme-dir /var/www/default/challenges/ \
+          --disable-check \
           --directory-url #{domain.ca} > #{domain.ongoing_cert_path}
       EOC
 
