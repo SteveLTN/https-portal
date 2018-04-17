@@ -25,7 +25,7 @@ module ACME
           --account-key /var/lib/https-portal/account.key \
           --csr #{domain.csr_path} \
           --acme-dir /var/www/default/challenges/ \
-          --ca #{domain.ca} > #{domain.ongoing_cert_path}
+          --directory-url #{domain.ca} > #{domain.ongoing_cert_path}
       EOC
 
       raise FailedToSignException unless system(command)
