@@ -54,11 +54,11 @@ class Domain
   def ca
     case stage
     when 'production'
-      'https://acme-v01.api.letsencrypt.org'
+      'https://acme-v02.api.letsencrypt.org/directory'
     when 'local'
       nil
     when 'staging'
-      'https://acme-staging.api.letsencrypt.org'
+      'https://acme-staging-v02.api.letsencrypt.org/directory'
     end
   end
 
