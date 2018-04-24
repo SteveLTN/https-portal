@@ -8,7 +8,7 @@ server {
     server_name <%= domain.name %>;
 
     ssl on;
-    ssl_certificate <%= domain.chained_cert_path %>;
+    ssl_certificate <%= domain.signed_cert_path %>;
     ssl_certificate_key <%= domain.key_path %>;
 
     ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;

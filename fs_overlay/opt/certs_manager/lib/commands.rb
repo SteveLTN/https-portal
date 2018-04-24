@@ -11,10 +11,6 @@ module Commands
     end
   end
 
-  def chain_keys(domain)
-    system "cat #{domain.signed_cert_path} #{intermediate_cert_path} > #{domain.chained_cert_path}"
-  end
-
   def mkdir(domain)
     system "mkdir -p #{domain.dir}"
   end

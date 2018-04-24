@@ -21,10 +21,6 @@ class Domain
     File.join(dir, 'signed.ongoing.crt')
   end
 
-  def chained_cert_path
-    File.join(dir, 'chained.pem')
-  end
-
   def key_path
     File.join(dir, 'domain.key')
   end

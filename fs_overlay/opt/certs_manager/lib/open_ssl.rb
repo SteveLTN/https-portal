@@ -21,8 +21,8 @@ module OpenSSL
     return true if NAConfig.force_renew?
 
     skip_conditions = File.exist?(domain.key_path) &&
-                      File.exist?(domain.chained_cert_path) &&
-                      expires_in_days(domain.chained_cert_path) > 30
+                      File.exist?(domain.signed_cert_path) &&
+                      expires_in_days(domain.signed_cert_path) > 30
 
     !skip_conditions
   end
@@ -50,8 +50,6 @@ module OpenSSL
     EOC
 
     system command
-
-    system "cp #{domain.signed_cert_path} #{domain.chained_cert_path}"
   end
 
   private
