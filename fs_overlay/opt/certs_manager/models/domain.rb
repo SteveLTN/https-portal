@@ -17,6 +17,9 @@ class Domain
     File.join(dir, 'signed.crt')
   end
 
+  # For backward compatibility
+  alias chained_cert_path signed_cert_path
+
   def ongoing_cert_path
     File.join(dir, 'signed.ongoing.crt')
   end
