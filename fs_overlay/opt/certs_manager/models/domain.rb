@@ -19,7 +19,7 @@ class Domain
 
   # For backward compatibility
   def chained_cert_path
-    puts "`chained_cert_path` is deprecated. Use `signed_cert_path` instead in your Nginx config file."
+    puts "Warning: `chained_cert_path` is deprecated. Use `signed_cert_path` instead in your Nginx config file."
 
     signed_cert_path
   end
