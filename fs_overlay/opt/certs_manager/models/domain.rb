@@ -18,7 +18,11 @@ class Domain
   end
 
   # For backward compatibility
-  alias chained_cert_path signed_cert_path
+  def chained_cert_path
+    puts "`chained_cert_path` is deprecated. Use `signed_cert_path` instead in your Nginx config file."
+
+    signed_cert_path
+  end
 
   def ongoing_cert_path
     File.join(dir, 'signed.ongoing.crt')
