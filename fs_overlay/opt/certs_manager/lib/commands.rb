@@ -1,9 +1,9 @@
 require 'open-uri'
 
 module Commands
-  def chain_cert(domain)
-    # Keeping this step for backward compatibility
-    system "ln -s #{domain.signed_cert_path} #{domain.chained_cert_path}"
+  def chain_certs(domain)
+    # Keeping it for backward compatibility
+    system "test ! -e #{domain.chained_cert_path} && ln -s #{domain.signed_cert_path} #{domain.chained_cert_path}"
   end
 
   def mkdir(domain)

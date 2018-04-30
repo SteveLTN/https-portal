@@ -50,8 +50,6 @@ module OpenSSL
     EOC
 
     system command
-
-    system "ln -s #{domain.signed_cert_path} #{domain.chained_cert_path}"
   end
 
   private

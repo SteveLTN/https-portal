@@ -27,6 +27,7 @@ class CertsManager
       NAConfig.domains.each do |domain|
         if OpenSSL.need_to_sign_or_renew? domain
           ACME.sign(domain)
+          chain_certs(domain)
           Nginx.reload
           puts "Renewed certs for #{domain.name}"
         else
@@ -53,6 +54,7 @@ class CertsManager
           OpenSSL.ensure_domain_key(domain)
           OpenSSL.create_csr(domain)
           if ACME.sign(domain)
+            chain_certs(domain)
             Nginx.config_ssl(domain)
             puts "Signed key for #{domain.name}"
           else
