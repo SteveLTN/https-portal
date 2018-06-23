@@ -7,6 +7,10 @@ class Domain
 
   def initialize(descriptor)
     @descriptor = descriptor
+    @name = nil
+    @upstream = nil
+    @stage = nil
+    @redirect_target_url = nil
   end
 
   def csr_path
@@ -67,7 +71,8 @@ class Domain
     if @name
       @name
     else
-      @name = descriptor.split('->').first.split(' ').first.strip
+      match = descriptor.match(/^\s*(.+?)(?=((->)|(=>)|(\s)|($)))/)
+      @name = match[1] if match
     end
   end
 

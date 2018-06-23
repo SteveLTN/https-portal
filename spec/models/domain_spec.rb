@@ -6,119 +6,30 @@ RSpec.describe Domain do
     allow(NAConfig).to receive(:stage).and_return('local')
   end
 
-  context 'only name is given' do
-    context 'without delimiter' do
-      it 'returns correct name, upstream and stage' do
-        domain = Domain.new('example.com')
+  it 'returns correct name, upstream. redirect_target_url and stage' do
+    keys = [:descriptor, :name, :upstream, :redirect_target_url, :stage]
 
-        aggregate_failures do
-          expect(domain.name).to eq 'example.com'
-          expect(domain.upstream).to be_nil
-          expect(domain.stage).to eq 'local'
-        end
-      end
-    end
+    domain_configs = [
+      ['example.com', 'example.com', nil, nil, 'local'],
+      [' example.com ', 'example.com', nil, nil, 'local'],
+      ['example.com #staging', 'example.com', nil, nil, 'staging'],
+      ['example.com -> http://target ', 'example.com', 'http://target', nil, 'local'],
+      ['example.com => http://target', 'example.com', nil, 'http://target', 'local'],
+      ['example.com=>http://target', 'example.com', nil, 'http://target', 'local'],
+      ['example.com -> http://target #staging', 'example.com', 'http://target', nil, 'staging'],
+      ['example.com => http://target #staging', 'example.com', nil, 'http://target', 'staging'],
+      ['example.com->http://target #staging', 'example.com', 'http://target', nil, 'staging'],
+    ]
 
-    context 'with delimiter' do
-      it 'returns correct name, upstream and stage' do
-        domain = Domain.new('example.com ->')
+    domain_configs.map { |config|
+      Hash[keys.zip(config)]
+    }.each do |config|
+      domain = Domain.new(config[:descriptor])
 
-        aggregate_failures do
-          expect(domain.name).to eq 'example.com'
-          expect(domain.upstream).to be_nil
-          expect(domain.stage).to eq 'local'
-        end
-      end
-    end
-  end
-
-  context 'only name and upstream are given' do
-    context 'without stage indicator' do
-      it 'returns correct name, upstream and stage' do
-        domain = Domain.new('example.com -> http://upstream')
-
-        aggregate_failures do
-          expect(domain.name).to eq 'example.com'
-          expect(domain.upstream).to eq 'http://upstream'
-          expect(domain.stage).to eq 'local'
-        end
-      end
-    end
-
-    context 'with stage indicator' do
-      it 'returns correct name, upstream and stage' do
-        domain = Domain.new('example.com -> http://upstream #')
-
-        aggregate_failures do
-          expect(domain.name).to eq 'example.com'
-          expect(domain.upstream).to eq 'http://upstream'
-          expect(domain.stage).to eq 'local'
-        end
-      end
-    end
-
-    context 'with stage indicator and an extra space' do
-      it 'returns correct name, upstream and stage' do
-        domain = Domain.new('example.com -> http://upstream  #')
-
-        aggregate_failures do
-          expect(domain.name).to eq 'example.com'
-          expect(domain.upstream).to eq 'http://upstream'
-          expect(domain.stage).to eq 'local'
-        end
-      end
-    end
-  end
-
-  context 'only name and stage indicator are given' do
-    context 'with upstream delimiter' do
-      it 'returns correct name, upstream and stage' do
-        domain = Domain.new('example.com ->  #staging')
-
-        aggregate_failures do
-          expect(domain.name).to eq 'example.com'
-          expect(domain.upstream).to be_nil
-          expect(domain.stage).to eq 'staging'
-        end
-      end
-    end
-
-    context 'without upstream delimiter' do
-      it 'returns correct name, upstream and stage' do
-        domain = Domain.new('example.com #staging')
-
-        aggregate_failures do
-          expect(domain.name).to eq 'example.com'
-          expect(domain.upstream).to be_nil
-          expect(domain.stage).to eq 'staging'
-        end
-      end
-    end
-  end
-
-  context 'name, upstream and stage are all given' do
-    context 'with a space between -> and upstream' do
-      it 'returns correct name, upstream and stage' do
-        domain = Domain.new('example.com -> http://upstream #staging')
-
-        aggregate_failures do
-          expect(domain.name).to eq 'example.com'
-          expect(domain.upstream).to eq 'http://upstream'
-          expect(domain.stage).to eq 'staging'
-        end
-      end
-    end
-
-    context 'without a space between -> and upstream' do
-      it 'returns correct name, upstream and stage' do
-        domain = Domain.new('example.com->http://upstream #staging')
-
-        aggregate_failures do
-          expect(domain.name).to eq 'example.com'
-          expect(domain.upstream).to eq 'http://upstream'
-          expect(domain.stage).to eq 'staging'
-        end
-      end
+      expect(domain.name).to eq(config[:name]), lambda { "Parsing failed on '#{config[:descriptor]}' method :name, expected #{config[:name]}, got #{domain.name}" }
+      expect(domain.upstream).to eq(config[:upstream]), lambda { "Parsing failed on '#{config[:descriptor]}' method :upstream, expected #{config[:upstream]}, got #{domain.upstream}" }
+      expect(domain.redirect_target_url).to eq(config[:redirect_target_url]), lambda { "Parsing failed on '#{config[:descriptor]}' method :redirect_target_url, expected #{config[:redirect_target_url]}, got #{domain.redirect_target_url}" }
+      expect(domain.stage).to eq(config[:stage]), lambda { "Parsing failed on '#{config[:descriptor]}' method :stage, expected #{config[:stage]}, got #{domain.stage}" }
     end
   end
 end
