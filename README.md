@@ -307,7 +307,7 @@ https-portal:
   # ...
   environment:
     DOMAINS: 'username:password@example.com -> <upstream>'
-    ```
+```
 
 ## Advanced Usage
 
