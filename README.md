@@ -25,6 +25,7 @@ Docker Hub page:
     - [Multiple Domains](#multiple-domains)
     - [Serving Static Sites](#serving-static-sites)
     - [Share Certificates with Other Apps](#share-certificates-with-other-apps)
+    - [HTTP Basic Auth](#http-basic-auth)
   - [Advanced Usage](#advanced-usage)
     - [Configure Nginx through Environment Variables](#configure-nginx-through-environment-variables)
     - [Override Nginx Configuration Files](#override-nginx-configuration-files)
@@ -293,6 +294,20 @@ https-portal:
 ```
 
 Now your certificates are available in `/data/ssl_certs` on your host.
+
+### HTTP Basic Auth
+
+You can set up an HTTP Basic Auth easily. It is useful when you put the website
+online but don't want to open it to public until ready.
+
+In your docker-compose file:
+
+```yaml
+https-portal:
+  # ...
+  environment:
+    DOMAINS: 'username:password@example.com -> <upstream>'
+    ```
 
 ## Advanced Usage
 

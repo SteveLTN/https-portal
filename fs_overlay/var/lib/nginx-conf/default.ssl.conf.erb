@@ -18,6 +18,11 @@ server {
         return 444;
     }
 
+    <% if domain.basic_auth_enabled? %>
+        auth_basic "Password";
+        auth_basic_user_file <%= domain.htaccess_path %>;
+    <% end %>
+
     <% if domain.upstream %>
     location / {
         <% if ENV['DYNAMIC_UPSTREAM'] && ENV['DYNAMIC_UPSTREAM'].downcase == 'true' %>

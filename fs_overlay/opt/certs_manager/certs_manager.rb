@@ -12,6 +12,9 @@ class CertsManager
 
     OpenSSL.ensure_dhparam
     OpenSSL.ensure_account_key
+
+    generate_ht_access(NAConfig.domains)
+
     Nginx.setup
     Nginx.start
 

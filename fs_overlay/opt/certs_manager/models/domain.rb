@@ -7,10 +7,6 @@ class Domain
 
   def initialize(descriptor)
     @descriptor = descriptor
-    @name = nil
-    @upstream = nil
-    @stage = nil
-    @redirect_target_url = nil
   end
 
   def csr_path
@@ -32,6 +28,10 @@ class Domain
 
   def key_path
     File.join(dir, 'domain.key')
+  end
+
+  def htaccess_path
+    File.join(dir, 'htaccess')
   end
 
   def dir
@@ -68,16 +68,17 @@ class Domain
   end
 
   def name
-    if @name
+    if defined? @name
       @name
     else
-      match = descriptor.match(/^\s*(.+?)(?=((->)|(=>)|(\s)|($)))/)
-      @name = match[1] if match
+      match = descriptor.match(/^\s*@?(.+?)(?=((->)|(=>)|(\s)|($)))/)
+      domain_with_auth = match[1] if match
+      domain_with_auth.split('@').last
     end
   end
 
   def upstream
-    if @upstream
+    if defined? @upstream
       @upstream
     else
       match = descriptor.match(/->\s*([^#\s][\S]*)/)
@@ -86,7 +87,7 @@ class Domain
   end
 
   def redirect_target_url
-    if @redirect_target_url
+    if defined? @redirect_target_url
       @redirect_target_url
     else
       match = descriptor.match(/=>\s*([^#\s][\S]*)/)
@@ -95,7 +96,7 @@ class Domain
   end
 
   def stage
-    if @stage
+    if defined? @stage
       @stage
     else
       match = descriptor.match(/\s#(\S+)$/)
@@ -113,6 +114,40 @@ class Domain
         nil
       end
     end
+  end
+
+  def basic_auth_username
+    if defined? @basic_auth_username
+      @basic_auth_username
+    else
+      match = descriptor.match(/^\s*@?(.+?)(?=((->)|(=>)|(\s)|($)))/)
+      domain_with_auth = match[1] if match
+
+      if domain_with_auth.include?("@")
+        @basic_auth_username = domain_with_auth.split(':').first
+      else
+        @basic_auth_username = nil
+      end
+    end
+  end
+
+  def basic_auth_password
+    if defined? @basic_auth_password
+      @basic_auth_password
+    else
+      match = descriptor.match(/^\s*@?(.+?)(?=((->)|(=>)|(\s)|($)))/)
+      domain_with_auth = match[1] if match
+
+      if domain_with_auth.include?("@")
+        @basic_auth_password = domain_with_auth.split('@').first.split(':').last
+      else
+        @basic_auth_password = nil
+      end
+    end
+  end
+
+  def basic_auth_enabled?
+    basic_auth_username && basic_auth_password
   end
 
   private
