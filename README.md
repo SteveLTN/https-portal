@@ -375,6 +375,18 @@ Another example can be found [here](/examples/custom_config).
 
 If you want to make an Nginx configuration that will be used by all sites, you can overwrite `/var/lib/nginx-conf/default.conf.erb` or `/var/lib/nginx-conf/default.ssl.conf.erb`. These two files will be propagated to each site if the site-specific configuration files are not provided.
 
+### Manually Set RSA Private Key Length
+
+By default, HTTPS-PORTAL generate `2048` bits long RSA private key.  
+However, you can manually set RSA private key length (`numbits` of `openssl genrsa` command) through `NUMBITS` environment variable.
+
+```yaml
+https-portal:
+  # ...
+  environment:
+    NUMBITS: '4096'
+```
+
 ## How It Works
 
 It:

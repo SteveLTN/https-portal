@@ -9,7 +9,7 @@ module OpenSSL
 
   def self.ensure_domain_key(domain)
     unless File.exist? domain.key_path
-      system "openssl genrsa 2048 > #{domain.key_path}"
+      system "openssl genrsa #{ENV['NUMBITS'] =~ /^[0-9]+$/ ? ENV['NUMBITS'] : 2048} > #{domain.key_path}"
     end
   end
 
