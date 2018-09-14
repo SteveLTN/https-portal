@@ -399,18 +399,20 @@ It:
 
 ## About Rate Limits of Let's Encrypt
 
-Let's Encrypt is in public beta at the moment. According to
-[this](https://community.letsencrypt.org/t/public-beta-rate-limits/4772) and
-[this discussion](https://community.letsencrypt.org/t/public-beta-rate-limits/4772/42),
-the rate limits are
+Let's Encrypt's service is rate limited to ensure fair usage. Please familiarize
+yourself with [the various rate
+limits](https://letsencrypt.org/docs/rate-limits/). This documentation page is
+the authoritative source for the current rate limit values.
 
-* 10 registrations per IP per 3 hours.
-* 5 certificates per domain (not sub-domain) per 7 days.
+For most people the most important rate limits are:
 
-The former is not usually a problem, however the latter could be, if you want
-to apply certificates for multiple sub-domains on a single domain. Let's
-Encrypt does support SAN certificates, however it requires careful planning
-and is hard to automate. So in HTTPS-PORTAL we only deal with CN certificates.
+* 5 failed validation attempts per hour
+* 50 certificates per registered domain per week
+
+If you want to use HTTPS for multiple sub-domains with a single certificate
+Let's Encrypt supports putting up to 100 domains in one certificate, however it
+can require careful planning and is hard to automate. So in HTTPS-PORTAL we only
+deal with single domain name certificates.
 
 HTTPS-PORTAL stores your certificates in a data volume and will not re-sign
 certificates until 30 days before expiration if a valid certificate is found
@@ -420,8 +422,6 @@ limit. That's why `STAGE` is `staging` by default, and thus we use the
 Let's Encrypt staging server. When you have finished your experiments and feel
 everything is good, you can switch to production mode with `STAGE:
 'production'`.
-
-According to Let's Encrypt, the restrictions will be loosened over time.
 
 ## Credits
 
