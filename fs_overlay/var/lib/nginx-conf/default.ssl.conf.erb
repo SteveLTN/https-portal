@@ -18,6 +18,13 @@ server {
         return 444;
     }
 
+    <% if domain.access_restriction %>
+        <% domain.access_restriction.each do |ip| %>
+            allow <%= ip %>;
+        <% end %>
+        deny all;
+    <% end %>
+
     <% if domain.basic_auth_enabled? %>
         auth_basic "Password";
         auth_basic_user_file <%= domain.htaccess_path %>;

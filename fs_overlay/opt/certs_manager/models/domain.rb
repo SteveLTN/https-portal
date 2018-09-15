@@ -68,89 +68,68 @@ class Domain
   end
 
   def name
-    if defined? @name
-      @name
-    else
-      match = descriptor.match(/^\s*@?(.+?)(?=((->)|(=>)|(\s)|($)))/)
-      domain_with_auth = match[1] if match
-      domain_with_auth.split('@').last
-    end
+    parsed_descriptor[:domain]
   end
 
   def upstream
-    if defined? @upstream
-      @upstream
-    else
-      match = descriptor.match(/->\s*([^#\s][\S]*)/)
-      @upstream = match[1] if match
-    end
+    parsed_descriptor[:upstream] if parsed_descriptor[:mode] == '->'
   end
 
   def redirect_target_url
-    if defined? @redirect_target_url
-      @redirect_target_url
-    else
-      match = descriptor.match(/=>\s*([^#\s][\S]*)/)
-      @redirect_target_url = match[1] if match
-    end
+    parsed_descriptor[:upstream] if parsed_descriptor[:mode] == '=>'
   end
 
   def stage
-    if defined? @stage
-      @stage
+    val = parsed_descriptor[:stage].to_s.empty? ? NAConfig.stage : parsed_descriptor[:stage]
+    
+    if STAGES.include?(val)
+      val
     else
-      match = descriptor.match(/\s#(\S+)$/)
-
-      @stage = if match
-                 match[1]
-               else
-                 NAConfig.stage
-               end
-
-      if STAGES.include?(@stage)
-        @stage
-      else
-        puts "Error: Invalid stage #{@stage}"
-        nil
-      end
+      STDERR.puts "Error: Invalid stage #{val}"
+      nil
     end
   end
 
   def basic_auth_username
-    if defined? @basic_auth_username
-      @basic_auth_username
-    else
-      match = descriptor.match(/^\s*@?(.+?)(?=((->)|(=>)|(\s)|($)))/)
-      domain_with_auth = match[1] if match
-
-      if domain_with_auth.include?("@")
-        @basic_auth_username = domain_with_auth.split(':').first
-      else
-        @basic_auth_username = nil
-      end
-    end
+    parsed_descriptor[:user]
   end
 
   def basic_auth_password
-    if defined? @basic_auth_password
-      @basic_auth_password
-    else
-      match = descriptor.match(/^\s*@?(.+?)(?=((->)|(=>)|(\s)|($)))/)
-      domain_with_auth = match[1] if match
-
-      if domain_with_auth.include?("@")
-        @basic_auth_password = domain_with_auth.split('@').first.split(':').last
-      else
-        @basic_auth_password = nil
-      end
-    end
+    parsed_descriptor[:pass]
   end
 
   def basic_auth_enabled?
     basic_auth_username && basic_auth_password
   end
 
+  def access_restriction
+    if defined? @access_restriction
+      @access_restriction
+    else
+      if parsed_descriptor[:ips].nil?
+        @access_restriction = nil
+      else
+        @access_restriction = parsed_descriptor[:ips].split(' ')
+      end
+    end
+  end
+
   private
+
+  def parsed_descriptor
+    if defined? @parsed_descriptor
+      @parsed_descriptor
+    else
+      regex = /^(?:\[(?<ips>[0-9.:\/, ]*)\]\s*)?(?:(?<user>[^:@\[\]]+)(?::(?<pass>[^@]*))?@)?(?<domain>[a-z0-9.-]+)(?:(?:\s*(?<mode>[-=]>)\s*(?<upstream>[a-z0-9.:\/-]+))?\s*(:?#(?<stage>[a-z]*))?)?$/i
+      match = descriptor.strip.match(regex)
+      if match.nil?
+        STDERR.puts "Error: Invalid descriptor #{descriptor}"
+        @parsed_descriptor = nil
+      else
+        @parsed_descriptor = match
+      end
+    end
+  end
 
   def compiled_welcome_page
     binding_hash = {

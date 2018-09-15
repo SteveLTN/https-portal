@@ -69,6 +69,13 @@ http {
     proxy_read_timeout <%= ENV['PROXY_READ_TIMEOUT'] %>;
     <% end %>
 
+    <% if ENV['ACCESS_RESTRICTION'] %>
+        <% ENV['ACCESS_RESTRICTION'].split(' ').each do |ip| %>
+            allow <%= ip %>;
+        <% end %>
+        deny all;
+    <% end %>
+
     include /etc/nginx/conf.d/*.conf;
 
     server {

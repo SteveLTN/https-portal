@@ -26,6 +26,7 @@ Docker Hub page:
     - [Serving Static Sites](#serving-static-sites)
     - [Share Certificates with Other Apps](#share-certificates-with-other-apps)
     - [HTTP Basic Auth](#http-basic-auth)
+    - [Access Restriction](#access-restriction)
   - [Advanced Usage](#advanced-usage)
     - [Configure Nginx through Environment Variables](#configure-nginx-through-environment-variables)
     - [Override Nginx Configuration Files](#override-nginx-configuration-files)
@@ -308,6 +309,41 @@ https-portal:
   environment:
     DOMAINS: 'username:password@example.com -> <upstream>'
 ```
+
+### Access Restriction
+
+You can enable IP access restrictions to protect your website. Specify global restrictions with the environment variable `ACCESS_RESTRICTION`. In addition each website can have individual restrictions.
+
+Example with global restriction:
+
+```yaml
+https-portal:
+  # ...
+  environment:
+    ACCESS_RESTRICTION: "1.2.3.4/24 4.3.2.1"
+```
+
+Example with individual restrictions:
+
+```yaml
+https-portal:
+  # ...
+  environment:
+    DOMAINS: "[1.2.3.4/24] a.example.com -> <upstream> , [1.2.3.4/24 4.3.2.1] b.example.com"
+```
+
+Example for auto discovery:
+
+```yaml
+https-portal:
+  # ...
+my_app:
+  image: ...
+  environment:
+    VIRTUAL_HOST: "[1.2.3.4] example.com"
+```
+
+For valid IP values see [Nginx allow](http://nginx.org/en/docs/http/ngx_http_access_module.html#allow)
 
 ## Advanced Usage
 
