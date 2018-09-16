@@ -85,7 +85,7 @@ https-portal:
     - wordpress
   restart: always
   environment:
-    DOMAINS: 'wordpress.example.com -> http://wordpress'
+    DOMAINS: 'wordpress.example.com -> http://wordpress:80'
     # STAGE: 'production'
     # FORCE_RENEW: 'true'
 
@@ -244,7 +244,7 @@ You can specify multiple domains by splitting them with commas:
 https-portal:
   # ...
   environment:
-    DOMAINS: 'wordpress.example.com -> http://wordpress, gitlab.example.com
+    DOMAINS: 'wordpress.example.com -> http://wordpress:80, gitlab.example.com
     -> http://gitlab'
 ```
 
