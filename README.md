@@ -156,6 +156,8 @@ https-portal:
 
 ### Automatic Container Discovery
 
+**WARNING: WE STRONGLY RECOMMEND AGAINST USING THIS FEATURE UNLESS ABSOLUTELY NECESSARY** as exposing Docker socket to a container (even with `:ro`) essentially gives the container root access to your host OS. If you insist, verify the source code carefully. [Read more](https://dev.to/petermbenjamin/docker-security-best-practices-45ih)
+
 HTTPS-PORTAL is capable of discovering other Docker containers running on the
 same host, as long as the Docker API socket is accessible within the container.
 
@@ -168,7 +170,7 @@ services:
   https-portal:
     # ...
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro # DANGEROUS, see the warning above
 ```
 
 and launch one or more web applications with:
@@ -214,7 +216,7 @@ Of course container discovery works in combination with ENV specified domains:
 https-portal:
   # ...
   volumes:
-    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - /var/run/docker.sock:/var/run/docker.sock:ro # DANGEROUS, see the warning above
   environment:
     DOMAINS: 'example.com -> http://upstream'
 ```
@@ -311,6 +313,8 @@ https-portal:
 ```
 
 ### Access Restriction
+
+**Notice: Access Restriction might not work as intended with Docker for Mac and Docker for Windows. In those systems, Docker essentially runs in VMs, so the requesting IP would be the IP of the proxy service.**
 
 You can enable IP access restrictions to protect your website. Specify global restrictions with the environment variable `ACCESS_RESTRICTION`. In addition each website can have individual restrictions.
 
