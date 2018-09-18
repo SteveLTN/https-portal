@@ -413,7 +413,7 @@ You can probably start by copying these files and make modifications to them.
 
 Another example can be found [here](/examples/custom_config).
 
-If you want to make an Nginx configuration that will be used by all sites, you can overwrite `/var/lib/nginx-conf/default.conf.erb` or `/var/lib/nginx-conf/default.ssl.conf.erb`. These two files will be propagated to each site if the site-specific configuration files are not provided.
+If you want to make a Nginx configuration that will be used by all sites, you can overwrite `/var/lib/nginx-conf/default.conf.erb` or `/var/lib/nginx-conf/default.ssl.conf.erb`. These two files will be propagated to each site if the site-specific configuration files are not provided.
 
 ### Manually Set RSA Private Key Length
 
