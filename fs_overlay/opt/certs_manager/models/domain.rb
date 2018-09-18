@@ -7,6 +7,7 @@ class Domain
 
   def initialize(descriptor)
     @descriptor = descriptor
+    create_dir
   end
 
   def csr_path
@@ -115,6 +116,10 @@ class Domain
   end
 
   private
+
+  def create_dir
+    FileUtils.mkdir_p dir
+  end
 
   def parsed_descriptor
     if defined? @parsed_descriptor
