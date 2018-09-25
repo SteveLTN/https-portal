@@ -32,6 +32,7 @@ Docker Hub page:
     - [Override Nginx Configuration Files](#override-nginx-configuration-files)
   - [How It Works](#how-it-works)
   - [About Rate Limits of Let's Encrypt](#about-rate-limits-of-lets-encrypt)
+  - [Troubleshooting](#troubleshooting)
   - [Credits](#credits)
 
 ## Prerequisite
@@ -462,6 +463,24 @@ limit. That's why `STAGE` is `staging` by default, and thus we use the
 Let's Encrypt staging server. When you have finished your experiments and feel
 everything is good, you can switch to production mode with `STAGE:
 'production'`.
+
+## Troubleshooting
+
+If you found your certificates are not chained correctly, please run the container
+again with the follow setting once:
+
+```yaml
+https-portal:
+  # ...
+  environment:
+    # ...
+    FORCE_RENEW: 'true' # <-- here
+```
+
+This is because with ACME v2 returns the full chain instead of a partial chain 
+with ACME v1. If you have old certificates stored, HTTPS-PORTAl may not be able 
+to handle the case correctly. If you run into this issue, just `FORCE_RENEW` to 
+obtain a new set of certificates.
 
 ## Credits
 
