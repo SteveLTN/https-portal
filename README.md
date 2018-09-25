@@ -466,7 +466,7 @@ everything is good, you can switch to production mode with `STAGE:
 
 ## Troubleshooting
 
-If you found your certificates are not chained correctly, please run the container
+If you find your certificates are not chained correctly, please run the container
 again with the follow setting once:
 
 ```yaml
