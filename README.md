@@ -354,9 +354,10 @@ For valid IP values see [Nginx allow](http://nginx.org/en/docs/http/ngx_http_acc
 
 ### Configure Nginx through Environment Variables
 
-There are several additional environment variables that you can use to config Nginx.
-They correspond to the configuration options that you would normally supply in `nginx.conf`.
-The following are the config keys with default values:
+In case you need to change Nginx's default parameters, 
+there are several additional environment variables that you can use to config Nginx.
+They correspond to the configuration options that you would normally put in `nginx.conf`.
+The following are the available params with their default values:
 
 ```
 WORKER_PROCESSES=1
@@ -384,7 +385,7 @@ WEBSOCKET=true
 
 to make HTTPS-PORTAL proxy WEBSOCKET connections.
 
-To avoid nginx DNS caching activate dynamic upstream
+To avoid nginx DNS caching, activate dynamic upstream
 
 ```
 RESOLVER="127.0.0.11 ipv6=off valid=30s"
