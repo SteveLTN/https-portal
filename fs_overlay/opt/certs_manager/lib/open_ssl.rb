@@ -2,13 +2,14 @@ require 'date'
 
 module OpenSSL
   def self.ensure_account_key
-    unless File.exist? '/var/lib/https-portal/account.key'
-      system 'openssl genrsa 4096 > /var/lib/https-portal/account.key'
+    path = '/var/lib/https-portal/account.key'
+    unless File.exist?(path) && system("openssl rsa --in #{path} --noout --check")
+      system "openssl genrsa 4096 > #{path}"
     end
   end
 
   def self.ensure_domain_key(domain)
-    unless File.exist? domain.key_path
+    unless File.exist?(domain.key_path) && system("openssl rsa --in #{domain.key_path} --noout --check")
       system "openssl genrsa #{ENV['NUMBITS'] =~ /^[0-9]+$/ ? ENV['NUMBITS'] : 2048} > #{domain.key_path}"
     end
   end
