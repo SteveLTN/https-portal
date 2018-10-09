@@ -4,6 +4,7 @@ require_relative '../../fs_overlay/opt/certs_manager/certs_manager'
 RSpec.describe Domain do
   before do
     allow(NAConfig).to receive(:stage).and_return('local')
+    allow(FileUtils).to receive(:mkdir_p)
   end
 
   it 'returns correct name, upstream. redirect_target_url and stage' do
@@ -14,11 +15,15 @@ RSpec.describe Domain do
       [' example.com ', 'example.com', nil, nil, 'local', nil, nil, nil],
       ['example.com #staging', 'example.com', nil, nil, 'staging', nil, nil, nil],
       ['example.com -> http://target ', 'example.com', 'http://target', nil, 'local', nil, nil, nil],
+      ["example.com \n-> http://target \n", 'example.com', 'http://target', nil, 'local', nil, nil, nil],
+      ["example.com\n-> http://target ", 'example.com', 'http://target', nil, 'local', nil, nil, nil],
       ['example.com => http://target', 'example.com', nil, 'http://target', 'local', nil, nil, nil],
       ['example.com=>http://target', 'example.com', nil, 'http://target', 'local', nil, nil, nil],
       ['example.com -> http://target #staging', 'example.com', 'http://target', nil, 'staging', nil, nil, nil],
       ['example.com => http://target #staging', 'example.com', nil, 'http://target', 'staging', nil, nil, nil],
       ['example.com->http://target #staging', 'example.com', 'http://target', nil, 'staging', nil, nil, nil],
+      ['example_.com->http://target #staging', 'example_.com', 'http://target', nil, 'staging', nil, nil, nil],
+      ['example.com->http://tar_get_ #staging', 'example.com', 'http://tar_get_', nil, 'staging', nil, nil, nil],
       ['username:password@example.com', 'example.com', nil, nil, 'local', 'username', 'password', nil],
       ['username:password@example.com -> http://target #staging', 'example.com', 'http://target', nil, 'staging', 'username', 'password', nil],
       ['[1.2.3.4/24]username:password@example.com -> http://target #staging', 'example.com', 'http://target', nil, 'staging', 'username', 'password', %w(1.2.3.4/24)],
