@@ -125,7 +125,7 @@ class Domain
     if defined? @parsed_descriptor
       @parsed_descriptor
     else
-      regex = /^(?:\[(?<ips>[0-9.:\/, ]*)\]\s*)?(?:(?<user>[^:@\[\]]+)(?::(?<pass>[^@]*))?@)?(?<domain>[a-z0-9._-]+?)(?:(?:\s*(?<mode>[-=]>)\s*(?<upstream>[a-z0-9.:\/_-]+))?\s*(:?#(?<stage>[a-z]*))?)?$/i
+      regex = /^(?:\[(?<ips>[0-9.:\/, ]*)\]\s*)?(?:(?<user>[^:@\[\]]+)(?::(?<pass>[^@]*))?@)?(?<domain>[a-z0-9._\-]+?)(?:(?:\s*(?<mode>[-=]>)\s*(?<upstream>[a-z0-9.:\/_\-]+))?\s*(:?#(?<stage>[a-z]*))?)?$/i
       match = descriptor.strip.match(regex)
       if match.nil?
         STDERR.puts "Error: Invalid descriptor #{descriptor}"
