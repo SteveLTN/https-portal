@@ -22,6 +22,7 @@ RSpec.describe Domain do
       ['example.com -> http://target #staging', 'example.com', 'http://target', nil, 'staging', nil, nil, nil],
       ['example.com => http://target #staging', 'example.com', nil, 'http://target', 'staging', nil, nil, nil],
       ['example.com->http://target #staging', 'example.com', 'http://target', nil, 'staging', nil, nil, nil],
+      ['exam-ple.com->http://tar-get #staging', 'exam-ple.com', 'http://tar-get', nil, 'staging', nil, nil, nil],
       ['example_.com->http://target #staging', 'example_.com', 'http://target', nil, 'staging', nil, nil, nil],
       ['example.com->http://tar_get_ #staging', 'example.com', 'http://tar_get_', nil, 'staging', nil, nil, nil],
       ['username:password@example.com', 'example.com', nil, nil, 'local', 'username', 'password', nil],
