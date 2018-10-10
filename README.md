@@ -182,8 +182,6 @@ version: '2'
 services:
   a-web-application:
     # ...
-    ports:
-      - '8080:80'
     environment:
       # tell HTTPS-PORTAL to set up "example.com"
       VIRTUAL_HOST: example.com
@@ -203,9 +201,9 @@ use the environment variable `VIRTUAL_PORT` to specify which port accepts HTTP r
 ```yaml
 a-multi-port-web-application:
   # ...
-  ports:
-    - '8080:80'
-    - '2222:22'
+  expose:
+    - '80'
+    - '8080'
   environment:
     VIRTUAL_HOST: example.com
     VIRTUAL_PORT: '8080'
