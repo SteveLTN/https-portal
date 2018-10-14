@@ -235,6 +235,20 @@ https-portal:
     DOMAINS: 'example.com -> http://dockerhost:8080'
 ```
 
+#### Firewall settings ####
+
+If you use a firewall like [ufw](https://help.ubuntu.com/community/UFW), you
+might need to allow communication from the container to your docker host machine.
+You can check if ufw is active by executing `ufw status`.
+
+If the command returns `active`, add the ufw rule to allow communication on port 8080 from HTTPS-PORTAL's container IP to the docker host IP on the port where the web application is reachable:
+
+```
+DOCKER_HOST_IP=docker network inspect code_default --format='{{ .IPAM.Config}}' |awk '{print $2}' # Assumes that the network is named code_default
+HTTPS_PORTAL_IP=docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' code_https-portal_1 # Assumes that the container has the name code_https-portal_1
+ufw allow from $HTTPS_PORTAL_IP to $DOCKER_HOST_IP port 8080
+```
+
 ### Multiple Domains
 
 You can specify multiple domains by splitting them with commas:
