@@ -436,7 +436,7 @@ If you want to make an Nginx configuration that will be used by all sites, you c
 https-portal:
   # ...
   environment:
-    DOMAINS: "my.grpc.service.domain.com -> grpc://grpc:port"
+    DOMAINS: 'my.grpc.service.domain.com -> grpc://grpc:port'
 ```
 
 ### Manually Set RSA Private Key Length
