@@ -30,6 +30,7 @@ Docker Hub page:
   - [Advanced Usage](#advanced-usage)
     - [Configure Nginx through Environment Variables](#configure-nginx-through-environment-variables)
     - [Override Nginx Configuration Files](#override-nginx-configuration-files)
+    - [GRPC Support](#grpc-support)
   - [How It Works](#how-it-works)
   - [About Rate Limits of Let's Encrypt](#about-rate-limits-of-lets-encrypt)
   - [Troubleshooting](#troubleshooting)
@@ -366,7 +367,7 @@ For valid IP values see [Nginx allow](http://nginx.org/en/docs/http/ngx_http_acc
 
 ### Configure Nginx through Environment Variables
 
-In case you need to change Nginx's default parameters, 
+In case you need to change Nginx's default parameters,
 there are several additional environment variables that you can use to config Nginx.
 They correspond to the configuration options that you would normally put in `nginx.conf`.
 The following are the available params with their default values:
@@ -429,6 +430,15 @@ Another example can be found [here](/examples/custom_config).
 
 If you want to make an Nginx configuration that will be used by all sites, you can overwrite `/var/lib/nginx-conf/default.conf.erb` or `/var/lib/nginx-conf/default.ssl.conf.erb`. These two files will be propagated to each site if the site-specific configuration files are not provided.
 
+### GRPC Support
+
+```yaml
+https-portal:
+  # ...
+  environment:
+    DOMAINS: "my.grpc.service.domain.com -> grpc://grpc:port"
+```
+
 ### Manually Set RSA Private Key Length
 
 By default, HTTPS-PORTAL generate `2048` bits long RSA private key.  
@@ -490,9 +500,9 @@ https-portal:
     FORCE_RENEW: 'true' # <-- here
 ```
 
-This is because with ACME v2 returns the full chain instead of a partial chain 
-with ACME v1. If you have old certificates stored, HTTPS-PORTAl may not be able 
-to handle the case correctly. If you run into this issue, just `FORCE_RENEW` to 
+This is because with ACME v2 returns the full chain instead of a partial chain
+with ACME v1. If you have old certificates stored, HTTPS-PORTAl may not be able
+to handle the case correctly. If you run into this issue, just `FORCE_RENEW` to
 obtain a new set of certificates.
 
 ## Credits
