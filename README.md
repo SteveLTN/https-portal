@@ -152,7 +152,7 @@ https-portal:
   # ...
   environment:
     STAGE: local
-    DOMAINS: 'example.com => target.example.com/foo/bar' # Notice it's "=>" instead of the normal "->"
+    DOMAINS: 'example.com => https://target.example.com/foo/bar' # Notice it's "=>" instead of the normal "->"
 ```
 
 ### Automatic Container Discovery
