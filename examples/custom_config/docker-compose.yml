@@ -1,9 +1,17 @@
-https-portal:
-  build: ./
-  ports:
-    - 80:80
-    - 443:443
-  environment:
-    # Redirect my.example.com to https:://letsencrypt.org
-    # The upsteams will be available as <%= domain.upstream %> in Nginx config
-    DOMAINS: 'my.example.domain -> https://letsencrypt.org, another.example.domain -> https://another.upstream'
+version: '3'
+
+services:
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      # Redirect my.example.com to https:://letsencrypt.org
+      # The upsteams will be available as <%= domain.upstream %> in Nginx config
+      DOMAINS: 'example.com -> https://letsencrypt.org'
+      STAGE: local
+    volumes:
+      - ./nginx-conf/example.com.conf.erb:/var/lib/nginx-conf/example.com.conf.erb:ro
+      - ./nginx-conf/example.com.ssl.conf.erb:/var/lib/nginx-conf/example.com.ssl.conf.erb:ro
+

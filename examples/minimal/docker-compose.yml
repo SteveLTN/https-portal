@@ -1,10 +1,11 @@
-https-portal:
-  image: steveltn/https-portal
-  # You can build from source code rather than use the prebuilt image from Docker Hub.
-  # build: ../..
-  ports:
-    - 80:80
-    - 443:443
-  environment:
-    DOMAINS: 'example.com'
-    PRODUCTION: 'true'
+version: '3'
+
+services:
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      DOMAINS: 'example.com'
+      STAGE: local
