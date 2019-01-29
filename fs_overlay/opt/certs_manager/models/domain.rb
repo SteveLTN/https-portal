@@ -77,7 +77,15 @@ class Domain
   end
 
   def redirect_target_url
-    parsed_descriptor[:upstream] if parsed_descriptor[:mode] == '=>'
+    return unless parsed_descriptor[:mode] == '=>'
+
+    url = parsed_descriptor[:upstream]
+
+    if url.start_with? "http"
+      return url
+    else
+      return "https://" + url
+    end
   end
 
   def stage

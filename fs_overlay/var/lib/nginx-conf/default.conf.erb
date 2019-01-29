@@ -4,7 +4,7 @@ server {
 
     <% if domain.redirect_target_url %>
     location / {
-      return    301 https://<%= domain.redirect_target_url %>$request_uri;
+      return    301 <%= domain.redirect_target_url %>$request_uri;
     }
     <% else %>
     location / {
