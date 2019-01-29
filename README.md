@@ -155,7 +155,7 @@ https-portal:
 
 All paths will be redirected to the target. E.g. `https://example.com/foo/bar` will be 301 redirected to `https://target.example.com/foo/bar`.
 
-A common use case is to redirect `www.example.com` to `example.com`:
+A common use case is to redirect `www.example.com` to `example.com`. Configure your DNS, make both `www.example.com` and `example.com` resolve to the HTTPS-PORTAL host, and use the following compose:
 
 ```yaml
 https-portal:
