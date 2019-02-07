@@ -109,8 +109,11 @@ section are HTTPS-PORTAL specific configurations. This time we added an extra
 parameter `-d`, which will tell Docker Compose to run the apps defined in
 `docker-compose.yml` in the background.
 
-Note: `STAGE` is `staging` by default, which results in a test
+Note: 
+
+- `STAGE` is `staging` by default, which results in a test
 (untrusted) certificate from Let's Encrypt.
+- `wordpress` is the hostname of WordPress container within HTTPS-PORTAL container. Usually you can use the service name of your WordPress container.
 
 ## Features
 
