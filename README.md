@@ -423,6 +423,12 @@ nginx.conf containing a valid `server` block. The custom nginx configurations
 are [ERB](http://www.stuartellis.eu/articles/erb/) templates and will be
 rendered before usage.
 
+You can either override just override one single site's config or all sites' configs.
+
+#### Override just one single site's config
+
+In this case, you provide `<your-domain>.conf.erb` and `<your-domain>.conf.ssl.erb`. The former one takes care of the ownership verification from Let's Encrypt, and redirection to https URL. The latter one handles https connections.
+
 For instance, to override both HTTPS and HTTP settings for `my.example.com`,
 you can launch HTTPS-PORTAL by:
 
@@ -435,11 +441,15 @@ https-portal:
 ```
 
 [This file](https://github.com/SteveLTN/https-portal/blob/master/fs_overlay/var/lib/nginx-conf/default.conf.erb) and [this file](https://github.com/SteveLTN/https-portal/blob/master/fs_overlay/var/lib/nginx-conf/default.ssl.conf.erb) are the default configuration files used by HTTPS-PORTAL.
-You can probably start by copying these files and make modifications to them.
+You can probably start by copying these files. You can either keep the variables or just hard-code the domain and upstream, etc.
 
 Another example can be found [here](/examples/custom_config).
 
+#### Override All sites' default config
+
 If you want to make an Nginx configuration that will be used by all sites, you can overwrite `/var/lib/nginx-conf/default.conf.erb` or `/var/lib/nginx-conf/default.ssl.conf.erb`. These two files will be propagated to each site if the site-specific configuration files are not provided.
+
+Since the config files will be used on all your sites, please keep using the variables already in the file and don't hard-code anything.
 
 ### Manually Set RSA Private Key Length
 
