@@ -13,6 +13,12 @@ server {
 
     ssl_dhparam <%= dhparam_path %>;
 
+    # Send HSTS header if configured
+    <% if ENV['HSTS_MAX_AGE'] %>
+       add_header Strict-Transport-Security "max-age=<%= ENV['HSTS_MAX_AGE'] %>" always;
+    <% end %>
+
+
     # Prevent Nginx from leaking the first TLS config
     if ($host != $server_name) {
         return 444;

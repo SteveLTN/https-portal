@@ -401,7 +401,9 @@ PROXY_READ_TIMEOUT=60;
 ACCESS_LOG=off;
 ```
 
-You can also add
+#### Websocket
+
+You can add
 
 ```
 WEBSOCKET=true
@@ -409,11 +411,23 @@ WEBSOCKET=true
 
 to make HTTPS-PORTAL proxy WEBSOCKET connections.
 
+#### DNS caching
+
 To avoid nginx DNS caching, activate dynamic upstream
 
 ```
 RESOLVER="127.0.0.11 ipv6=off valid=30s"
 DYNAMIC_UPSTREAM=true
+```
+
+#### HSTS Header
+
+You can use the follow environment variable to set HSTS header.
+
+**WARNING:** Please test with a low value before you set it to a desired high max_age value. Once you send the header out, all visited clients would refuse to downgrade to HTTP. It would then be impossible to fallback your website to HTTP. 
+
+```
+HSTS_MAX_AGE=60  # in seconds
 ```
 
 ### Override Nginx Configuration Files
