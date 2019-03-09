@@ -1,4 +1,3 @@
 #!/usr/bin/with-contenv sh
 
-echo 'Starting docker-gen ...'
 docker-gen -watch -only-exposed -notify-output -notify reconfig /etc/docker-gen/domains.tmpl /var/run/domains
