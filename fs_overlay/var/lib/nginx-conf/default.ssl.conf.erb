@@ -2,7 +2,6 @@ server {
     listen 443 ssl http2;
     server_name <%= domain.name %>;
 
-    ssl on;
     ssl_certificate <%= domain.chained_cert_path %>;
     ssl_certificate_key <%= domain.key_path %>;
 
