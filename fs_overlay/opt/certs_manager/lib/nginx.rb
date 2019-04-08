@@ -63,6 +63,7 @@ module Nginx
   def self.acme_challenge_location_snippet
     <<-SNIPPET
       location /.well-known/acme-challenge/ {
+          allow all;
           alias /var/www/default/challenges/;
           try_files $uri =404;
       }
