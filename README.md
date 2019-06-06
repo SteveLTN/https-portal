@@ -498,6 +498,7 @@ For most people the most important rate limits are:
 
 * 5 failed validation attempts per hour
 * 50 certificates per registered domain per week
+* 5 duplicated certificate per week (for renewal)
 
 If you want to use HTTPS for multiple sub-domains with a single certificate
 Let's Encrypt supports putting up to 100 domains in one certificate, however it
