@@ -4,10 +4,10 @@ MAINTAINER Weiyan Shao "lighteningman@gmail.com"
 
 WORKDIR /root
 
-ENV S3_OVERLAY_VERSION v1.22.1.0
+ENV S6_OVERLAY_VERSION v1.22.1.0
 ENV DOCKER_GEN_VERSION 0.7.4
 
-ADD https://github.com/just-containers/s6-overlay/releases/download/$S3_OVERLAY_VERSION/s6-overlay-amd64.tar.gz /tmp/
+ADD https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-amd64.tar.gz /tmp/
 ADD https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-linux-amd64-$DOCKER_GEN_VERSION.tar.gz /tmp/
 ADD https://raw.githubusercontent.com/diafygi/acme-tiny/5350420d35177eda733d85096433a24e55f8d00e/acme_tiny.py /bin/acme_tiny
 
