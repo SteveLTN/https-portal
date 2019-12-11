@@ -33,7 +33,7 @@ module OpenSSL
   end
 
   def self.ensure_dhparam
-    unless File.exist? NAConfig.dhparam_path
+    unless dhparam_valid?(NAConfig.dhparam_path)
       system "mkdir -p #{File.dirname(NAConfig.dhparam_path)} && openssl dhparam -out #{NAConfig.dhparam_path} 2048"
     end
   end
@@ -58,5 +58,9 @@ module OpenSSL
   def self.expires_at(pem)
     date_str = `openssl x509 -enddate -noout -in #{pem}`.sub('notAfter=', '')
     Date.parse date_str
+  end
+
+  def self.dhparam_valid?(path)
+    File.exist?(path) && system("openssl dhparam -check < #{path}")
   end
 end
