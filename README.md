@@ -399,6 +399,7 @@ PROXY_CONNECT_TIMEOUT=60;
 PROXY_SEND_TIMEOUT=60;
 PROXY_READ_TIMEOUT=60;
 ACCESS_LOG=off;
+ACCESS_LOG_INCLUDE_HOST=off;            # include vhost in access log (useful for goaccess => use log-format=VCOMBINED)
 ```
 
 #### Websocket
