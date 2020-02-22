@@ -1,7 +1,5 @@
 FROM nginx:1.17.3
 
-MAINTAINER Weiyan Shao "lighteningman@gmail.com"
-
 WORKDIR /root
 
 ENV S6_OVERLAY_VERSION v1.22.1.0
