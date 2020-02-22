@@ -64,7 +64,7 @@ https-portal:
     - '443:443'
   environment:
     DOMAINS: 'example.com'
-    # STAGE: 'production'
+    # STAGE: 'production' # Don't use production until staging works
 ```
 
 Run the `docker-compose up` command in the same directory. A moment later you'll
@@ -87,7 +87,7 @@ https-portal:
   restart: always
   environment:
     DOMAINS: 'wordpress.example.com -> http://wordpress:80'
-    # STAGE: 'production'
+    # STAGE: 'production' # Don't use production until staging works
     # FORCE_RENEW: 'true'
 
 wordpress:
@@ -276,7 +276,7 @@ https-portal:
 You can also specify the stage (`local`, `staging`, or `production`) for each individual site, note that stages of individual sites overrides the global stage:
 
 ```yaml
-DOMAINS: 'wordpress.example.com -> http://wordpress #local, gitlab.example.com #production'
+DOMAINS: 'wordpress.example.com -> http://wordpress #local, gitlab.example.com #staging'
 ```
 
 ### Serving Static Sites
