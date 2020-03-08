@@ -1,5 +1,8 @@
 server {
     listen       80;
+    <% if ENV['LISTEN_IPV6'] && ENV['LISTEN_IPV6'].downcase == 'true' %>
+    listen       [::]:80;
+    <% end %>
     server_name  <%= domain.name %>;
 
     <% if domain.redirect_target_url %>
