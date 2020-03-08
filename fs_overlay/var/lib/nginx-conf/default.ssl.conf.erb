@@ -1,5 +1,8 @@
 server {
     listen 443 ssl http2;
+    <% if ENV['LISTEN_IPV6'] && ENV['LISTEN_IPV6'].downcase == 'true' %>
+    listen [::]:443 ssl http2;
+    <% end %>
     server_name <%= domain.name %>;
 
     ssl_certificate <%= domain.chained_cert_path %>;

@@ -431,6 +431,16 @@ You can use the follow environment variable to set HSTS header.
 HSTS_MAX_AGE=60  # in seconds
 ```
 
+#### IPv6 connectivity
+
+**Notice:** IPv6 is only supported on Linux hosts.
+
+You can enable IPv6 connection using the following variable:
+
+```
+LISTEN_IPV6=true
+```
+
 ### Override Nginx Configuration Files
 
 You can override default nginx settings by providing a config segment of
