@@ -7,6 +7,7 @@ class Domain
 
   def initialize(descriptor)
     @descriptor = descriptor
+
     create_dir
   end
 
@@ -121,6 +122,10 @@ class Domain
         @access_restriction = parsed_descriptor[:ips].split(' ')
       end
     end
+  end
+
+  def print_debug_info
+    puts "DEBUG: name:'#{name}' upstream:'#{upstream}' redirect_target:'#{redirect_target_url}'"
   end
 
   private

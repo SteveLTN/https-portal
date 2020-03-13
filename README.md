@@ -27,6 +27,7 @@ Docker Hub page:
     - [Share Certificates with Other Apps](#share-certificates-with-other-apps)
     - [HTTP Basic Auth](#http-basic-auth)
     - [Access Restriction](#access-restriction)
+    - [Debugging](#debugging)
   - [Advanced Usage](#advanced-usage)
     - [Configure Nginx through Environment Variables](#configure-nginx-through-environment-variables)
     - [Override Nginx Configuration Files](#override-nginx-configuration-files)
@@ -373,6 +374,15 @@ my_app:
 ```
 
 For valid IP values see [Nginx allow](http://nginx.org/en/docs/http/ngx_http_access_module.html#allow)
+
+### Debugging
+
+With the environment variable `DEBUG=true` you can see more info printed about domain parsing, such as:
+
+```
+DEBUG: name:'example.com' upstream:'' redirect_target:''
+```
+
 
 ## Advanced Usage
 

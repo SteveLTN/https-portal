@@ -43,6 +43,10 @@ module NAConfig
     end
   end
 
+  def self.debug_mode
+    ENV['DEBUG']
+  end
+
   private
 
   def self.parse(domain_desc)
