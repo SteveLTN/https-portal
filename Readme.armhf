@@ -1,0 +1,5 @@
+#to build armhf image from amd64 machine:
+#Install qemu, see https://github.com/multiarch/qemu-user-static
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+#Pass relevant args to the docker build cmd
+docker build  --build-arg DIST=arm32v7/nginx:1.17.3 --build-arg ARCH=armhf -t https-portal:armhf-master .
