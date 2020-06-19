@@ -411,13 +411,6 @@ By default no Nginx access logs are written, and error logs are written to stdou
 
   If you want to alter log rotation configuration, you can overwrite `/etc/logrotate.d/nginx`.
 
-  There are other configurable environment variables:
-
-  ```
-  `ACCESS_LOG_BUFFER` - controls buffer size of access log. Example: 16k.
-  `ERROR_LOG_LEVEL` - controls error log level. Default value is `error`
-  ```
-
 * Write logs to custom locations:
 
   ```yaml
@@ -431,6 +424,14 @@ By default no Nginx access logs are written, and error logs are written to stdou
   ```
 
   Note that no automatic log rotation will be performed in this case.
+
+* Other env variables:
+
+There are some other configurable environment variables regarding logging:
+
+`ACCESS_LOG_BUFFER` - controls buffer size of access log. Example: 16k.
+`ERROR_LOG_LEVEL` - controls error log level. Default value is `error`
+
 
 ### Debugging
 
