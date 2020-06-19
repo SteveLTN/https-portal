@@ -27,6 +27,7 @@ Docker Hub page:
     - [Share Certificates with Other Apps](#share-certificates-with-other-apps)
     - [HTTP Basic Auth](#http-basic-auth)
     - [Access Restriction](#access-restriction)
+    - [Logging configuration](#logging-configuration)
     - [Debugging](#debugging)
   - [Advanced Usage](#advanced-usage)
     - [Configure Nginx through Environment Variables](#configure-nginx-through-environment-variables)
@@ -374,6 +375,55 @@ my_app:
 ```
 
 For valid IP values see [Nginx allow](http://nginx.org/en/docs/http/ngx_http_access_module.html#allow)
+
+### Logging configuration
+
+By default no Nginx logs are written. There are few options to set them up:
+
+* Redirect error/access logs to stdout/stderr:
+  
+  ```yaml
+  https-portal:
+    # ...
+    environment:
+      ERROR_LOG: stdout
+      ACCESS_LOG: stderr
+  ```
+
+* Write logs to default locations:
+
+  ```yaml
+  https-portal:
+    # ...
+    environment:
+      ERROR_LOG: default
+      ACCESS_LOG: default
+    volumes:
+      - /path/to/log/directory:/var/log/nginx/
+      - /path/to/logrotate/state/directory:/var/lib/logrotate/
+  ```
+
+  Default log files pathes are `/var/log/nginx/access.log` and `/var/log/nginx/error.log`.
+
+  Log files within default location `/var/log/nginx/*.log` are rotated on daily basis.
+  HTTPS-PORTAL will keep up to 30 log files and will compress files older than 2 days
+  (so current day log and previous day log are both available in plain text while all older ones are compresses).
+
+  If you want to alter log rotation configuration, you can overwrite `/etc/logrotate.d/nginx`.
+
+* Write logs to custom locations:
+
+  ```yaml
+  https-portal:
+    # ...
+    environment:
+      ERROR_LOG: /var/log/custom-logs/error.log
+      ACCESS_LOG: /var/log/custom-logs/access.log
+    volumes:
+      - /path/to/log/directory:/var/log/custom-logs/
+  ```
+
+  Note that no automatic log rotation will be performed in this case.
 
 ### Debugging
 
