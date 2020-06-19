@@ -427,11 +427,10 @@ By default no Nginx access logs are written, and error logs are written to stdou
 
 * Other env variables:
 
-There are some other configurable environment variables regarding logging:
+  There are some other configurable environment variables regarding logging:
 
-`ACCESS_LOG_BUFFER` - controls buffer size of access log. Example: 16k.
-`ERROR_LOG_LEVEL` - controls error log level. Default value is `error`
-
+  `ACCESS_LOG_BUFFER` - controls buffer size of access log. Example: 16k.
+  `ERROR_LOG_LEVEL` - controls error log level. Default value is `error`
 
 ### Debugging
 
