@@ -31,28 +31,24 @@ http {
     }
     <% end %>
 
-    <% if ENV['ACCESS_LOG'] == 'off' || ENV['ACCESS_LOG'] == '' %>
+    <% if !ENV['ACCESS_LOG'] || ENV['ACCESS_LOG'] == '' || ENV['ACCESS_LOG'] == 'off'  %>
     access_log off;
     <% elsif ENV['ACCESS_LOG'] == 'stdout' %>
-    access_log /dev/stdout main buffer=<%= ENV['ACCESS_LOG_BUFFER'] || "16k" %>;
-    <% else %>
+    access_log /dev/stdout main <%= ENV['ACCESS_LOG_BUFFER'] && "buffer=#{ENV['ACCESS_LOG_BUFFER']}" %>;
     <% elsif ENV['ACCESS_LOG'] == 'stderr' %>
-    access_log /dev/stderr main buffer=<%= ENV['ACCESS_LOG_BUFFER'] || "16k" %>;
-    <% else %>
+    access_log /dev/stderr main <%= ENV['ACCESS_LOG_BUFFER'] && "buffer=#{ENV['ACCESS_LOG_BUFFER']}" %>;
     <% elsif ENV['ACCESS_LOG'] == 'default' %>
-    access_log /var/log/nginx/access.log main buffer=<%= ENV['ACCESS_LOG_BUFFER'] || "16k" %>;
+    access_log /var/log/nginx/access.log main <%= ENV['ACCESS_LOG_BUFFER'] && "buffer=#{ENV['ACCESS_LOG_BUFFER']}" %>;
     <% else %>
-    access_log <%= ENV['ACCESS_LOG'] %>  main buffer=<%= ENV['ACCESS_LOG_BUFFER'] || "16k" %>;
+    access_log <%= ENV['ACCESS_LOG'] %>  main <%= ENV['ACCESS_LOG_BUFFER'] && "buffer=#{ENV['ACCESS_LOG_BUFFER']}" %>;
     <% end %>
 
-    <% if ENV['ERROR_LOG'] == 'off' || ENV['ERROR_LOG'] == '' %>
+    <% if !ENV['ERROR_LOG'] || ENV['ERROR_LOG'] == '' || ENV['ERROR_LOG'] == 'stderr'  %>
+    error_log /dev/stderr <%= ENV['ERROR_LOG_LEVEL'] || "error" %>;
+    <% elsif ENV['ERROR_LOG'] == 'off' %>
     error_log off;
     <% elsif ENV['ERROR_LOG'] == 'stdout' %>
     error_log /dev/stdout <%= ENV['ERROR_LOG_LEVEL'] || "error" %>;
-    <% else %>
-    <% elsif ENV['ERROR_LOG'] == 'stderr' %>
-    error_log /dev/stderr <%= ENV['ERROR_LOG_LEVEL'] || "error" %>;
-    <% else %>
     <% elsif ENV['ERROR_LOG'] == 'default' %>
     error_log /var/log/nginx/error.log <%= ENV['ERROR_LOG_LEVEL'] || "error" %>;
     <% else %>

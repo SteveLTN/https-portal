@@ -378,7 +378,7 @@ For valid IP values see [Nginx allow](http://nginx.org/en/docs/http/ngx_http_acc
 
 ### Logging configuration
 
-By default no Nginx logs are written. There are few options to set them up:
+By default no Nginx access logs are written, and error logs are written to stdout, which will be captured by Docker. There are few options to configure them:
 
 * Redirect error/access logs to stdout/stderr:
   
@@ -410,6 +410,13 @@ By default no Nginx logs are written. There are few options to set them up:
   (so current day log and previous day log are both available in plain text while all older ones are compresses).
 
   If you want to alter log rotation configuration, you can overwrite `/etc/logrotate.d/nginx`.
+
+  There are other configurable environment variables:
+
+  ```
+  `ACCESS_LOG_BUFFER` - controls buffer size of access log. Example: 16k.
+  `ERROR_LOG_LEVEL` - controls error log level. Default value is `error`
+  ```
 
 * Write logs to custom locations:
 

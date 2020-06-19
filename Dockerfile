@@ -4,9 +4,7 @@ ARG  ARCH=amd64
 
 # Delete sym links from nginx image, install logrotate
 RUN rm /var/log/nginx/access.log && \
-    rm /var/log/nginx/error.log && \
-    apt-get update && \
-    apt-get -y install logrotate
+    rm /var/log/nginx/error.log
 
 WORKDIR /root
 
@@ -24,7 +22,7 @@ RUN tar xzf /tmp/s6-overlay-$ARCH.tar.gz -C / &&\
     rm /tmp/s6-overlay-$ARCH.tar.gz && \
     rm /etc/nginx/conf.d/default.conf && \
     apt-get update && \
-    apt-get install -y python ruby cron iproute2 apache2-utils && \
+    apt-get install -y python ruby cron iproute2 apache2-utils logrotate && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
