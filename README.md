@@ -526,7 +526,7 @@ You can also make it multi-line:
     	auth_basic "Password";	
 ```
 
-The `CUSTOM_NGINX_SERVER_CONFIG_BLOCK` will be inserted after all other configuration blocks listed in section "Configure Nginx through Environment Variables".
+The `CUSTOM_NGINX_SERVER_CONFIG_BLOCK` will be inserted after all other configuration blocks listed in section "Configure Nginx through Environment Variables", and it might conflict with other configurations.
 
 ```
 # generated Nginx config:
