@@ -507,6 +507,38 @@ You can enable IPv6 connection using the following variable:
 ```
 LISTEN_IPV6=true
 ```
+#### Other server block level configurations
+
+You can add additional `server` block level configurations to each domain:
+
+```yaml
+  environment:
+    ...
+    CUSTOM_NGINX_SERVER_CONFIG_BLOCK: add_header Strict-Transport-Security "max-age=60" always;
+```
+You can also make it multi-line:
+
+```yaml
+  environment:
+    ...
+    CUSTOM_NGINX_SERVER_CONFIG_BLOCK: |
+    	add_header Strict-Transport-Security "max-age=60" always;
+    	auth_basic "Password";	
+```
+
+The `CUSTOM_NGINX_SERVER_CONFIG_BLOCK` will be inserted after all other configuration blocks listed in section "Configure Nginx through Environment Variables".
+
+```
+# generated Nginx config:
+server {
+	listen 443 ssl http2;
+	... # (other configurations)
+	<%= CUSTOM_NGINX_SERVER_CONFIG_BLOCK %>
+	location / {
+		...
+	}
+}
+```
 
 ### Override Nginx Configuration Files
 

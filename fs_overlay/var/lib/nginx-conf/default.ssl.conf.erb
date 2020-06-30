@@ -38,6 +38,10 @@ server {
         auth_basic_user_file <%= domain.htaccess_path %>;
     <% end %>
 
+    <% if ENV['CUSTOM_NGINX_SERVER_CONFIG_BLOCK'] %>
+        <%= ENV['CUSTOM_NGINX_SERVER_CONFIG_BLOCK'] %>
+    <% end %>
+
     <% if domain.upstream %>
     location / {
         <% if ENV['DYNAMIC_UPSTREAM'] && ENV['DYNAMIC_UPSTREAM'].downcase == 'true' %>
