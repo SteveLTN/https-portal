@@ -237,7 +237,7 @@ https-portal:
 ### Hybrid Setup with Non-Dockerized Apps
 
 Web applications that run directly on the host machine instead of in Docker
-containers are available at `dockerhost`.
+containers are available at `host.docker.internal`. It also works with *Docker for Mac* and *Docker for Windows*.
 
 For instance, if an application accepts HTTP requests on port 8080 of the host
 machine, you can start HTTPS-PORTAL by:
@@ -246,7 +246,7 @@ machine, you can start HTTPS-PORTAL by:
 https-portal:
   # ...
   environment:
-    DOMAINS: 'example.com -> http://dockerhost:8080'
+    DOMAINS: 'example.com -> http://host.docker.internal:8080'
 ```
 
 #### Firewall settings ####
