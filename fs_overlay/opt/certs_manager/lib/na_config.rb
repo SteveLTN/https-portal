@@ -47,6 +47,10 @@ module NAConfig
     ENV['DEBUG']
   end
 
+  def self.renew_margin_days
+    ENV['RENEW_MARGIN_DAYS'].to_i != 0 ? ENV['RENEW_MARGIN_DAYS'].to_i : 30
+  end
+
   private
 
   def self.parse(domain_desc)

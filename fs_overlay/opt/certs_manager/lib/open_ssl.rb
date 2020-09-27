@@ -23,7 +23,7 @@ module OpenSSL
 
     skip_conditions = File.exist?(domain.key_path) &&
                       File.exist?(domain.signed_cert_path) &&
-                      expires_in_days(domain.signed_cert_path) > 30
+                      expires_in_days(domain.signed_cert_path) > NAConfig.renew_margin_days
 
     !skip_conditions
   end

@@ -29,6 +29,7 @@ Docker Hub page:
     - [Access Restriction](#access-restriction)
     - [Logging configuration](#logging-configuration)
     - [Debugging](#debugging)
+    - [Other configurations](#other-configurations)
   - [Advanced Usage](#advanced-usage)
     - [Configure Nginx through Environment Variables](#configure-nginx-through-environment-variables)
     - [Override Nginx Configuration Files](#override-nginx-configuration-files)
@@ -440,6 +441,12 @@ With the environment variable `DEBUG=true` you can see more info printed about d
 DEBUG: name:'example.com' upstream:'' redirect_target:''
 ```
 
+### Other Configurations
+
+By default, HTTPS-PORTAL renews the certificate about 30 days before the expiry. You can customize it by:
+```
+RENEW_MARGIN_DAYS=30
+```
 
 ## Advanced Usage
 
