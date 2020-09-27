@@ -3,3 +3,4 @@
 # Persist envs for cron jobs to use
 
 printenv | sed '/^[[:space:]]*$/d' | sed 's/^\(.*\)$/export "\1"/g' > /etc/cron_env.sh
+chmod +x /etc/cron_env.sh
