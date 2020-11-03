@@ -645,7 +645,7 @@ https-portal:
 ```
 
 This is because with ACME v2 returns the full chain instead of a partial chain 
-with ACME v1. If you have old certificates stored, HTTPS-PORTAl may not be able 
+with ACME v1. If you have old certificates stored, HTTPS-PORTAL may not be able 
 to handle the case correctly. If you run into this issue, just `FORCE_RENEW` to 
 obtain a new set of certificates.
 
