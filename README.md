@@ -204,7 +204,7 @@ services:
 
 **Caveat**: Your web application must be created in the same network as HTTPS-PORTAL.
 
-Note that here is **no need** to link your web service to HTTPS-PORTAL, and you **shouldn't** put `example.com` in environment variable `DOMAINS` of HTTP-PORTAL.
+Note that here is **no need** to link your web service to HTTPS-PORTAL, and you **shouldn't** put `example.com` in environment variable `DOMAINS` of HTTPS-PORTAL.
 
 This feature allows you to deploy multiple web applications on the same host
 without restarting HTTPS-PORTAL itself or interrupting any other application while
