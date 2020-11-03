@@ -204,7 +204,7 @@ services:
 
 **Caveat**: Your web application must be created in the same network as HTTPS-PORTAL.
 
-Note that here is **no need** to link your web service to HTTPS-PORTAL, and you **shouldn't** put `example.com` in environment variable `DOMAINS` of HTTP-PORTAL.
+Note that here is **no need** to link your web service to HTTPS-PORTAL, and you **shouldn't** put `example.com` in environment variable `DOMAINS` of HTTPS-PORTAL.
 
 This feature allows you to deploy multiple web applications on the same host
 without restarting HTTPS-PORTAL itself or interrupting any other application while
@@ -645,7 +645,7 @@ https-portal:
 ```
 
 This is because with ACME v2 returns the full chain instead of a partial chain 
-with ACME v1. If you have old certificates stored, HTTPS-PORTAl may not be able 
+with ACME v1. If you have old certificates stored, HTTPS-PORTAL may not be able 
 to handle the case correctly. If you run into this issue, just `FORCE_RENEW` to 
 obtain a new set of certificates.
 
