@@ -17,6 +17,8 @@ RSpec.describe Domain do
       ['example.com -> http://target ', 'example.com', 'http://target', nil, 'local', nil, nil, nil],
       ["example.com \n-> http://target \n", 'example.com', 'http://target', nil, 'local', nil, nil, nil],
       ["example.com\n-> http://target ", 'example.com', 'http://target', nil, 'local', nil, nil, nil],
+      ['example.com -> http://target:8000', 'example.com', 'http://target:8000', nil, 'local', nil, nil, nil],
+      ['example.com -> target:8000', 'example.com', 'http://target:8000', nil, 'local', nil, nil, nil],
       ['example.com => http://target', 'example.com', nil, 'http://target', 'local', nil, nil, nil],
       ['example.com => https://target', 'example.com', nil, 'https://target', 'local', nil, nil, nil],
       ['example.com => target', 'example.com', nil, 'https://target', 'local', nil, nil, nil],
