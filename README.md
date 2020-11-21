@@ -23,6 +23,7 @@ Docker Hub page:
     - [Automatic Container Discovery](#automatic-container-discovery)
     - [Hybrid Setup with Non-Dockerized Apps](#hybrid-setup-with-non-dockerized-apps)
     - [Multiple Domains](#multiple-domains)
+    - [Multiple Upstreams](#multiple-upstreams)
     - [Serving Static Sites](#serving-static-sites)
     - [Share Certificates with Other Apps](#share-certificates-with-other-apps)
     - [HTTP Basic Auth](#http-basic-auth)
@@ -282,6 +283,21 @@ You can also specify the stage (`local`, `staging`, or `production`) for each in
 DOMAINS: 'wordpress.example.com -> http://wordpress #local, gitlab.example.com #staging'
 ```
 
+### Multiple Upstreams
+
+It's possible to define multiple upstreams for a domain for the purpose of load-balancing and/or HA.
+Just add additional upstreams separated by a pipe separator. Each upstream can have custom parameters.
+
+```yaml
+https-portal:
+  # ...
+  environment:
+    DOMAINS: 'wordpress.example.com -> http://wordpress1:80|wordpress2:80[weight=2 max_conns=100]
+```
+
+
+See [Nginx Upstream-Module](http://nginx.org/en/docs/http/ngx_http_upstream_module.html#server) for possible parameters.
+
 ### Serving Static Sites
 
 Instead of forwarding requests to web applications, HTTPS-PORTAL can also serve
@@ -438,7 +454,7 @@ By default no Nginx access logs are written, and error logs are written to stdou
 With the environment variable `DEBUG=true` you can see more info printed about domain parsing, such as:
 
 ```
-DEBUG: name:'example.com' upstream:'' redirect_target:''
+DEBUG: name:'example.com' upstreams:'' redirect_target:''
 ```
 
 ### Other Configurations

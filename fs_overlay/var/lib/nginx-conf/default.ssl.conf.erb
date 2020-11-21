@@ -1,3 +1,11 @@
+<% if domain.multiple_upstreams? %>
+upstream <%= domain.upstream_backend_name %> {
+    <% domain.upstreams.each do |upstream| %>
+        server <%= upstream[:address] %> <%= upstream[:parameters] %>;
+    <% end %>
+}
+<% end %>
+
 server {
     listen 443 ssl http2;
     <% if ENV['LISTEN_IPV6'] && ENV['LISTEN_IPV6'].downcase == 'true' %>
@@ -45,10 +53,10 @@ server {
     <% if domain.upstream %>
     location / {
         <% if ENV['DYNAMIC_UPSTREAM'] && ENV['DYNAMIC_UPSTREAM'].downcase == 'true' %>
-        set $backend <%= domain.upstream %>;
+        set $backend <%= domain.multiple_upstreams? ? domain.upstream_proto + domain.upstream_backend_name : domain.upstream %>;
         proxy_pass $backend;
         <% else %>
-        proxy_pass <%= domain.upstream %>;
+        proxy_pass <%= domain.multiple_upstreams? ? domain.upstream_proto + domain.upstream_backend_name : domain.upstream %>;
         <% end %>
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;

@@ -45,7 +45,7 @@ class Domain
   end
 
   def ensure_welcome_page
-    return if upstream || redirect_target_url
+    return if upstreams.length > 0 || redirect_target_url
 
     index_html = File.join(www_root, 'index.html')
 
@@ -73,20 +73,51 @@ class Domain
     parsed_descriptor[:domain]
   end
 
+  def upstream_backend_name
+    "backend_" + parsed_descriptor[:domain]
+  end
+
+  def upstream_proto
+    mode = parsed_descriptor[:mode]
+    return unless ["->", "=>"].include? mode
+
+    default = mode == "->" ? "http://" : "https://"
+    parsed_descriptor[:upstream_proto] || default
+  end
+
+  def upstreams
+    upstreams = parsed_descriptor[:upstreams].to_s.split("|").delete_if { |v| v.empty? }
+    upstreams.map do |v|
+      match = v.match(/^(?<address>[^\[]+)(?:\[(?<parameters>.*)\])?$/)
+      raise "Invalid upstream: #{v}" unless match
+
+      match.named_captures.transform_keys(&:to_sym)
+    end
+  end
+
+  def multiple_upstreams?
+    upstreams.length > 1
+  end
+
   def upstream
-    parsed_descriptor[:upstream] if parsed_descriptor[:mode] == '->'
+    # For backward compatibility it is important to return nil for static site and redirect mode
+    return unless parsed_descriptor[:mode] == '->'
+
+    upstream = upstreams.first
+    return if upstream.nil?
+
+    return upstream_proto + upstream[:address]
   end
 
   def redirect_target_url
     return unless parsed_descriptor[:mode] == '=>'
 
-    url = parsed_descriptor[:upstream]
+    upstream = upstreams.first
+    return if upstream.nil?
 
-    if url.start_with? "http"
-      return url
-    else
-      return "https://" + url
-    end
+    raise "Parameters not supported on redirect-target" unless upstream[:parameters].nil?
+
+    upstream_proto + upstream[:address]
   end
 
   def stage
@@ -125,7 +156,7 @@ class Domain
   end
 
   def print_debug_info
-    puts "DEBUG: name:'#{name}' upstream:'#{upstream}' redirect_target:'#{redirect_target_url}'"
+    puts "DEBUG: name:'#{name}' upstreams:'#{upstreams.inspect}' redirect_target:'#{redirect_target_url}'"
   end
 
   private
@@ -138,12 +169,28 @@ class Domain
     if defined? @parsed_descriptor
       @parsed_descriptor
     else
-      regex = /^(?:\[(?<ips>[0-9.:\/, ]*)\]\s*)?(?:(?<user>[^:@\[\]]+)(?::(?<pass>[^@]*))?@)?(?<domain>[a-z0-9._\-]+?)(?:(?:\s*(?<mode>[-=]>)\s*(?<upstream>[a-z0-9.:\/_\-]+))?\s*(:?#(?<stage>[a-z]*))?)?$/i
+      regex = %r{
+        ^
+        (?:\[(?<ips>[0-9.:\/, ]*)\]\s*)?
+        (?:(?<user>[^:@\[\]]+)(?::(?<pass>[^@]*))?@)?(?<domain>[a-z0-9._\-]+?)
+        (?:
+          (?:
+            \s*(?<mode>[-=]>)\s*
+            (?<upstream_proto>https?:\/\/)?
+            (?<upstreams>[a-z0-9.:\/_|\[= \]\-]+?)
+          )?
+        )?
+        (:?\s+\#(?<stage>[a-z]*))?
+        $
+      }xi
+
       match = descriptor.strip.match(regex)
       if match.nil?
         STDERR.puts "Error: Invalid descriptor #{descriptor}"
         @parsed_descriptor = nil
       else
+        match = match.named_captures.transform_keys(&:to_sym)
+
         @parsed_descriptor = match
       end
     end
