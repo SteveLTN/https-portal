@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  https-portal:
+    build: ../
+    ports:
+      - '80:80'
+      - '443:443'
+    environment: 
+      STAGE: 'local'
+      OWN_CERT: 'True'
+    volumes:
+       - "portal-certs:/var/lib/https-portal/custom/"
+       - type: bind
+         source: ${pwd}/domains.txt
+         target: /var/run/domains
+networks: 
+  default:
+    external: 
+      name: dappnode_public

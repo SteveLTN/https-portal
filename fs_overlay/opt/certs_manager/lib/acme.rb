@@ -6,7 +6,9 @@ module ACME
 
   def self.sign(domain)
     if domain.stage == 'local'
-      OpenSSL.self_sign(domain)
+      if ENV['OWN_CERT'] != 'True'
+        OpenSSL.self_sign(domain)
+      end
     else
       le_sign(domain)
     end

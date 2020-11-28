@@ -37,7 +37,11 @@ class Domain
   end
 
   def dir
-    "/var/lib/https-portal/#{name}/#{stage}/"
+    if ENV['OWN_CERT'] == 'True'
+      return "/var/lib/https-portal/custom/"
+    else
+      return "/var/lib/https-portal/#{name}/#{stage}/"
+    end
   end
 
   def www_root
