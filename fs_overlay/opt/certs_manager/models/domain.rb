@@ -37,11 +37,11 @@ class Domain
   end
 
   def dir
-    "/var/lib/https-portal/#{name}/#{stage}/"
+    File.join(NAConfig.portal_base_dir, name, stage)
   end
 
   def www_root
-    "/var/www/vhosts/#{name}"
+    File.join("/var/www/vhosts/", name)
   end
 
   def ensure_welcome_page

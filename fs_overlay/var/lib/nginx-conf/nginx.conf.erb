@@ -115,12 +115,13 @@ http {
 
     include /etc/nginx/conf.d/*.conf;
 
+    # Prevent Nginx from leaking other server configurations on the same machine
     server {
         listen      80 default_server;
         listen      443 ssl default_server;
 
-        ssl_certificate /var/lib/https-portal/default_server/default_server.crt;
-        ssl_certificate_key /var/lib/https-portal/default_server/default_server.key;
+        ssl_certificate <%= NAConfig.portal_base_dir %>/default_server/default_server.crt;
+        ssl_certificate_key <%= NAConfig.portal_base_dir %>/default_server/default_server.key;
         server_name _;
         return      444;
     }

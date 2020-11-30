@@ -2,7 +2,7 @@ require 'date'
 
 module OpenSSL
   def self.ensure_account_key
-    path = '/var/lib/https-portal/account.key'
+    path = "#{NAConfig.portal_base_dir}/account.key"
     unless File.exist?(path) && system("openssl rsa --in #{path} --noout --check")
       system "openssl genrsa 4096 > #{path}"
     end

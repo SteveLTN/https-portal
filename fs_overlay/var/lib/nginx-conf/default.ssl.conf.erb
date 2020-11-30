@@ -29,7 +29,7 @@ server {
     <% end %>
 
 
-    # Prevent Nginx from leaking the first TLS config
+    # Prevent Nginx from leaking other server configurations on the same machine
     if ($host != $server_name) {
         return 444;
     }

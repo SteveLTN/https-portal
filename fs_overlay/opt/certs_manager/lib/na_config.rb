@@ -1,4 +1,8 @@
 module NAConfig
+  def self.portal_base_dir
+    "/var/lib/https-portal"
+  end
+
   def self.domains
     (env_domains + auto_discovered_domains).uniq(&:name)
   end
@@ -24,7 +28,7 @@ module NAConfig
   end
 
   def self.dhparam_path
-    '/var/lib/https-portal/dhparam.pem'
+    "#{NAConfig.portal_base_dir}/dhparam.pem"
   end
 
   def self.env_domains
