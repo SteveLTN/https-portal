@@ -184,11 +184,9 @@ class Domain
         (?:\[(?<ips>[0-9.:\/, ]*)\]\s*)?
         (?:(?<user>[^:@\[\]]+)(?::(?<pass>[^@]*))?@)?(?<domain>[a-z0-9._\-]+?)
         (?:
-          (?:
-            \s*(?<mode>[-=]>)\s*
-            (?<upstream_proto>https?:\/\/)?
-            (?<upstreams>[a-z0-9.:\/_|\[= \]\-]+?)
-          )?
+          \s*(?<mode>[-=]>)\s*
+          (?<upstream_proto>https?:\/\/)?
+          (?<upstreams>[a-z0-9.:\/_|\[= \]\-]+?)
         )?
         (:?\s+\#(?<stage>[a-z]*))?
         $
