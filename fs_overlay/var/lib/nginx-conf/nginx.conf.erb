@@ -117,6 +117,10 @@ http {
 
     server {
         listen      80 default_server;
+        listen      443 ssl default_server;
+
+        ssl_certificate /var/lib/https-portal/default_server/default_server.crt;
+        ssl_certificate_key /var/lib/https-portal/default_server/default_server.key;
         server_name _;
         return      444;
     }

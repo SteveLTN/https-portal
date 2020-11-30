@@ -25,4 +25,12 @@ module Commands
       end
     end
   end
+
+  def generate_dummy_certificate_for_default_server
+    OpenSSL.generate_dummy_certificate(
+      "/var/lib/https-portal/default_server",
+      "/var/lib/https-portal/default_server/default_server.crt",
+      "/var/lib/https-portal/default_server/default_server.key",
+    )
+  end
 end

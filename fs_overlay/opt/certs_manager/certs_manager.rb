@@ -8,9 +8,14 @@ class CertsManager
 
   def setup
     add_dockerhost_to_hosts
-    NAConfig.domains.each(&:print_debug_info) if NAConfig.debug_mode
-    NAConfig.domains.each(&:ensure_welcome_page)
+    NAConfig.domains.each do |domain|
+      if NAConfig.debug_mode?
+        domain.print_debug_info
+      end
+      domain.ensure_welcome_page
+    end
 
+    generate_dummy_certificate_for_default_server
     OpenSSL.ensure_dhparam
     OpenSSL.ensure_account_key
 
@@ -27,9 +32,13 @@ class CertsManager
 
   def renew
     puts "Renewing ..."
-    NAConfig.domains.each(&:print_debug_info) if NAConfig.debug_mode
+    NAConfig.domains.each(&:print_debug_info) if NAConfig.debug_mode?
     with_lock do
       NAConfig.domains.each do |domain|
+        if NAConfig.debug_mode?
+          domain.print_debug_info
+        end
+
         if OpenSSL.need_to_sign_or_renew? domain
           ACME.sign(domain)
           chain_certs(domain)

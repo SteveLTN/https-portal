@@ -43,12 +43,16 @@ module NAConfig
     end
   end
 
-  def self.debug_mode
+  def self.debug_mode?
     ENV['DEBUG']
   end
 
   def self.renew_margin_days
     ENV['RENEW_MARGIN_DAYS'].to_i != 0 ? ENV['RENEW_MARGIN_DAYS'].to_i : 30
+  end
+
+  def self.key_length
+    ENV['NUMBITS'] =~ /^[0-9]+$/ ? ENV['NUMBITS'] : 2048
   end
 
   private

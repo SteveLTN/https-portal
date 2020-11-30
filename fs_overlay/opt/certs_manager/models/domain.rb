@@ -156,7 +156,17 @@ class Domain
   end
 
   def print_debug_info
-    puts "DEBUG: name:'#{name}' upstreams:'#{upstreams.inspect}' redirect_target:'#{redirect_target_url}'"
+    puts "----------- BEGIN DOMAIN CONFIG -------------"
+    puts "name: #{name}"
+    puts "stage: #{stage}"
+    puts "upstream: #{upstream}"
+    puts "upstreams: #{upstreams.inspect}"
+    puts "upstream_proto: #{upstream_proto}"
+    puts "redirect_target_url: #{redirect_target_url}"
+    puts "basic_auth_username: #{basic_auth_username}"
+    puts "basic_auth_password: #{basic_auth_password}"
+    puts "access_restriction: #{access_restriction}"
+    puts "-------- --- END DOMAIN CONFIG  -------------"
   end
 
   private

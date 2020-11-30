@@ -10,7 +10,7 @@ module OpenSSL
 
   def self.ensure_domain_key(domain)
     unless File.exist?(domain.key_path) && system("openssl rsa --in #{domain.key_path} --noout --check")
-      system "openssl genrsa #{ENV['NUMBITS'] =~ /^[0-9]+$/ ? ENV['NUMBITS'] : 2048} > #{domain.key_path}"
+      system "openssl genrsa #{NAConfig.key_length} > #{domain.key_path}"
     end
   end
 
@@ -48,6 +48,21 @@ module OpenSSL
       -in #{domain.csr_path} \
       -signkey #{domain.key_path} \
       -out #{domain.signed_cert_path}
+    EOC
+
+    system command
+  end
+
+  def self.generate_dummy_certificate(dir, out_path, keyout_path)
+    command = <<-EOC
+      mkdir -p #{dir} && \
+      openssl req -x509 -newkey \
+        rsa:#{NAConfig.key_length} -nodes \
+        -out #{out_path} \
+        -keyout #{keyout_path} \
+        -days 36500 \
+        -batch \
+        -subj "/CN=default-server.example.com"
     EOC
 
     system command
