@@ -36,8 +36,8 @@ module NAConfig
   end
 
   def self.auto_discovered_domains
-    if File.exist? '/var/run/domains'
-      parse File.read('/var/run/domains')
+    if File.exist? '/var/run/domains.d/domains'
+      parse File.read('/var/run/domains.d/domains')
     else
       []
     end

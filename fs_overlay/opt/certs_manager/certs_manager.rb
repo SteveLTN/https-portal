@@ -11,6 +11,8 @@ class CertsManager
     NAConfig.domains.each(&:print_debug_info) if NAConfig.debug_mode
     NAConfig.domains.each(&:ensure_welcome_page)
 
+    system 'mkdir -p /var/run/domains.d/'
+
     OpenSSL.ensure_dhparam
     OpenSSL.ensure_account_key
 
