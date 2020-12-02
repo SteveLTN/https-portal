@@ -4,7 +4,7 @@ require 'rest-client'
 
 module OpenSSL
   def self.ensure_account_key
-    path = '/var/lib/https-portal/account.key'
+    path = "#{NAConfig.portal_base_dir}/account.key"
     unless File.exist?(path) && system("openssl rsa --in #{path} --noout --check")
       system "openssl genrsa 4096 > #{path}"
     end
@@ -12,7 +12,7 @@ module OpenSSL
 
   def self.ensure_domain_key(domain)
     unless File.exist?(domain.key_path) && system("openssl rsa --in #{domain.key_path} --noout --check")
-      system "openssl genrsa #{ENV['NUMBITS'] =~ /^[0-9]+$/ ? ENV['NUMBITS'] : 2048} > #{domain.key_path}"
+      system "openssl genrsa #{NAConfig.key_length} > #{domain.key_path}"
     end
   end
 
@@ -86,6 +86,19 @@ module OpenSSL
       }
     )
     File.write(domain.signed_cert_path, response.to_str)
+  def self.generate_dummy_certificate(dir, out_path, keyout_path)
+    command = <<-EOC
+      mkdir -p #{dir} && \
+      openssl req -x509 -newkey \
+        rsa:#{NAConfig.key_length} -nodes \
+        -out #{out_path} \
+        -keyout #{keyout_path} \
+        -days 36500 \
+        -batch \
+        -subj "/CN=default-server.example.com"
+    EOC
+
+    system command
   end
 
   private

@@ -5,15 +5,9 @@ server {
     <% end %>
     server_name  <%= domain.name %>;
 
-    <% if domain.redirect_target_url %>
-    location / {
-      return    301 <%= domain.redirect_target_url %>$request_uri;
-    }
-    <% else %>
     location / {
       return    301 https://$server_name$request_uri;
     }
-    <% end %>
 
     <%= acme_challenge_location %>
 }

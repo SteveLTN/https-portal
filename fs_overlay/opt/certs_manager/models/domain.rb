@@ -37,13 +37,13 @@ class Domain
   end
 
   def dir
-    return '/var/lib/https-portal/wildcard_certs/' if ENV['API_SIGN'] == 'True'
+    return File.join(NAConfig.portal_base_dir, 'wildcard_certs/') if ENV['STAGE'] == 'dappnode-api'
 
-    "/var/lib/https-portal/#{name}/#{stage}/"
+    File.join(NAConfig.portal_base_dir, name, stage)
   end
 
   def www_root
-    "/var/www/vhosts/#{name}"
+    File.join("/var/www/vhosts/", name)
   end
 
   def ensure_welcome_page
@@ -160,7 +160,17 @@ class Domain
   end
 
   def print_debug_info
-    puts "DEBUG: name:'#{name}' upstreams:'#{upstreams.inspect}' redirect_target:'#{redirect_target_url}'"
+    puts "----------- BEGIN DOMAIN CONFIG -------------"
+    puts "name: #{name}"
+    puts "stage: #{stage}"
+    puts "upstream: #{upstream}"
+    puts "upstreams: #{upstreams.inspect}"
+    puts "upstream_proto: #{upstream_proto}"
+    puts "redirect_target_url: #{redirect_target_url}"
+    puts "basic_auth_username: #{basic_auth_username}"
+    puts "basic_auth_password: #{basic_auth_password}"
+    puts "access_restriction: #{access_restriction}"
+    puts "-------- --- END DOMAIN CONFIG  -------------"
   end
 
   private
@@ -178,11 +188,9 @@ class Domain
         (?:\[(?<ips>[0-9.:\/, ]*)\]\s*)?
         (?:(?<user>[^:@\[\]]+)(?::(?<pass>[^@]*))?@)?(?<domain>[a-z0-9._\-]+?)
         (?:
-          (?:
-            \s*(?<mode>[-=]>)\s*
-            (?<upstream_proto>https?:\/\/)?
-            (?<upstreams>[a-z0-9.:\/_|\[= \]\-]+?)
-          )?
+          \s*(?<mode>[-=]>)\s*
+          (?<upstream_proto>https?:\/\/)?
+          (?<upstreams>[a-z0-9.:\/_|\[= \]\-]+?)
         )?
         (:?\s+\#(?<stage>[a-z]*))?
         $
