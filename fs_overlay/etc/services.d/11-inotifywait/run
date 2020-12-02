@@ -1,0 +1,6 @@
+#!/usr/bin/with-contenv sh
+
+inotifywait -q -m -e close_write --format %e /var/run/domains.d/domains |
+while read events; do
+  reconfig
+done

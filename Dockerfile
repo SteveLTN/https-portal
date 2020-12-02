@@ -22,7 +22,7 @@ RUN tar xzf /tmp/s6-overlay-$ARCH.tar.gz -C / &&\
     rm /tmp/s6-overlay-$ARCH.tar.gz && \
     rm /etc/nginx/conf.d/default.conf && \
     apt-get update && \
-    apt-get install -y python ruby cron iproute2 apache2-utils logrotate && \
+    apt-get install -y python ruby cron iproute2 apache2-utils logrotate inotify-tools && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
