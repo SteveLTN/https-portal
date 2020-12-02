@@ -5,10 +5,11 @@ module ACME
   class FailedToSignException < RuntimeError; end
 
   def self.sign(domain)
-    if domain.stage == 'local'
-      if ENV['OWN_CERT'] != 'True'
-        OpenSSL.self_sign(domain)
-      end
+    case domain.stage
+    when 'local'
+      OpenSSL.self_sign(domain)
+    when 'dappnode-api'
+      OpenSSL.api_sign(domain)
     else
       le_sign(domain)
     end

@@ -1,4 +1,6 @@
 require 'date'
+require 'rest-client'
+
 
 module OpenSSL
   def self.ensure_account_key
@@ -15,7 +17,11 @@ module OpenSSL
   end
 
   def self.create_csr(domain)
-    system "openssl req -new -sha256 -key #{domain.key_path} -subj '/CN=#{domain.name}' > #{domain.csr_path}"
+    if domain.stage == 'dappnode-api'
+      system "openssl req -new -sha256 -key #{domain.key_path} -subj '/CN=#{domain.name}' -addext 'subjectAltName = *.#{domain.name}' > #{domain.csr_path}"
+    else
+      system "openssl req -new -sha256 -key #{domain.key_path} -subj '/CN=#{domain.name}' > #{domain.csr_path}"
+    end
   end
 
   def self.need_to_sign_or_renew?(domain)
@@ -51,6 +57,35 @@ module OpenSSL
     EOC
 
     system command
+  end
+
+  self.get_eth_signature(timestamp)
+    dappmanager_url = ENV['DAPPMANAGER_URL']
+    response = RestClient::Request.execute(
+      :method => :get,
+      url => "http://#{dappmanager_url}/api/sign?message=#{timestamp}"
+    )
+    results = JSON.parse(response.to_str)
+    signature = results['data'][0]['sig']
+    address = results['data'][0]['address']
+    return signature, address
+  end
+
+
+  def self.api_sign(domain)
+    puts "Api call for signing certificate for *.#{domain.name}"
+    timestamp = Time.now.to_i
+    signature, address = get_eth_signature(timestamp)
+    certapi_url = ENV['CERTAPI_URL']
+
+    response = RestClient::Request.execute(
+      :method => :post,
+      :url => "http://#{certapi_url}/?sig=#{signature}&address=#{address}&timestamp=#{timestamp}",
+      :payload => {
+        :csr => File.new(domain.csr_path 'rb')
+      }
+    )
+    File.write(domain.signed_cert_path, response.to_str)
   end
 
   private

@@ -2,15 +2,16 @@ version: '3.8'
 
 services:
   https-portal:
-    build: ../
+    build: .
     ports:
       - '80:80'
       - '443:443'
     environment: 
-      STAGE: 'local'
-      OWN_CERT: 'True'
+      STAGE: 'dappnode-api'
+      DAPPMANAGER_URL: 127.0.0.1
+      CERTAPI_URL: 127.0.0.1
     volumes:
-       - "portal-certs:/var/lib/https-portal/custom/"
+       - "portal-certs:/var/lib/https-portal/wildcard_certs/"
        - type: bind
          source: ${pwd}/domains.txt
          target: /var/run/domains

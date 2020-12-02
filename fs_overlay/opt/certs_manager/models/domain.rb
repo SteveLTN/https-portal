@@ -1,7 +1,7 @@
 require 'fileutils'
 
 class Domain
-  STAGES = %w(production staging local).freeze
+  STAGES = %w(production staging local dappnode-api).freeze
 
   attr_reader :descriptor
 
@@ -37,11 +37,9 @@ class Domain
   end
 
   def dir
-    if ENV['OWN_CERT'] == 'True'
-      return "/var/lib/https-portal/custom/"
-    else
-      return "/var/lib/https-portal/#{name}/#{stage}/"
-    end
+    return '/var/lib/https-portal/wildcard_certs/' if ENV['API_SIGN'] == 'True'
+
+    "/var/lib/https-portal/#{name}/#{stage}/"
   end
 
   def www_root
@@ -67,6 +65,8 @@ class Domain
     when 'production'
       'https://acme-v02.api.letsencrypt.org/directory'
     when 'local'
+      nil
+    when 'dappnode-api'
       nil
     when 'staging'
       'https://acme-staging-v02.api.letsencrypt.org/directory'
