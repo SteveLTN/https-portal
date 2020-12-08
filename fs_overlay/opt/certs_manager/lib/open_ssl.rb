@@ -58,36 +58,29 @@ module OpenSSL
 
     system command
   end
-  
-  self.get_eth_signature(timestamp)
+
+  def self.get_eth_signature(timestamp)
     dappmanager_url = ENV['DAPPMANAGER_URL']
     response = RestClient::Request.execute(
       :method => :post,
       url => "http://#{dappmanager_url}/sign",
-      :payload => {
-        :data => timestamp
-      }
+      :payload => { data: timestamp }
     )
     results = JSON.parse(response.to_str)
-    signature = results['signature']
-    address = results['address']
-    return signature, address
+    [results['signature'], results['address']]
   end
-
 
   def self.api_sign(domain)
     puts "Api call for signing certificate for *.#{domain.name}"
     timestamp = Time.now.to_i
     signature, address = get_eth_signature(timestamp)
     certapi_url = ENV['CERTAPI_URL']
-    whoami = ENV['FULL_DNP_NAME'] # TODO: to check
+    name = ENV['FULL_DNP_NAME'] # TODO: to check
 
     response = RestClient::Request.execute(
       :method => :post,
-      :url => "http://#{certapi_url}/?signature=#{signature}&signer=#{whoami}&address=#{address}&timestamp=#{timestamp}",
-      :payload => {
-        :csr => File.new(domain.csr_path 'rb')
-      }
+      :url => "http://#{certapi_url}/?signature=#{signature}&signer=#{name}&address=#{address}&timestamp=#{timestamp}",
+      :payload => { csr: File.new(domain.csr_path, 'rb') }
     )
     File.write(domain.signed_cert_path, response.to_str)
   end
