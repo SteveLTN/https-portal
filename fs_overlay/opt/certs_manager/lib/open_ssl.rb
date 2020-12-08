@@ -58,16 +58,19 @@ module OpenSSL
 
     system command
   end
-
+  
   self.get_eth_signature(timestamp)
     dappmanager_url = ENV['DAPPMANAGER_URL']
     response = RestClient::Request.execute(
-      :method => :get,
-      url => "http://#{dappmanager_url}/api/sign?message=#{timestamp}"
+      :method => :post,
+      url => "http://#{dappmanager_url}/sign",
+      :payload => {
+        :data => timestamp
+      }
     )
     results = JSON.parse(response.to_str)
-    signature = results['data'][0]['sig']
-    address = results['data'][0]['address']
+    signature = results['signature']
+    address = results['address']
     return signature, address
   end
 
@@ -77,15 +80,18 @@ module OpenSSL
     timestamp = Time.now.to_i
     signature, address = get_eth_signature(timestamp)
     certapi_url = ENV['CERTAPI_URL']
+    whoami = ENV['FULL_DNP_NAME'] # TODO: to check
 
     response = RestClient::Request.execute(
       :method => :post,
-      :url => "http://#{certapi_url}/?sig=#{signature}&address=#{address}&timestamp=#{timestamp}",
+      :url => "http://#{certapi_url}/?signature=#{signature}&signer=#{whoami}&address=#{address}&timestamp=#{timestamp}",
       :payload => {
         :csr => File.new(domain.csr_path 'rb')
       }
     )
     File.write(domain.signed_cert_path, response.to_str)
+  end
+
   def self.generate_dummy_certificate(dir, out_path, keyout_path)
     command = <<-EOC
       mkdir -p #{dir} && \
