@@ -22,11 +22,16 @@ RUN tar xzf /tmp/s6-overlay-$ARCH.tar.gz -C / &&\
     rm /tmp/s6-overlay-$ARCH.tar.gz && \
     rm /etc/nginx/conf.d/default.conf && \
     apt-get update && \
-    apt-get install -y python ruby cron iproute2 apache2-utils logrotate inotify-tools && \
+    apt-get install -y python ruby ruby-rest-client cron iproute2 apache2-utils logrotate nodejs npm && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /src/api
 
 COPY ./fs_overlay /
+
+COPY api/package*.json /src/api/
+RUN npm install --prefix=/src/api/
+COPY ./api /src/api
 
 RUN chmod a+x /bin/*
 
