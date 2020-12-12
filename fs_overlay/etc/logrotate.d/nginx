@@ -15,6 +15,6 @@
         fi \
     endscript
     postrotate
-        invoke-rc.d nginx rotate >/dev/null 2>&1
+        nginx -s reopen
     endscript
 }
