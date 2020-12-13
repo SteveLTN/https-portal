@@ -15,7 +15,7 @@ class CertsManager
       domain.ensure_welcome_page
     end
 
-    generate_dummy_certificate_for_default_server
+    ensure_dummy_certificate_for_default_server
     OpenSSL.ensure_dhparam
     OpenSSL.ensure_account_key
 

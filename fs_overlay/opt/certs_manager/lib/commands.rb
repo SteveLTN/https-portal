@@ -26,11 +26,17 @@ module Commands
     end
   end
 
-  def generate_dummy_certificate_for_default_server
-    OpenSSL.generate_dummy_certificate(
-      File.join(NAConfig.portal_base_dir, "default_server"),
-      File.join(NAConfig.portal_base_dir, "default_server/default_server.crt"),
-      File.join(NAConfig.portal_base_dir, "default_server/default_server.key")
-    )
+  def ensure_dummy_certificate_for_default_server
+    base_dir = File.join(NAConfig.portal_base_dir, "default_server")
+    cert_path = File.join(NAConfig.portal_base_dir, "default_server/default_server.crt")
+    key_path = File.join(NAConfig.portal_base_dir, "default_server/default_server.key")
+
+    unless File.exist?(cert_path) && File.exist?(key_path)
+      OpenSSL.generate_dummy_certificate(
+        base_dir,
+        cert_path,
+        key_path
+      )
+    end
   end
 end
