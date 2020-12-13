@@ -54,6 +54,8 @@ module OpenSSL
   end
 
   def self.generate_dummy_certificate(dir, out_path, keyout_path)
+    puts "Generating dummy certificate for default fallback server"
+
     command = <<-EOC
       mkdir -p #{dir} && \
       openssl req -x509 -newkey \
