@@ -1,5 +1,6 @@
 require 'date'
 require 'rest-client'
+require 'json'
 
 
 module OpenSSL
@@ -18,7 +19,7 @@ module OpenSSL
 
   def self.create_csr(domain)
     if domain.stage == 'dappnode-api'
-      system "openssl req -new -sha256 -key #{domain.key_path} -subj '/CN=#{domain.name}' -addext 'subjectAltName = *.#{domain.name}' > #{domain.csr_path}"
+      system "openssl req -new -sha256 -key #{domain.key_path} -subj '/CN=#{ENV['PUBLIC_DOMAIN']}' -addext 'subjectAltName = *.#{ENV['PUBLIC_DOMAIN']}' > #{domain.csr_path}"
     else
       system "openssl req -new -sha256 -key #{domain.key_path} -subj '/CN=#{domain.name}' > #{domain.csr_path}"
     end
@@ -61,21 +62,25 @@ module OpenSSL
 
   def self.get_eth_signature(timestamp)
     dappmanager_url = ENV['DAPPMANAGER_URL']
-    response = RestClient::Request.execute(
-      :method => :post,
-      url => "http://#{dappmanager_url}/sign",
-      :payload => { data: timestamp }
-    )
+
+    response = RestClient.post("http://#{dappmanager_url}/sign", timestamp.to_s, :content_type => 'text/plain')
+    # response = RestClient::Request.execute(
+    #  :method => :post,
+    #  :headers => {content_type: 'text/plain'},
+    #  :url => "http://#{dappmanager_url}/sign",
+    #  :body => timestamp.to_s
+    # )
     results = JSON.parse(response.to_str)
+    puts results
     [results['signature'], results['address']]
   end
 
   def self.api_sign(domain)
-    puts "Api call for signing certificate for *.#{domain.name}"
+    puts "Api call for signing certificate for *.#{ENV['PUBLIC_DOMAIN']}"
     timestamp = Time.now.to_i
     signature, address = get_eth_signature(timestamp)
     certapi_url = ENV['CERTAPI_URL']
-    name = ENV['FULL_DNP_NAME'] # TODO: to check
+    name = 'https-portal.dnp.dappnode.eth' # ENV['FULL_DNP_NAME'] # TODO: to check
 
     response = RestClient::Request.execute(
       :method => :post,
