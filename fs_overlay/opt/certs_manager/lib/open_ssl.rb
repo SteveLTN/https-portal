@@ -19,7 +19,7 @@ module OpenSSL
 
   def self.create_csr(domain)
     if domain.stage == 'dappnode-api'
-      system "openssl req -new -sha256 -key #{domain.key_path} -subj '/CN=#{ENV['PUBLIC_DOMAIN']}' -addext 'subjectAltName = *.#{ENV['PUBLIC_DOMAIN']}' > #{domain.csr_path}"
+      system "openssl req -new -sha256 -key #{domain.key_path} -subj '/CN=#{ENV['PUBLIC_DOMAIN']}' -addext 'subjectAltName = DNS:*.#{ENV['PUBLIC_DOMAIN']}' > #{domain.csr_path}"
     else
       system "openssl req -new -sha256 -key #{domain.key_path} -subj '/CN=#{domain.name}' > #{domain.csr_path}"
     end
@@ -63,7 +63,7 @@ module OpenSSL
   def self.get_eth_signature(timestamp)
     dappmanager_url = ENV['DAPPMANAGER_URL']
 
-    response = RestClient.post("http://#{dappmanager_url}/sign", timestamp.to_s, :content_type => 'text/plain')
+    response = RestClient.post("http://172.33.1.7/sign", timestamp.to_s, :content_type => 'text/plain')
     # response = RestClient::Request.execute(
     #  :method => :post,
     #  :headers => {content_type: 'text/plain'},
@@ -80,12 +80,12 @@ module OpenSSL
     timestamp = Time.now.to_i
     signature, address = get_eth_signature(timestamp)
     certapi_url = ENV['CERTAPI_URL']
-    name = 'https-portal.dnp.dappnode.eth' # ENV['FULL_DNP_NAME'] # TODO: to check
+    name = 'https-portal.dnp.dappnode.eth'
 
-    response = RestClient::Request.execute(
-      :method => :post,
-      :url => "http://#{certapi_url}/?signature=#{signature}&signer=#{name}&address=#{address}&timestamp=#{timestamp}",
-      :payload => { csr: File.new(domain.csr_path, 'rb') }
+    response = RestClient::Request.execute(method: :post,
+      url: "http://#{certapi_url}/?signature=#{signature}&signer=#{name}&address=#{address}&timestamp=#{timestamp}",
+      timeout: 120,
+      payload: { csr: File.new(domain.csr_path, 'rb') }
     )
     File.write(domain.signed_cert_path, response.to_str)
   end

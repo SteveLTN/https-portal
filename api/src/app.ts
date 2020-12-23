@@ -92,6 +92,7 @@ app.get("/remove",
     }
     db.get('entries').remove(removeKey).write().then(() => {
       generateDomainsFile();
+      exec.exec("reconfig");
       return res.sendStatus(204);
     }).catch((err) => {
         console.log(err);

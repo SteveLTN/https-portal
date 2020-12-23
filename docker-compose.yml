@@ -3,17 +3,27 @@ version: '3.8'
 services:
   https-portal:
     build: .
+    container_name: DAppNodePackage-https-portal.dnp.dappnode.eth
     ports:
       - '80:80'
       - '443:443'
     environment: 
       STAGE: 'dappnode-api'
-      DAPPMANAGER_URL: 127.0.0.1
-      CERTAPI_URL: 127.0.0.1
+      CERTAPI_URL: 'cert-api:5000'
+      PUBLIC_DOMAIN: 'xxxxx.dyndns.dappnode.io'
     volumes:
-       - "portal-certs:/var/lib/https-portal/wildcard_certs/"
-       - "portal-data:/var/run/domains.d/"
+      - "portal-certs:/var/lib/https-portal/"
+      - "portal-data:/var/run/domains.d/"
+    networks: 
+      - dncore_network
+      - dappnode_public
+       
 networks: 
-  default:
-    external: 
-      name: dappnode_public
+  dappnode_public:
+    external: true
+  dncore_network:
+    external: true
+
+volumes: 
+  portal-certs:
+  portal-data:
