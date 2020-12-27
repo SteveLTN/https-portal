@@ -1,0 +1,80 @@
+#/bin/sh
+# Usage: archname.sh <PACKAGE>
+#
+# Outputs the correct architecture string for the named package, translating
+# between the different platform strings. The nice things about standards…
+# PACKAGE is one of "s6-overlay" or "docker-gen"
+#
+# Reads the docker architecture from $TARGETPLATFORM (set by `docker buildx
+# build`) and outputs the appropriate per-package architecture name. If
+# $TARGETPLATFORM is unset (using legacy `docker build`), it is determined from
+# the output for `arch`, which is unreliable in case it is run in an emulator.
+# If you really plan to build inside an emulator with the legacy build process,
+# you are on your own.
+
+
+# Platform compatibility/naming matrix as of 2020-01-17:
+# - Nginx: https://hub.docker.com/_/nginx?tab=tags
+# - S6 Overlay: https://github.com/just-containers/s6-overlay/releases
+# - Docker-Gen: https://github.com/jwilder/docker-gen/releases
+# - ACME-Tiny: No architecture/platform dependencies
+# - Stars elsewhere are not part of the output, but indicate special values
+#
+# Nginx (Docker) | `arch` output | S6 Overlay | Docker-Gen | ACME-Tiny
+# ---------------+---------------+------------+------------+----------
+# linux/386      | x86_64*       | x86        | i386       | *
+# linux/amd64    | x86_64        | amd64      | amd64      | *
+# linux/arm/v5   | armv7l*       | arm        | armel      | *
+# linux/arm/v6*  | armv7l*       | arm        | armel      | *
+# linux/arm/v7   | armv7l        | armhf      | armhf      | *
+# linux/arm64/v8 | aarch64       | aarch64    | armhf*     | *
+# linux/mips64le | mips64        | ---        | ---        | *
+# linux/ppc64le  | ppc6le        | ppc64le    | ---        | *
+# linux/s390x    | s390x         | ---        | ---        | *
+#
+# Notes:
+# - nginx:1.19.6 does not support linux/arm/v6
+# - `arch` output as reported potentially inside the emulater with
+#   `docker buildx build --builder docker-multiarch --platform ...`
+# - Assuming linux/arm/v5 and linux/arm/v6 are user-level compatible (for
+#   S6 Overlay and Docker-Gen)
+# - Assuming Docker-Gen armhf is user-level compatible with linux/arm64/v8
+
+# This is only used for `docker build`, so we should not run inside the
+# emulator:
+if [ "x$TARGETPLATFORM" = "x" ]; then
+  case `arch` in
+    # Extend this list as necessary
+    x86_64)  TARGETPLATFORM=linux/amd64;;
+    armv7l)  TARGETPLATFORM=linux/arm/v7;;
+    aarch64) TARGETPLATFORM=linux/arm64/v8;;
+    *)       echo "$0: Empty TARGETPLATFORM, unsupported ARCH: `arch`">&2; exit 1;;
+  esac
+fi
+
+case "$1" in
+  s6-overlay)
+    case "$TARGETPLATFORM" in
+      linux/386)	echo x86;;
+      linux/amd64)	echo amd64;;
+      linux/arm/v5)	echo arm;;
+      linux/arm/v6)	echo arm;;
+      linux/arm/v7)	echo armhf;;
+      linux/arm64/v8)	echo aarch64;;
+      *)		echo "$0: Unsupported TARGETPLATFORM: $TARGETPLATFORM" >&2; exit 1;;
+    esac
+    ;;
+  docker-gen)
+    case "$TARGETPLATFORM" in
+      linux/386)	echo i386;;
+      linux/amd64)	echo amd64;;
+      linux/arm/v5)	echo armel;;
+      linux/arm/v6)	echo armel;;
+      linux/arm/v7)	echo armhf;;
+      linux/arm64/v8)	echo armhf;;
+      *)		echo "$0: Unsupported TARGETPLATFORM: $TARGETPLATFORM" >&2; exit 1;;
+    esac
+    ;;
+  *)
+    echo "$0: Unsupported package: $1" >&2; exit 1;;
+esac
