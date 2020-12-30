@@ -8,5 +8,5 @@ export default {
   db_name: process.env.DB_NAME || "domains.json",
   domains_dir: process.env.DOMAIN_DIR || "/var/run/domains.d",
   domains_file: process.env.DOMAINS || "domains",
-  public_domain: process.env.PUBLIC_DOMAIN
+  public_domain: process.env.PUBLIC_DOMAIN || process.env._DAPPNODE_GLOBAL_DOMAIN
 };

@@ -19,7 +19,7 @@ module OpenSSL
 
   def self.create_csr(domain)
     if domain.stage == 'dappnode-api'
-      system "openssl req -new -sha256 -key #{domain.key_path} -subj '/CN=#{ENV['PUBLIC_DOMAIN']}' -addext 'subjectAltName = DNS:*.#{ENV['PUBLIC_DOMAIN']}' > #{domain.csr_path}"
+      system "openssl req -new -sha256 -key #{domain.key_path} -subj '/CN=#{domain.global}' -addext 'subjectAltName = DNS:*.#{domain.global}' > #{domain.csr_path}"
     else
       system "openssl req -new -sha256 -key #{domain.key_path} -subj '/CN=#{domain.name}' > #{domain.csr_path}"
     end
@@ -76,7 +76,7 @@ module OpenSSL
   end
 
   def self.api_sign(domain)
-    puts "Api call for signing certificate for *.#{ENV['PUBLIC_DOMAIN']}"
+    puts "Api call for signing certificate for *.#{domain.global}"
     timestamp = Time.now.to_i
     signature, address = get_eth_signature(timestamp)
     certapi_url = ENV['CERTAPI_URL']

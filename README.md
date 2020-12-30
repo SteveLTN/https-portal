@@ -14,7 +14,6 @@ By setting environment varialbe `STAGE` to `dappnode-api`, https-portal uses DAp
 | -------------- | --------------------- | ----------------------------- |
 | STAGE          | dappnode-api          | Mode description              |
 | CERTAPI_URL    | TBD                   | URL of remote signing service |
-| PUBLIC_DOMAIN  | xxxx.dydns.dappnode.io| Provided domain from DAppNode |
 
 This mode can only be used within DAppNode as a package.
 ## Running DAppNode on your own domain

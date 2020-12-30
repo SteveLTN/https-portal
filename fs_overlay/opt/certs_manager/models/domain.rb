@@ -77,6 +77,14 @@ class Domain
     parsed_descriptor[:domain]
   end
 
+  def global
+    if ENV['_DAPPNODE_GLOBAL_DOMAIN']
+      ENV['_DAPPNODE_GLOBAL_DOMAIN']
+    else
+      ENV['PUBLIC_DOMAIN']
+    end
+  end
+
   def upstream_backend_name
     "backend_" + parsed_descriptor[:domain]
   end
