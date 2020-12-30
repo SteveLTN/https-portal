@@ -23,4 +23,4 @@ In this mode, following environment variables have to be set:
 | Name           | Value                 | Description        |
 | -------------- | --------------------- | ------------------ |
 | STAGE          | production            | Mode description   |
-| PUBLIC_DOMAIN  | yourdomain            | Your domain which  |
+| PUBLIC_DOMAIN  |                       | Your domain        |
