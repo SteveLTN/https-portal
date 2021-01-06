@@ -50,8 +50,8 @@ server {
         <%= ENV['CUSTOM_NGINX_SERVER_CONFIG_BLOCK'] %>
     <% end %>
 
-    <% if ENV["CUSTOM_NGINX_#{domain.env_name}_CONFIG_BLOCK"] %>
-        <%= ENV["CUSTOM_NGINX_#{domain.env_name}_CONFIG_BLOCK"] %>
+    <% if ENV["CUSTOM_NGINX_#{domain.env_format_name}_CONFIG_BLOCK"] %>
+        <%= ENV["CUSTOM_NGINX_#{domain.env_format_name}_CONFIG_BLOCK"] %>
     <% end %>
 
     <% if domain.upstream %>

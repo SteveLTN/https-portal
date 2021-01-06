@@ -8,7 +8,7 @@ RSpec.describe Domain do
   end
 
   it 'returns correct names, upstream. redirect_target_url, stage etc.' do
-    keys = [:descriptor, :name, :env_name, :upstream_proto, :upstreams, :redirect_target_url, :stage, :basic_auth_username, :basic_auth_password, :access_restriction]
+    keys = [:descriptor, :name, :env_format_name, :upstream_proto, :upstreams, :redirect_target_url, :stage, :basic_auth_username, :basic_auth_password, :access_restriction]
 
     domain_configs = [
       ['example.com', 'example.com', 'EXAMPLE_COM', nil, [], nil, 'local', nil, nil, nil],
@@ -44,7 +44,7 @@ RSpec.describe Domain do
       domain = Domain.new(config[:descriptor])
 
       expect(domain.name).to eq(config[:name]), lambda { "Parsing failed on #{config[:descriptor].inspect} method :name, expected #{config[:name].inspect}, got #{domain.name.inspect}" }
-      expect(domain.env_name).to eq(config[:env_name]), lambda { "Parsing failed on #{config[:descriptor].inspect} method :env_name, expected #{config[:env_name].inspect}, got #{domain.env_name.inspect}" }
+      expect(domain.env_format_name).to eq(config[:env_format_name]), lambda { "Parsing failed on #{config[:descriptor].inspect} method :env_format_name, expected #{config[:env_format_name].inspect}, got #{domain.env_format_name.inspect}" }
       expect(domain.upstream_proto).to eq(config[:upstream_proto]), lambda { "Parsing failed on #{config[:descriptor].inspect} method :upstream_proto, expected #{config[:upstream_proto].inspect}, got #{domain.upstream_proto.inspect}" }
       expect(domain.upstreams).to eq(config[:upstreams]), lambda { "Parsing failed on #{config[:descriptor].inspect} method :upstreams, expected #{config[:upstreams].inspect}, got #{domain.upstreams.inspect}" }
       expect(domain.redirect_target_url).to eq(config[:redirect_target_url]), lambda { "Parsing failed on #{config[:descriptor].inspect} method :redirect_target_url, expected #{config[:redirect_target_url].inspect}, got #{domain.redirect_target_url.inspect}" }

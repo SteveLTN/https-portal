@@ -551,7 +551,7 @@ You can also make it multi-line:
 
 The `CUSTOM_NGINX_SERVER_CONFIG_BLOCK` will be inserted after all other configuration blocks listed in section "Configure Nginx through Environment Variables", and it might conflict with other configurations.
 
-In addition to the global `CUSTOM_NGINX_SERVER_CONFIG_BLOCK`, which applies to all configurations, there are `CUSTOM_NGINX_<UPPERCASE_AND_UNDERSCORED_DOMAIN_NAME>_CONFIG_BLOCK`s, which are inserted after the `CUSTOM_NGINX_SERVER_CONFIG_BLOCK`, but only into the configuration file for a specific site. To make specific changes to `example.com` only, create an environment variable `CUSTOM_NGINX_EXAMPLE_COM_CONFIG_BLOCK`.
+In addition to the global `CUSTOM_NGINX_SERVER_CONFIG_BLOCK`, which applies to all configurations, there are `CUSTOM_NGINX_<UPPERCASE_AND_UNDERSCORED_DOMAIN_NAME>_CONFIG_BLOCK`s, which are inserted after the `CUSTOM_NGINX_SERVER_CONFIG_BLOCK`, but only into the configuration file for a specific site. **For instance**, To make specific changes to `example.com` only, create an environment variable `CUSTOM_NGINX_EXAMPLE_COM_CONFIG_BLOCK`.
 
 ```
 # generated Nginx config:
