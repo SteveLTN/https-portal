@@ -73,6 +73,10 @@ class Domain
     parsed_descriptor[:domain]
   end
 
+  def env_name
+    name.upcase.tr('^A-Z0-9', '_')
+  end
+
   def upstream_backend_name
     "backend_" + parsed_descriptor[:domain]
   end
