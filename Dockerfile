@@ -1,4 +1,4 @@
-ARG  DIST=nginx:1.17.3
+ARG  DIST=nginx:1.19.6
 FROM $DIST
 ARG  ARCH=amd64
 
