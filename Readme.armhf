@@ -1,5 +1,23 @@
-#to build armhf image from amd64 machine:
-#Install qemu, see https://github.com/multiarch/qemu-user-static
-docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-#Pass relevant args to the docker build cmd
-docker build  --build-arg DIST=arm32v7/nginx:1.17.3 --build-arg ARCH=armhf -t https-portal:armhf-master .
+# Cross-platform/multi-platform docker images
+Docker images for different and/or multiple architectures may be built using
+`sudo make docker-multiarch`.
+
+# Single-platform image for the current platform (compatibility)
+As usual: `docker build .`
+
+# Basic multi-platform build
+Publish to your private docker registry, using the default set of platforms:
+
+`sudo make docker-multiarch REGISTRY=docker.example.com`
+
+# Specify your list of platforms
+`sudo make docker-multiarch REGISTRY=docker.example.com PLATFORMS=linux/arm/v7`
+
+For details on the supported platforms, see `./fs_overlay/bin/archname`.
+
+# Set-up
+In order to support cross-platform building, you need to install
+`docker-buildx`. It can be downloaded from
+https://github.com/docker/buildx/releases/latest and needs to be installed
+as `~/.docker/cli-plugins/docker-buildx` and `chmod +x`ed. See
+https://github.com/docker/buildx for more information.
