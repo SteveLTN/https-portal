@@ -27,6 +27,7 @@
 # linux/arm/v5   | armv7l*       | arm        | armel      | *
 # linux/arm/v6*  | armv7l*       | arm        | armel      | *
 # linux/arm/v7   | armv7l        | armhf      | armhf      | *
+# linux/arm64*   | aarch64       | aarch64    | armhf*     | *
 # linux/arm64/v8 | aarch64       | aarch64    | armhf*     | *
 # linux/mips64le | mips64        | ---        | ---        | *
 # linux/ppc64le  | ppc6le        | ppc64le    | ---        | *
@@ -39,6 +40,7 @@
 # - Assuming linux/arm/v5 and linux/arm/v6 are user-level compatible (for
 #   S6 Overlay and Docker-Gen)
 # - Assuming Docker-Gen armhf is user-level compatible with linux/arm64/v8
+# - Apparently, linux/arm64 and linux/arm64/v8 are used interchangeably
 
 # This is only used for `docker build`, so we should not run inside the
 # emulator:
@@ -60,7 +62,7 @@ case "$1" in
       linux/arm/v5)	echo arm;;
       linux/arm/v6)	echo arm;;
       linux/arm/v7)	echo armhf;;
-      linux/arm64/v8)	echo aarch64;;
+      linux/arm64*)	echo aarch64;;
       *)		echo "$0: Unsupported TARGETPLATFORM: $TARGETPLATFORM" >&2; exit 1;;
     esac
     ;;
@@ -71,7 +73,7 @@ case "$1" in
       linux/arm/v5)	echo armel;;
       linux/arm/v6)	echo armel;;
       linux/arm/v7)	echo armhf;;
-      linux/arm64/v8)	echo armhf;;
+      linux/arm64*)	echo armhf;;
       *)		echo "$0: Unsupported TARGETPLATFORM: $TARGETPLATFORM" >&2; exit 1;;
     esac
     ;;
