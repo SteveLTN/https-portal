@@ -12,7 +12,7 @@ REGISTRY	= steveltn
 # for anything else, output nothing
 BASETAG		= ${REGISTRY}/https-portal
 VERSIONTAGS	= $(shell git describe --tags | \
-                  sed -n -e 's,^\(\(\([0-9]*\).[0-9]*\).[0-9]*\).*,-t ${BASETAG}:\1 -t ${BASETAG}:\2 -t ${BASETAG}:\3,p')
+                  sed -n -e 's,^\(\(\([0-9]*\).[0-9]*\).[0-9]*\)\(.*\),-t ${BASETAG}:\1\4 -t ${BASETAG}:\2\4 -t ${BASETAG}:\3\4,p')
 
 # For platform compatibility/naming matrix, see `./fs_overlay/bin/archname`
 #
@@ -23,6 +23,12 @@ VERSIONTAGS	= $(shell git describe --tags | \
 PLATFORMS	= linux/386,linux/amd64,linux/arm/v7,linux/arm64/v8
 
 docker-multiarch:	qemu buildx docker-multiarch-builder
+	docker login
+	docker buildx build --builder docker-multiarch --pull \
+		--platform ${PLATFORMS} \
+		${VERSIONTAGS} -t ${BASETAG}:latest .
+
+docker-multiarch-push: qemu buildx docker-multiarch-builder
 	docker login
 	docker buildx build --builder docker-multiarch --pull --push \
 		--platform ${PLATFORMS} \
