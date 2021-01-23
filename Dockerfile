@@ -28,7 +28,7 @@ RUN sh -c "wget -q https://github.com/jwilder/docker-gen/releases/download/$DOCK
     tar xzC /bin
 RUN wget -q https://raw.githubusercontent.com/diafygi/acme-tiny/$ACME_TINY_VERSION/acme_tiny.py -O /bin/acme_tiny
 
-RUN rm /etc/nginx/conf.d/default.conf
+RUN rm /etc/nginx/conf.d/default.conf /etc/crontab
 
 COPY ./fs_overlay /
 
