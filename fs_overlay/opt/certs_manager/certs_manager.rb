@@ -8,6 +8,8 @@ class CertsManager
 
   def setup
     add_dockerhost_to_hosts
+    ensure_crontab
+
     NAConfig.domains.each do |domain|
       if NAConfig.debug_mode?
         domain.print_debug_info
@@ -87,5 +89,19 @@ class CertsManager
       lock.flock File::LOCK_EX
       yield(block)
     end
+  end
+
+  def ensure_crontab
+    crontab = '/etc/crontab'
+
+    unless File.exist?(crontab)
+      File.open(crontab, 'w') do |file|
+        file.write compiled_crontab
+      end
+    end
+  end
+
+  def compiled_crontab
+    ERBBinding.new('/var/lib/crontab.erb', {}).compile
   end
 end
