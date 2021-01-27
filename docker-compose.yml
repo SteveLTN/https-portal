@@ -2,7 +2,7 @@ version: "3.4"
 services:
   https-portal.public.dappnode.eth:
     build: .
-    image: "wireguard.public.dappnode.eth:0.1.0"
+    image: "https-portal.public.dappnode.eth:0.1.0"
     restart: always
     ports:
       - "80:80"
