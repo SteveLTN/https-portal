@@ -18,7 +18,7 @@ class CertsManager
     system 'mkdir -p /var/run/domains.d/'
 
     generate_dummy_certificate_for_default_server
-    OpenSSL.ensure_dhparam
+    # OpenSSL.ensure_dhparam
     OpenSSL.ensure_account_key
 
     generate_ht_access(NAConfig.domains)
