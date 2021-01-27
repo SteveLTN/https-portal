@@ -78,10 +78,18 @@ class Domain
   end
 
   def global
-    if ENV['_DAPPNODE_GLOBAL_DOMAIN']
-      ENV['_DAPPNODE_GLOBAL_DOMAIN']
-    else
-      ENV['PUBLIC_DOMAIN']
+    set = 0
+    while set.zero?
+      if ENV['PUBLIC_DOMAIN']
+        ENV['PUBLIC_DOMAIN']
+        set = 1
+      elsif NV['_DAPPNODE_GLOBAL_DOMAIN']
+        ENV['_DAPPNODE_GLOBAL_DOMAIN']
+        set = 1
+      else
+        puts 'Neither PUBLIC_DOMAIN or  _DAPPNODE_GLOBAL_DOMAIN not set, sleeping for 1 sec'
+        sleep 1
+      end
     end
   end
 
