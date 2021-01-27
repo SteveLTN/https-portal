@@ -70,6 +70,9 @@ module OpenSSL
     #  :url => "http://#{dappmanager_url}/sign",
     #  :body => timestamp.to_s
     # )
+    if response.code != 200
+      raise('Failed to get DNP_DAPPMANAGER signature')
+    end
     results = JSON.parse(response.to_str)
     puts results
     [results['signature'], results['address']]
@@ -87,6 +90,10 @@ module OpenSSL
       timeout: 120,
       payload: { csr: File.new(domain.csr_path, 'rb') }
     )
+    if response.code != 200
+      raise('Failed to sign certificate')
+    end
+    puts "Certificate signed!"
     File.write(domain.signed_cert_path, response.to_str)
   end
 
