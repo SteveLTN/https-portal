@@ -5,9 +5,9 @@ import config from "./config";
 import lowdb from "lowdb";
 import FileAsync from "lowdb/adapters/FileAsync";
 
-function createIfNotExists(path: string) {
-  if (!fs.existsSync(path)) {
-    fs.mkdirSync(path);
+function createIfNotExists(paths: string) {
+  if (!fs.existsSync(paths)) {
+    fs.mkdirSync(paths);
   }
 }
 

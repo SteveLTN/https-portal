@@ -9,8 +9,8 @@ services:
       - '443:443'
     environment: 
       STAGE: 'dappnode-api'
-      CERTAPI_URL: 'cert-api:5000'
-      PUBLIC_DOMAIN: 'xxxxx.dyndns.dappnode.io'
+      CERTAPI_URL: 'ns.dappnode.io:5000'
+      PUBLIC_DOMAIN: 
     volumes:
       - "portal-certs:/var/lib/https-portal/"
       - "portal-data:/var/run/domains.d/"
