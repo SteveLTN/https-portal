@@ -1,7 +1,7 @@
 {
-    "name": "wireguard.public.dappnode.eth",
+    "name": "https-portal.public.dappnode.eth",
     "version": "0.1.0",
-    "description": "Https for DAppNode",
+    "description": "HTTPS portal for DAppNode",
     "type": "service",
     "author": "Shardlabs",
     "categories": ["Developer tools"],
