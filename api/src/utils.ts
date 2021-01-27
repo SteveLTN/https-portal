@@ -7,9 +7,9 @@ import FileAsync from "lowdb/adapters/FileAsync";
 import { ChildProcess } from "child_process";
 import { promisify } from "util";
 
-function createIfNotExists(path: string) {
-  if (!fs.existsSync(path)) {
-    fs.mkdirSync(path);
+function createIfNotExists(paths: string) {
+  if (!fs.existsSync(paths)) {
+    fs.mkdirSync(paths);
   }
 }
 

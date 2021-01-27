@@ -32,7 +32,7 @@ COPY ./fs_overlay /
 COPY api/package*.json /src/api/
 RUN npm install --prefix=/src/api/
 COPY ./api /src/api
-
+RUN npm run build --prefix=/src/api/
 RUN chmod a+x /bin/*
 
 VOLUME /var/lib/https-portal
