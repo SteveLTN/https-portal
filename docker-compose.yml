@@ -1,29 +1,20 @@
-version: '3.8'
-
+version: "3.4"
 services:
-  https-portal:
+  https-portal.public.dappnode.eth:
     build: .
-    container_name: DAppNodePackage-https-portal.dnp.dappnode.eth
+    image: "wireguard.public.dappnode.eth:0.1.0"
+    restart: always
     ports:
-      - '80:80'
-      - '443:443'
-    environment: 
-      STAGE: 'dappnode-api'
-      CERTAPI_URL: 'ns.dappnode.io:5000'
-      PUBLIC_DOMAIN: 
+      - "80:80"
+      - "443:443"
+    environment:
+      STAGE: dappnode-api
+      CERTAPI_URL: "ns.dappnode.io:5000"
+      PUBLIC_DOMAIN: null
+      NAME: https-portal.public.dappnode.eth
     volumes:
       - "portal-certs:/var/lib/https-portal/"
       - "portal-data:/var/run/domains.d/"
-    networks: 
-      - dncore_network
-      - dappnode_public
-       
-networks: 
-  dappnode_public:
-    external: true
-  dncore_network:
-    external: true
-
-volumes: 
-  portal-certs:
-  portal-data:
+volumes:
+  portal-certs: {}
+  portal-data: {}

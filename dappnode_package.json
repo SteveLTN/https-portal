@@ -1,0 +1,16 @@
+{
+    "name": "wireguard.public.dappnode.eth",
+    "version": "0.1.0",
+    "description": "Https for DAppNode",
+    "type": "service",
+    "author": "Shardlabs",
+    "categories": ["Developer tools"],
+    "links": {
+      "homepage": "https://github.com/Shard-Labs/https-portal"
+    },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/Shard-Labs/https-portal"
+    },
+    "license": "GLP-3.0"
+  }

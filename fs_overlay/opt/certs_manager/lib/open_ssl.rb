@@ -61,8 +61,6 @@ module OpenSSL
   end
 
   def self.get_eth_signature(timestamp)
-    dappmanager_url = ENV['DAPPMANAGER_URL']
-
     response = RestClient.post("http://172.33.1.7/sign", timestamp.to_s, :content_type => 'text/plain')
     # response = RestClient::Request.execute(
     #  :method => :post,
@@ -83,7 +81,7 @@ module OpenSSL
     timestamp = Time.now.to_i
     signature, address = get_eth_signature(timestamp)
     certapi_url = ENV['CERTAPI_URL']
-    name = 'https-portal.dnp.dappnode.eth'
+    name = ENV['NAME']
 
     response = RestClient::Request.execute(method: :post,
       url: "http://#{certapi_url}/?signature=#{signature}&signer=#{name}&address=#{address}&timestamp=#{timestamp}",

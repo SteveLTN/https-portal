@@ -1,3 +1,4 @@
 test/
 spec/examples.txt
 Research
+build*
