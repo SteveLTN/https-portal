@@ -19,8 +19,8 @@ app.use(morgan("tiny"));
 app.get(
   "/add",
   [
-    query("from").exists().isString(),
-    query("to").exists().isString()
+    query("from").exists(),
+    query("to").exists()
   ],
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
@@ -60,8 +60,8 @@ app.get(
 app.get("/remove",
   oneOf(
     [
-      query("from").exists().isString(),
-      query("to").exists().isString()
+      query("from").exists(),
+      query("to").exists()
   ]),
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
