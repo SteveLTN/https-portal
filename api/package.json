@@ -26,6 +26,7 @@
   "dependencies": {
     "@types/dotenv-defaults": "^2.0.0",
     "@types/morgan": "^1.9.2",
+    "axios": "^0.21.1",
     "dotenv-defaults": "^2.0.1",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",

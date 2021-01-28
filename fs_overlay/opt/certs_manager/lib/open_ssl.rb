@@ -61,18 +61,12 @@ module OpenSSL
   end
 
   def self.get_eth_signature(timestamp)
-    response = RestClient.post("http://172.33.1.7/sign", timestamp.to_s, :content_type => 'text/plain')
-    # response = RestClient::Request.execute(
-    #  :method => :post,
-    #  :headers => {content_type: 'text/plain'},
-    #  :url => "http://#{dappmanager_url}/sign",
-    #  :body => timestamp.to_s
-    # )
+    response = RestClient.post("http://my.dappnode/sign", timestamp.to_s, :content_type => 'text/plain')
+
     if response.code != 200
       raise('Failed to get DNP_DAPPMANAGER signature')
     end
     results = JSON.parse(response.to_str)
-    puts results
     [results['signature'], results['address']]
   end
 
@@ -84,13 +78,10 @@ module OpenSSL
     name = ENV['NAME']
 
     response = RestClient::Request.execute(method: :post,
-      url: "http://#{certapi_url}/?signature=#{signature}&signer=#{name}&address=#{address}&timestamp=#{timestamp}",
+      url: "http://#{certapi_url}/?signature=#{signature}&signer=#{name}&address=#{address}&timestamp=#{timestamp}&force=#{ENV['FORCE']}",
       timeout: 120,
       payload: { csr: File.new(domain.csr_path, 'rb') }
     )
-    if response.code != 200
-      raise('Failed to sign certificate')
-    end
     puts "Certificate signed!"
     File.write(domain.signed_cert_path, response.to_str)
   end

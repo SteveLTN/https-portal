@@ -11,9 +11,9 @@ import FileAsync from "lowdb/adapters/FileAsync";
 import exec from 'child_process';
 import empty from "is-empty";
 import fs from "fs";
+import axios from "axios"
 
 const app = express();
-
 
 app.use(morgan("tiny"));
 app.get(
@@ -27,16 +27,10 @@ app.get(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-
-    const domain: string = process.env._DAPPNODE_GLOBAL_DOMAIN || process.env.PUBLIC_DOMAIN ;
-
-    if(domain.length < 1) {
-      return res.status(400).json({ error: "Domain not yet set" });
-    }
-
+    
+    const domain: string = (await axios.get("http://my.dappnode/global-envs/DOMAIN")).data;
     const from: string = `${req.query.from as string}.${domain}`;
     const to: string = req.query.to as string;
-
     const adapter = new FileAsync<Schema>(path.join(config.db_dir, config.db_name));
     const db = await lowdb(adapter);
     db.defaults({ entries: [] }).write();
@@ -69,13 +63,7 @@ app.get("/remove",
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const domain: string = process.env._DAPPNODE_GLOBAL_DOMAIN || process.env.PUBLIC_DOMAIN ;
-
-    if(domain.length < 1) {
-      return res.status(400).json({ error: "Domain not yet set" });
-    }
-
-
+    const domain: string = (await axios.get("http://my.dappnode/global-envs/DOMAIN")).data;
     const adapter = new FileAsync<Schema>(path.join(config.db_dir, config.db_name));
     const db = await lowdb(adapter);
     db.defaults({ entries: [] }).write();

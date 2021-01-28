@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'rest-client'
 
 class Domain
   STAGES = %w(production staging local dappnode-api).freeze
@@ -78,19 +79,11 @@ class Domain
   end
 
   def global
-    set = 0
-    while set.zero?
       if ENV['PUBLIC_DOMAIN']
-        return ENV['PUBLIC_DOMAIN']
-        set = 1
-      elsif ENV['_DAPPNODE_GLOBAL_DOMAIN']
-        return ENV['_DAPPNODE_GLOBAL_DOMAIN']
-        set = 1
+        ENV['PUBLIC_DOMAIN']
       else
-        puts 'Neither PUBLIC_DOMAIN or  _DAPPNODE_GLOBAL_DOMAIN not set, sleeping for 1 sec'
-        sleep 1
+        RestClient.get('http://my.dappnode/global-envs/DOMAIN').to_str
       end
-    end
   end
 
   def upstream_backend_name
