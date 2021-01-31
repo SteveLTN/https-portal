@@ -1,17 +1,15 @@
 import express, { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import { oneOf, query, param, validationResult } from "express-validator";
-import { generateDomainsFile, generateDomainsString, promisifyChildProcess } from './utils'
+import { generateDomainsFile, generateDomainsString, getDAppNodeDomain, shell } from './utils'
 import morgan from "morgan";
 import path from "path";
 import config from "./config";
 import { Schema } from "./types";
 import lowdb from "lowdb";
 import FileAsync from "lowdb/adapters/FileAsync";
-import exec from 'child_process';
 import empty from "is-empty";
 import fs from "fs";
-import axios from "axios"
 
 const app = express();
 
@@ -28,7 +26,7 @@ app.get(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const domain: string = (await axios.get("http://my.dappnode/global-envs/DOMAIN")).data;
+    const domain: string = await getDAppNodeDomain();
     const from: string = `${req.query.from as string}.${domain}`;
     const to: string = req.query.to as string;
 
@@ -43,23 +41,17 @@ app.get(
       return res.status(400).json({ error: "External endpoint already exists!" });
     }
 
-    await db.get('entries').push({from, to}).write()
-    .then(() => generateDomainsFile())
-    .then(() => promisifyChildProcess(exec.exec("reconfig")))
-    .catch((err) => {
-        console.log(err);
-        next(err);
-    }).finally(() => {
-      res.sendStatus(204);
-    });
+    await db.get('entries').push({from, to}).write();
+    await generateDomainsFile();
+    console.log(await shell("reconfig"));
+    return res.sendStatus(204);
 
 }));
 
 app.get("/remove",
   oneOf(
     [
-      query("from").exists(),
-      query("to").exists()
+      query("from").exists()
   ]),
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
@@ -67,7 +59,7 @@ app.get("/remove",
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const domain: string = (await axios.get("http://my.dappnode/global-envs/DOMAIN")).data;
+    const domain: string = await getDAppNodeDomain();
     const adapter = new FileAsync<Schema>(path.join(config.db_dir, config.db_name));
     const db = await lowdb(adapter);
     db.defaults({ entries: [] }).write();
@@ -97,16 +89,10 @@ app.get("/remove",
       }
       removeKey = {from, to};
     }
-    await db.get('entries').remove(removeKey).write()
-    .then(() => generateDomainsFile())
-    .then(() => promisifyChildProcess(exec.exec("reconfig")))
-    .catch((err) => {
-        console.log(err);
-        next(err);
-    }).finally(() => {
-      res.sendStatus(204);
-    });
-
+    await db.get('entries').remove(removeKey).write();
+    await generateDomainsFile();
+    console.log(await shell("reconfig"));
+    return res.sendStatus(204);
 }));
 
 app.get("/dump/:how",
@@ -139,12 +125,7 @@ app.get("/clear",
       fs.unlinkSync(dbFile);
       const adapter = new FileAsync<Schema>(dbFile);
       const db = await lowdb(adapter);
-      db.defaults({ entries: [] }).write()
-      .then(() => generateDomainsFile())
-      .catch((err) => {
-        console.log(err);
-        next(err);
-      });
+      await db.defaults({ entries: [] }).write();
     }
 
     return res.sendStatus(204);
@@ -153,13 +134,8 @@ app.get("/clear",
 
 app.get("/reconfig",
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    promisifyChildProcess(exec.exec("reconfig")).then(() => {
-      res.sendStatus(204);
-    })
-    .catch((err) => {
-        console.log(err);
-        next(err);
-    });
+    console.log(await shell("reconfig"));
+    return res.sendStatus(204);
 }));
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

@@ -4,11 +4,9 @@
   "description": "dAppNode HTTPS Portal API",
   "main": "index.js",
   "scripts": {
-    "prebuild": "rm -rf dist/* && tslint -c tslint.json -p tsconfig.json --fix",
     "build": "tsc && cp -rf package.json dist/package.json",
-    "start": "ts-node src/index.ts",
-    "dev": "nodemon --exec ts-node src/index.ts",
-    "test": "mocha -r ts-node/register tests/**/*.spec.ts"
+    "start": "node ./dist/index.js",
+    "lint": "eslint . --ext .ts"
   },
   "keywords": [],
   "author": "",
