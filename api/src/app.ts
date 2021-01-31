@@ -27,7 +27,7 @@ app.get(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    
+
     const domain: string = (await axios.get("http://my.dappnode/global-envs/DOMAIN")).data;
     const from: string = `${req.query.from as string}.${domain}`;
     const to: string = req.query.to as string;
@@ -39,7 +39,7 @@ app.get(
     const db = await lowdb(adapter);
     db.defaults({ entries: [] }).write();
 
-    if (!empty(db.get('entries').find({ from: from }).value())) {
+    if (!empty(db.get('entries').find({ from }).value())) {
       return res.status(400).json({ error: "External endpoint already exists!" });
     }
 
@@ -52,7 +52,7 @@ app.get(
     }).finally(() => {
       res.sendStatus(204);
     });
-    
+
 }));
 
 app.get("/remove",
@@ -75,27 +75,27 @@ app.get("/remove",
 
     if(!req.query.to  && req.query.from) {
       const from: string = `${req.query.from as string}.${domain}`;
-      if (empty(db.get('entries').find({ from: from }).value())) {
+      if (empty(db.get('entries').find({ from }).value())) {
         return res.status(400).json({ error: "External endpoint not found!" });
       }
-      removeKey = {from: from};
+      removeKey = {from};
     }
 
     else if(req.query.to  && !req.query.from) {
       const to: string = req.query.to as string;
-      if (empty(db.get('entries').find({ to: to }).value())) {
+      if (empty(db.get('entries').find({ to }).value())) {
         return res.status(400).json({ error: "Internal endpoint not found!" });
       }
-      removeKey = {to: to};
+      removeKey = {to};
     }
 
     else {
       const from: string = `${req.query.from as string}.${domain}`;
       const to: string = req.query.to as string;
-      if (empty(db.get('entries').find({from: from, to: to }).value())) {
+      if (empty(db.get('entries').find({from, to }).value())) {
         return res.status(304).json({ message: "External -> internal forwarding not found!" });
       }
-      removeKey = {from: from, to: to};
+      removeKey = {from, to};
     }
     await db.get('entries').remove(removeKey).write()
     .then(() => generateDomainsFile())
@@ -109,7 +109,7 @@ app.get("/remove",
 
 }));
 
-app.get("/dump/:how", 
+app.get("/dump/:how",
   [
     param("how").exists().isIn(["json", "txt"]).withMessage("Only json and txt allowed.")
   ],
@@ -130,7 +130,7 @@ app.get("/dump/:how",
 
 }));
 
-app.get("/clear", 
+app.get("/clear",
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
 
     const dbFile: string = path.join(config.db_dir, config.db_name);
@@ -148,6 +148,18 @@ app.get("/clear",
     }
 
     return res.sendStatus(204);
+}));
+
+
+app.get("/reconfig",
+  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    promisifyChildProcess(exec.exec("reconfig")).then(() => {
+      res.sendStatus(204);
+    })
+    .catch((err) => {
+        console.log(err);
+        next(err);
+    });
 }));
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
