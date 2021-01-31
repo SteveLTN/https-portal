@@ -50,6 +50,11 @@ server {
         <%= ENV['CUSTOM_NGINX_SERVER_CONFIG_BLOCK'] %>
     <% end %>
 
+    location /dappnode-health-check {
+      access_log off;
+      return 200 "I am healthy!\n";
+    }
+
     <% if domain.upstream %>
     location / {
         <% if ENV['DYNAMIC_UPSTREAM'] && ENV['DYNAMIC_UPSTREAM'].downcase == 'true' %>

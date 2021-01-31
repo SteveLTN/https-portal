@@ -5,6 +5,11 @@ server {
     <% end %>
     server_name  <%= domain.name %>;
 
+    location /dappnode-health-check {
+      access_log off;
+      return 200 "I am healthy!\n";
+    }
+
     location / {
       return    301 https://$server_name$request_uri;
     }
