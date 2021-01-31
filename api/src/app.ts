@@ -32,7 +32,7 @@ app.get(
     const from: string = `${req.query.from as string}.${domain}`;
     const to: string = req.query.to as string;
 
-    if(from.includes(".")) {
+    if((req.query.from as string).includes(".")) {
       return res.status(400).json({ error: "Parameter from should not be FQDN nor contain any aditiondal subdomains" });
     }
     const adapter = new FileAsync<Schema>(path.join(config.db_dir, config.db_name));
