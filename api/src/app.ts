@@ -31,6 +31,10 @@ app.get(
     const domain: string = (await axios.get("http://my.dappnode/global-envs/DOMAIN")).data;
     const from: string = `${req.query.from as string}.${domain}`;
     const to: string = req.query.to as string;
+
+    if(from.includes(".")) {
+      return res.status(400).json({ error: "Parameter from should not be FQDN nor contain any aditiondal subdomains" });
+    }
     const adapter = new FileAsync<Schema>(path.join(config.db_dir, config.db_name));
     const db = await lowdb(adapter);
     db.defaults({ entries: [] }).write();
