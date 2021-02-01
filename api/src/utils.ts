@@ -10,11 +10,19 @@ import axios from "axios";
 import * as child from "child_process";
 const exec = promisify(child.exec);
 
-async function generateDomainsString(): Promise<string> {
+function deleteDomainPart(data) {
+  data.forEach((o) => {
+    o.from = o.from.split(".")[0];
+  });
+  return data;
+}
+
+async function generateDomainsString(full: boolean = true): Promise<string> {
   const adapter = new FileAsync<Schema>(path.join(config.db_dir, config.db_name));
   const db = await lowdb(adapter);
+  db.defaults({ entries: [] }).write();
 
-  const data = db.get('entries').value();
+  const data = full?db.get('entries').value():deleteDomainPart(db.get('entries').value());
   let output: string = "";
 
   for(const entry of data){
@@ -95,4 +103,4 @@ export class ShellError extends Error implements child.ExecException {
   }
 }
 
-export { generateDomainsString, generateDomainsFile, getDAppNodeDomain, shell };
+export { generateDomainsString, generateDomainsFile, getDAppNodeDomain, shell, deleteDomainPart };
