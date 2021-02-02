@@ -1,6 +1,7 @@
 require 'date'
 require 'rest-client'
 require 'json'
+require "#{File.dirname(__FILE__)}/nginx"
 
 
 module OpenSSL
@@ -76,12 +77,20 @@ module OpenSSL
     signature, address = get_eth_signature(timestamp)
     certapi_url = ENV['CERTAPI_URL']
     name = ENV['NAME']
-
-    response = RestClient::Request.execute(method: :post,
-      url: "http://#{certapi_url}/?signature=#{signature}&signer=#{name}&address=#{address}&timestamp=#{timestamp}&force=#{ENV['FORCE']}",
-      timeout: 120,
-      payload: { csr: File.new(domain.csr_path, 'rb') }
-    )
+    force = ENV['FORCE'] || 0
+    begin
+      response = RestClient::Request.execute(method: :post,
+        url: "http://#{certapi_url}/?signature=#{signature}&signer=#{name}&address=#{address}&timestamp=#{timestamp}&force=#{force}",
+        timeout: 120,
+        payload: { csr: File.new(domain.csr_path, 'rb') }
+      )
+      raise "Error in api Call" unless response.code == 200
+    rescue => e
+      puts "An error occured during API call. "
+      puts e
+      Nginx.stop
+      exit
+    end
     puts "Certificate signed!"
     File.write(domain.signed_cert_path, response.to_str)
   end
