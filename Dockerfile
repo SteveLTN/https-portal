@@ -1,8 +1,17 @@
 FROM node:12-alpine AS builder
-COPY api/package*.json /src/api/
-RUN npm install --prefix=/src/api/
-COPY ./api /src/api
-RUN npm run build --prefix=/src/api/
+
+WORKDIR /src/api/
+
+# Install all deps to build
+COPY api/package*.json ./
+RUN npm install
+
+COPY ./api ./
+RUN npm run build
+
+# Re-install only production for final layer
+RUN rm -rf node_modules && npm install --production
+
 
 
 FROM nginx:1.17.3
@@ -31,19 +40,11 @@ RUN tar xzf /tmp/s6-overlay-$ARCH.tar.gz -C / && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /src/api
 
+RUN apt-get update && apt-get install nodejs -y && rm -rf /var/lib/apt/lists/*
 
 COPY ./fs_overlay /
-
-RUN mkdir -p $NVM_DIR
-RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
-RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
-RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
-ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-
 COPY --from=builder /src/api/dist /src/api/dist
-COPY api/package*.json /src/api/
-RUN npm install --production --prefix=/src/api/
+COPY --from=builder /src/api/node_modules /src/api/node_modules
 RUN chmod a+x /bin/*
 
 VOLUME /var/lib/https-portal
