@@ -1,4 +1,4 @@
 test/
 spec/examples.txt
 Research
-build*
+/build_*

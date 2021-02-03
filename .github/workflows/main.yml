@@ -1,0 +1,26 @@
+name: "Main"
+on:
+  pull_request:
+  push:
+    branches:
+      - "master"
+      - "v[0-9]+.[0-9]+.[0-9]+"
+    paths-ignore:
+      - "README.md"
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: [unit-test, integration-test]
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "10.x"
+      - name: Publish
+        run: npx @dappnode/dappnodesdk publish patch --dappnode_team_preset
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
