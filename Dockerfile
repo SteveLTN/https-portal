@@ -3,14 +3,14 @@ FROM node:12-alpine AS builder
 WORKDIR /src/api/
 
 # Install all deps to build
-COPY api/package*.json ./
-RUN npm install
+COPY api/package.json api/yarn.lock ./
+RUN yarn install
 
 COPY ./api ./
-RUN npm run build
+RUN yarn run build
 
 # Re-install only production for final layer
-RUN rm -rf node_modules && npm install --production
+RUN rm -rf node_modules && yarn install --production
 
 
 
