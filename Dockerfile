@@ -22,10 +22,13 @@ ENV S6_OVERLAY_VERSION v2.2.0.1
 ENV DOCKER_GEN_VERSION 0.7.4
 ENV ACME_TINY_VERSION 4.1.0
 
-RUN sh -c "wget -q https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-`archname s6-overlay`.tar.gz -O -" | \
-    tar xzC /
-RUN sh -c "wget -q https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-linux-`archname docker-gen`-$DOCKER_GEN_VERSION.tar.gz -O -" | \
-    tar xzC /bin
+RUN sh -c "wget -q https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-`archname s6-overlay`.tar.gz -O /tmp/s6-overlay.tar.gz" && \
+    tar xzf /tmp/s6-overlay.tar.gz -C / && \
+    rm -rf /tmp/s6-overlay.tar.gz
+RUN sh -c "wget -q https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-linux-`archname docker-gen`-$DOCKER_GEN_VERSION.tar.gz -O /tmp/docker-gen.tar.gz" && \
+    tar xzf /tmp/docker-gen.tar.gz -C /bin && \
+    rm -rf /tmp/docker-gen.tar.gz
+
 RUN wget -q https://raw.githubusercontent.com/diafygi/acme-tiny/$ACME_TINY_VERSION/acme_tiny.py -O /bin/acme_tiny
 
 RUN rm /etc/nginx/conf.d/default.conf /etc/crontab
