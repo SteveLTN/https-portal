@@ -9,10 +9,26 @@ on:
       - "README.md"
 
 jobs:
+  unit-test:
+    defaults:
+      run:
+        working-directory: /api
+    runs-on: ubuntu-16.04
+    name: Unit tests
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "10.x"
+      - run: yarn
+      - run: yarn build
+      - run: yarn lint
+
   release:
     name: Release
     runs-on: ubuntu-latest
-    needs: [unit-test, integration-test]
+    needs: [unit-test]
     if: github.event_name == 'push'
     steps:
       - uses: actions/checkout@v2

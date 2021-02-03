@@ -2,7 +2,6 @@ import dotenv from "dotenv-defaults";
 
 dotenv.config();
 
-
 export default {
   db_dir: process.env.DB_DIR || "/var/run/domains.d",
   db_name: process.env.DB_NAME || "domains.json",
