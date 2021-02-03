@@ -32,7 +32,7 @@ docker-multiarch-push: qemu buildx docker-multiarch-builder
 	docker login
 	docker buildx build --builder docker-multiarch --pull --push \
 		--platform ${PLATFORMS} \
-		${VERSIONTAGS} -t ${BASETAG}:latest .
+		${VERSIONTAGS} .
 
 qemu:		${QEMUDETECT}
 ${QEMUDETECT}:
