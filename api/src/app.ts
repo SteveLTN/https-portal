@@ -1,7 +1,13 @@
 import express, { NextFunction, Request, Response } from "express";
 import asyncHandler from "express-async-handler";
 import { oneOf, query, param, validationResult } from "express-validator";
-import { generateDomainsFile, generateDomainsString, getDAppNodeDomain, shell, deleteDomainPart } from './utils'
+import {
+  generateDomainsFile,
+  generateDomainsString,
+  getDAppNodeDomain,
+  shell,
+  deleteDomainPart
+} from "./utils";
 import morgan from "morgan";
 import path from "path";
 import config from "./config";
@@ -16,10 +22,7 @@ const app = express();
 app.use(morgan("tiny"));
 app.get(
   "/add",
-  [
-    query("from").exists(),
-    query("to").exists()
-  ],
+  [query("from").exists(), query("to").exists()],
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -27,32 +30,39 @@ app.get(
     }
 
     const domain: string = await getDAppNodeDomain();
-    const from: string = `${req.query.from as string}.${domain}`;
+    const from = `${req.query.from as string}.${domain}`;
     const to: string = req.query.to as string;
 
-    if((req.query.from as string).includes(".")) {
-      return res.status(400).json({ error: "Parameter from should not be FQDN nor contain any aditiondal subdomains" });
+    if ((req.query.from as string).includes(".")) {
+      return res
+        .status(400)
+        .json({
+          error:
+            "Parameter from should not be FQDN nor contain any aditiondal subdomains"
+        });
     }
-    const adapter = new FileAsync<Schema>(path.join(config.db_dir, config.db_name));
+    const adapter = new FileAsync<Schema>(
+      path.join(config.db_dir, config.db_name)
+    );
     const db = await lowdb(adapter);
     db.defaults({ entries: [] }).write();
 
-    if (!empty(db.get('entries').find({ from }).value())) {
-      return res.status(400).json({ error: "External endpoint already exists!" });
+    if (!empty(db.get("entries").find({ from }).value())) {
+      return res
+        .status(400)
+        .json({ error: "External endpoint already exists!" });
     }
 
-    await db.get('entries').push({from, to}).write();
+    await db.get("entries").push({ from, to }).write();
     await generateDomainsFile();
     console.log(await shell("reconfig"));
     return res.sendStatus(204);
+  })
+);
 
-}));
-
-app.get("/remove",
-  oneOf(
-    [
-      query("from").exists()
-  ]),
+app.get(
+  "/remove",
+  oneOf([query("from").exists()]),
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -60,76 +70,82 @@ app.get("/remove",
     }
 
     const domain: string = await getDAppNodeDomain();
-    const adapter = new FileAsync<Schema>(path.join(config.db_dir, config.db_name));
+    const adapter = new FileAsync<Schema>(
+      path.join(config.db_dir, config.db_name)
+    );
     const db = await lowdb(adapter);
     db.defaults({ entries: [] }).write();
     let removeKey: any = {};
 
-    if(!req.query.to  && req.query.from) {
-      const from: string = `${req.query.from as string}.${domain}`;
-      if (empty(db.get('entries').find({ from }).value())) {
+    if (!req.query.to && req.query.from) {
+      const from = `${req.query.from as string}.${domain}`;
+      if (empty(db.get("entries").find({ from }).value())) {
         return res.status(400).json({ error: "External endpoint not found!" });
       }
-      removeKey = {from};
-    }
-
-    else if(req.query.to  && !req.query.from) {
+      removeKey = { from };
+    } else if (req.query.to && !req.query.from) {
       const to: string = req.query.to as string;
-      if (empty(db.get('entries').find({ to }).value())) {
+      if (empty(db.get("entries").find({ to }).value())) {
         return res.status(400).json({ error: "Internal endpoint not found!" });
       }
-      removeKey = {to};
-    }
-
-    else {
-      const from: string = `${req.query.from as string}.${domain}`;
+      removeKey = { to };
+    } else {
+      const from = `${req.query.from as string}.${domain}`;
       const to: string = req.query.to as string;
-      if (empty(db.get('entries').find({from, to }).value())) {
-        return res.status(304).json({ message: "External -> internal forwarding not found!" });
+      if (empty(db.get("entries").find({ from, to }).value())) {
+        return res
+          .status(304)
+          .json({ message: "External -> internal forwarding not found!" });
       }
-      removeKey = {from, to};
+      removeKey = { from, to };
     }
-    await db.get('entries').remove(removeKey).write();
+    await db.get("entries").remove(removeKey).write();
     await generateDomainsFile();
     console.log(await shell("reconfig"));
     return res.sendStatus(204);
-}));
+  })
+);
 
-app.get("/", [
-  query("format").optional().isIn(["txt", "json"]),
-  query("full").optional().isBoolean().toBoolean()
+app.get(
+  "/",
+  [
+    query("format").optional().isIn(["txt", "json"]),
+    query("full").optional().isBoolean().toBoolean()
   ],
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    
 
     const format = req.query.format || "txt";
     const full: any = req.query.full === undefined ? true : req.query.full;
 
-    if(format === "txt") {
+    if (format === "txt") {
       return res.status(200).send(await generateDomainsString(full));
-    } else if(format === "json") {
-      const adapter = new FileAsync<Schema>(path.join(config.db_dir, config.db_name));
+    } else if (format === "json") {
+      const adapter = new FileAsync<Schema>(
+        path.join(config.db_dir, config.db_name)
+      );
       const db = await lowdb(adapter);
       db.defaults({ entries: [] }).write();
-      const data = db.get('entries').value();
-      if(!full) {
+      const data = db.get("entries").value();
+      if (!full) {
         return res.status(200).json(deleteDomainPart(data));
       }
       return res.status(200).json(data);
     }
-    return res.status(400).json({error: "Unknown format, choose between txt and json."})
-}));
+    return res
+      .status(400)
+      .json({ error: "Unknown format, choose between txt and json." });
+  })
+);
 
-app.get("/clear",
+app.get(
+  "/clear",
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-
     const dbFile: string = path.join(config.db_dir, config.db_name);
-    if(fs.existsSync(dbFile)) {
-
+    if (fs.existsSync(dbFile)) {
       fs.unlinkSync(dbFile);
       const adapter = new FileAsync<Schema>(dbFile);
       const db = await lowdb(adapter);
@@ -137,27 +153,27 @@ app.get("/clear",
     }
 
     return res.sendStatus(204);
-}));
+  })
+);
 
-
-app.get("/reconfig",
+app.get(
+  "/reconfig",
   asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     console.log(await shell("reconfig"));
     return res.sendStatus(204);
-}));
+  })
+);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   return res.status(500).json({
-    error: err,
+    error: err
   });
 });
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   return res.status(404).json({
-    error: "Not Found",
+    error: "Not Found"
   });
 });
 
 export { app };
-
-

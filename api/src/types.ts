@@ -5,4 +5,4 @@ export interface Entry {
 
 export interface Schema {
   entries: Entry[];
-};
+}
