@@ -35,12 +35,15 @@ RUN tar xzf /tmp/s6-overlay-$ARCH.tar.gz -C / && \
     rm /tmp/s6-overlay-$ARCH.tar.gz && \
     rm /etc/nginx/conf.d/default.conf && \
     apt-get update && \
-    apt-get install -y curl ruby ruby-rest-client cron iproute2 apache2-utils logrotate && \
+    apt-get install -y \
+    # From original image
+    ruby ruby-rest-client cron iproute2 apache2-utils logrotate \
+    # For Typescript app
+    nodejs \
+    && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     mkdir -p /src/api
-
-RUN apt-get update && apt-get install nodejs -y && rm -rf /var/lib/apt/lists/*
 
 COPY ./fs_overlay /
 COPY --from=builder /src/api/dist /src/api/dist
