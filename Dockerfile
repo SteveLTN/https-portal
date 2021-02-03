@@ -47,7 +47,7 @@ RUN tar xzf /tmp/s6-overlay-$ARCH.tar.gz -C / && \
 
 COPY ./fs_overlay /
 COPY --from=builder /src/api/node_modules /src/api/node_modules
-COPY --from=builder /src/api/dist /src/api/dist
+COPY --from=builder /src/api/dist /src/api/
 RUN chmod a+x /bin/*
 
 VOLUME /var/lib/https-portal
