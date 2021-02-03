@@ -1,8 +1,8 @@
 version: "3.4"
 services:
-  https-portal.public.dappnode.eth:
+  https-portal.dnp.dappnode.eth:
     build: .
-    image: "https-portal.public.dappnode.eth:0.1.0"
+    image: "https-portal.dnp.dappnode.eth:0.1.0"
     restart: always
     ports:
       - "80:80"
@@ -11,7 +11,7 @@ services:
       STAGE: dappnode-api
       CERTAPI_URL: "ns.dappnode.io:5000"
       PUBLIC_DOMAIN: null
-      NAME: https-portal.public.dappnode.eth
+      NAME: https-portal.dnp.dappnode.eth
     volumes:
       - "portal-certs:/var/lib/https-portal/"
       - "portal-data:/var/run/domains.d/"
