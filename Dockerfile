@@ -18,7 +18,7 @@ RUN apt-get update && \
 # Need this already now, but cannot copy remainder of fs_overlay yet
 COPY ./fs_overlay/bin/archname /bin/
 
-ENV S6_OVERLAY_VERSION v1.22.1.0
+ENV S6_OVERLAY_VERSION v2.2.0.1
 ENV DOCKER_GEN_VERSION 0.7.4
 ENV ACME_TINY_VERSION 4.1.0
 
