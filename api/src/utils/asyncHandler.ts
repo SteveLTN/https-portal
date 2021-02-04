@@ -8,6 +8,12 @@ export class HttpError extends Error {
   }
 }
 
+export class BadRequestError extends HttpError {
+  constructor(message: string) {
+    super(message, 400);
+  }
+}
+
 export function asyncHandler<T>(
   handler: (req: Request) => Promise<T>
 ): RequestHandler {
