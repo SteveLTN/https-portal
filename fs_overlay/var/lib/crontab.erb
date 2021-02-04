@@ -13,5 +13,5 @@ SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 # m h dom mon dow user  command
-<%= rand 60 %> <%= rand 24 %> * * * root  . /etc/cron_env.sh; /bin/sleep <%= rand * 60 %>; /bin/renew_certs > /proc/$(cat /var/run/crond.pid)/fd/1 2>&1
-45 3 * * * root  . /etc/cron_env.sh; /usr/sbin/logrotate -s /var/lib/logrotate/logrotate.status /etc/logrotate.d/nginx -l /var/log/nginx/logrotate.log
+<%= rand 60 %> <%= rand 24 %> * * * root  /bin/sleep <%= '%.3f' % (rand * 60) %>; /usr/bin/with-contenv /bin/renew_certs > /proc/$(cat /var/run/crond.pid)/fd/1 2>&1
+45 3 * * * root  /usr/sbin/logrotate -s /var/lib/logrotate/logrotate.status /etc/logrotate.d/nginx -l /var/log/nginx/logrotate.log
