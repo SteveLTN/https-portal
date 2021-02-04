@@ -1,179 +1,71 @@
-import express, { NextFunction, Request, Response } from "express";
-import asyncHandler from "express-async-handler";
-import { oneOf, query, param, validationResult } from "express-validator";
-import {
-  generateDomainsFile,
-  generateDomainsString,
-  getDAppNodeDomain,
-  shell,
-  deleteDomainPart
-} from "./utils";
+import express, { ErrorRequestHandler, Request, Response } from "express";
 import morgan from "morgan";
-import path from "path";
-import config from "./config";
-import { Schema } from "./types";
-import lowdb from "lowdb";
-import FileAsync from "lowdb/adapters/FileAsync";
-import empty from "is-empty";
-import fs from "fs";
+import { HttpError, asyncHandler } from "./utils/asyncHandler";
+import { entriesDb } from "./db";
+import { reconfigureNGINX } from "./nginx";
+import { sanitizeFrom, sanitizeTo } from "./utils/sanitize";
 
 const app = express();
 
 app.use(morgan("tiny"));
+
 app.get(
   "/add",
-  [query("from").exists(), query("to").exists()],
-  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+  asyncHandler(async req => {
+    const from = sanitizeFrom(req.query.from as string);
+    const to = sanitizeTo(req.query.to as string);
+
+    const entries = entriesDb.get();
+    if (entries.some(entry => entry.from === from)) {
+      throw new HttpError("External endpoint already exists", 400);
     }
 
-    const domain: string = await getDAppNodeDomain();
-    const from = `${req.query.from as string}.${domain}`;
-    const to: string = req.query.to as string;
+    entries.push({ from, to });
+    entriesDb.set(entries);
 
-    if ((req.query.from as string).includes(".")) {
-      return res
-        .status(400)
-        .json({
-          error:
-            "Parameter from should not be FQDN nor contain any aditiondal subdomains"
-        });
-    }
-    const adapter = new FileAsync<Schema>(
-      path.join(config.db_dir, config.db_name)
-    );
-    const db = await lowdb(adapter);
-    db.defaults({ entries: [] }).write();
-
-    if (!empty(db.get("entries").find({ from }).value())) {
-      return res
-        .status(400)
-        .json({ error: "External endpoint already exists!" });
-    }
-
-    await db.get("entries").push({ from, to }).write();
-    await generateDomainsFile();
-    console.log(await shell("reconfig"));
-    return res.sendStatus(204);
+    await reconfigureNGINX();
   })
 );
 
 app.get(
   "/remove",
-  oneOf([query("from").exists()]),
-  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+  asyncHandler(async req => {
+    const from = sanitizeFrom(req.query.from as string);
 
-    const domain: string = await getDAppNodeDomain();
-    const adapter = new FileAsync<Schema>(
-      path.join(config.db_dir, config.db_name)
-    );
-    const db = await lowdb(adapter);
-    db.defaults({ entries: [] }).write();
-    let removeKey: any = {};
+    const entries = entriesDb.get();
+    entriesDb.set(entries.filter(e => e.from !== from));
 
-    if (!req.query.to && req.query.from) {
-      const from = `${req.query.from as string}.${domain}`;
-      if (empty(db.get("entries").find({ from }).value())) {
-        return res.status(400).json({ error: "External endpoint not found!" });
-      }
-      removeKey = { from };
-    } else if (req.query.to && !req.query.from) {
-      const to: string = req.query.to as string;
-      if (empty(db.get("entries").find({ to }).value())) {
-        return res.status(400).json({ error: "Internal endpoint not found!" });
-      }
-      removeKey = { to };
-    } else {
-      const from = `${req.query.from as string}.${domain}`;
-      const to: string = req.query.to as string;
-      if (empty(db.get("entries").find({ from, to }).value())) {
-        return res
-          .status(304)
-          .json({ message: "External -> internal forwarding not found!" });
-      }
-      removeKey = { from, to };
-    }
-    await db.get("entries").remove(removeKey).write();
-    await generateDomainsFile();
-    console.log(await shell("reconfig"));
-    return res.sendStatus(204);
+    await reconfigureNGINX();
   })
 );
 
 app.get(
   "/",
-  [
-    query("format").optional().isIn(["txt", "json"]),
-    query("full").optional().isBoolean().toBoolean()
-  ],
-  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    const format = req.query.format || "txt";
-    const full: any = req.query.full === undefined ? true : req.query.full;
-
-    if (format === "txt") {
-      return res.status(200).send(await generateDomainsString(full));
-    } else if (format === "json") {
-      const adapter = new FileAsync<Schema>(
-        path.join(config.db_dir, config.db_name)
-      );
-      const db = await lowdb(adapter);
-      db.defaults({ entries: [] }).write();
-      const data = db.get("entries").value();
-      if (!full) {
-        return res.status(200).json(deleteDomainPart(data));
-      }
-      return res.status(200).json(data);
-    }
-    return res
-      .status(400)
-      .json({ error: "Unknown format, choose between txt and json." });
-  })
-);
-
-app.get(
-  "/clear",
-  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const dbFile: string = path.join(config.db_dir, config.db_name);
-    if (fs.existsSync(dbFile)) {
-      fs.unlinkSync(dbFile);
-      const adapter = new FileAsync<Schema>(dbFile);
-      const db = await lowdb(adapter);
-      await db.defaults({ entries: [] }).write();
-    }
-
-    return res.sendStatus(204);
-  })
+  asyncHandler(async () => entriesDb.get())
 );
 
 app.get(
   "/reconfig",
-  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    console.log(await shell("reconfig"));
-    return res.sendStatus(204);
+  asyncHandler(async () => await reconfigureNGINX())
+);
+
+app.get(
+  "/clear",
+  asyncHandler(async () => {
+    entriesDb.clear();
+    await reconfigureNGINX();
   })
 );
 
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  return res.status(500).json({
-    error: err
-  });
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({ error: "Not Found" });
 });
 
-app.use((req: Request, res: Response, next: NextFunction) => {
-  return res.status(404).json({
-    error: "Not Found"
-  });
-});
+// Default error handler
+app.use(function (err, _req, res, next) {
+  if (res.headersSent) return next(err);
+  const code = err instanceof HttpError ? err.code : 500;
+  res.status(code).json({ error: err.message });
+} as ErrorRequestHandler);
 
 export { app };

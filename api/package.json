@@ -4,7 +4,7 @@
   "description": "dAppNode HTTPS Portal API",
   "main": "index.js",
   "scripts": {
-    "build": "tsc && cp -rf package.json dist/package.json",
+    "build": "tsc",
     "start": "node ./dist/index.js",
     "lint": "eslint . --ext .ts --fix",
     "prettier": "prettier --write 'src/**/*.*' 'test/**/*.*'"
@@ -30,11 +30,7 @@
     "@types/dotenv-defaults": "^2.0.0",
     "@types/morgan": "^1.9.2",
     "axios": "^0.21.1",
-    "dotenv-defaults": "^2.0.1",
     "express": "^4.17.1",
-    "express-async-handler": "^1.1.4",
-    "express-validator": "^6.7.0",
-    "is-empty": "^1.2.0",
     "lowdb": "^1.0.0",
     "morgan": "^1.10.0"
   }

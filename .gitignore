@@ -2,3 +2,10 @@ test/
 spec/examples.txt
 Research
 /build_*
+
+# API
+node_modules/
+dist/
+.env
+.DS_Store
+/api/domains_dir/
