@@ -14,7 +14,7 @@ RUN rm -rf node_modules && yarn install --production
 
 
 
-FROM nginx:1.17.3
+FROM nginx:1.17.3-alpine
 ARG  ARCH=amd64
 
 # Delete sym links from nginx image, install logrotate
@@ -34,16 +34,16 @@ ADD https://raw.githubusercontent.com/diafygi/acme-tiny/$ACME_TINY_VERSION/acme_
 RUN tar xzf /tmp/s6-overlay-$ARCH.tar.gz -C / && \
     rm /tmp/s6-overlay-$ARCH.tar.gz && \
     rm /etc/nginx/conf.d/default.conf && \
-    apt-get update && \
-    apt-get install -y \
+    apk add --update \
     # From original image
-    ruby ruby-rest-client cron iproute2 apache2-utils logrotate \
+    ruby-dev build-base iproute2 apache2-utils logrotate openssl \
     # For Typescript app
     nodejs \
     && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /src/api
+   # apt-get clean && \
+   # rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /src/api && \
+    gem install --no-rdoc --no-ri rest-client json
 
 COPY ./fs_overlay /
 COPY --from=builder /src/api/node_modules /src/api/node_modules
