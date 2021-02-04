@@ -27,12 +27,6 @@ server {
        add_header Strict-Transport-Security "max-age=<%= ENV['HSTS_MAX_AGE'] %>" always;
     <% end %>
 
-
-    # Prevent Nginx from leaking other server configurations on the same machine
-    if ($host != $server_name) {
-        return 444;
-    }
-
     <% if domain.access_restriction %>
         <% domain.access_restriction.each do |ip| %>
             allow <%= ip %>;
