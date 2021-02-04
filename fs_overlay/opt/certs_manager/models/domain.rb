@@ -79,6 +79,7 @@ class Domain
   end
 
   def global
+    begin
       if ENV['PUBLIC_DOMAIN']
         ENV['PUBLIC_DOMAIN']
       else
@@ -90,6 +91,12 @@ class Domain
         end
         raise('Could not determine domain')
       end
+    rescue => e
+      puts "An error occured during API call to DAPPMANAGER determine DAppnode domain"
+      puts e
+      Nginx.stop
+      exit
+    end
   end
 
   def upstream_backend_name

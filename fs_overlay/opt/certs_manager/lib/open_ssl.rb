@@ -62,13 +62,20 @@ module OpenSSL
   end
 
   def self.get_eth_signature(timestamp)
-    response = RestClient.post("http://my.dappnode/sign", timestamp.to_s, :content_type => 'text/plain')
+    begin
+      response = RestClient.post("http://my.dappnode/sign", timestamp.to_s, :content_type => 'text/plain')
 
-    if response.code != 200
-      raise('Failed to get DNP_DAPPMANAGER signature')
+      if response.code != 200
+        raise('Failed to get DNP_DAPPMANAGER signature')
+      end
+      results = JSON.parse(response.to_str)
+      [results['signature'], results['address']]
+    rescue => e
+      puts "An error occured during API call to DAPPMANAGER /sign endpoint."
+      puts e
+      Nginx.stop
+      exit
     end
-    results = JSON.parse(response.to_str)
-    [results['signature'], results['address']]
   end
 
   def self.api_sign(domain)
@@ -86,7 +93,7 @@ module OpenSSL
       )
       raise "Error in api Call" unless response.code == 200
     rescue => e
-      puts "An error occured during API call. "
+      puts "An error occured during API call to the signing service."
       puts e
       Nginx.stop
       exit
