@@ -13,7 +13,7 @@ export async function sanitizeFrom(from: string): Promise<string> {
       400
     );
   }
-  const fullDomain: string = from + (await getDAppNodeDomain());
+  const fullDomain: string = `${from}.${await getDAppNodeDomain()}`;
   if (fullDomain.length  > config.maximum_domain_length) {
     throw new HttpError(
        `Your domain (${fullDomain}) is ${fullDomain.length} charachters long. Maximum allowed is ${config.maximum_domain_length}.`,
