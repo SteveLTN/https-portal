@@ -12,7 +12,7 @@ app.use(morgan("tiny"));
 app.get(
   "/add",
   asyncHandler(async req => {
-    const from = sanitizeFrom(req.query.from as string);
+    const from = await sanitizeFrom(req.query.from as string);
     const to = sanitizeTo(req.query.to as string);
 
     const entries = entriesDb.get();
@@ -30,7 +30,7 @@ app.get(
 app.get(
   "/remove",
   asyncHandler(async req => {
-    const from = sanitizeFrom(req.query.from as string);
+    const from = await sanitizeFrom(req.query.from as string);
 
     const entries = entriesDb.get();
     entriesDb.set(entries.filter(e => e.from !== from));
