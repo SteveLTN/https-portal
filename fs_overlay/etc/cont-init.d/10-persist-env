@@ -1,5 +1,0 @@
-#!/usr/bin/with-contenv sh
-
-# Persist envs for cron jobs to use
-
-export > /etc/cron_env.sh
