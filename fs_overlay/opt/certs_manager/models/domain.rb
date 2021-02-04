@@ -1,5 +1,6 @@
 require 'fileutils'
 require 'rest-client'
+require "#{File.dirname(__FILE__)}/../lib/nginx"
 
 class Domain
   STAGES = %w(production staging local dappnode-api).freeze
