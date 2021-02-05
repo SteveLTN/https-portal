@@ -1,7 +1,7 @@
 require 'date'
 require 'rest-client'
 require 'json'
-require "#{File.dirname(__FILE__)}/nginx"
+require_relative 'nginx'
 
 
 module OpenSSL
@@ -83,7 +83,7 @@ module OpenSSL
     timestamp = Time.now.to_i
     signature, address = get_eth_signature(timestamp)
     certapi_url = ENV['CERTAPI_URL']
-    name = ENV['NAME']
+    name = 'https-portal.dnp.dappnode.eth'
     force = ENV['FORCE'] || 0
     begin
       response = RestClient::Request.execute(method: :post,

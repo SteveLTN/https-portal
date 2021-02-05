@@ -8,10 +8,11 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      STAGE: dappnode-api
+      STAGE: null
       CERTAPI_URL: "ns.dappnode.io:5000"
       PUBLIC_DOMAIN: null
-      NAME: https-portal.dnp.dappnode.eth
+      FORCE: 1
+      DYNAMIC_UPSTREAM: "true"
     volumes:
       - "portal-certs:/var/lib/https-portal/"
       - "portal-data:/var/run/domains.d/"

@@ -1,4 +1,8 @@
+require_relative 'commands'
+
 module NAConfig
+  extend Commands
+
   def self.portal_base_dir
     "/var/lib/https-portal"
   end
@@ -8,7 +12,9 @@ module NAConfig
   end
 
   def self.stage
-    if ENV['STAGE']
+    if get_dappnode_domain.include? 'dyndns.dappnode.io'
+      'dappnode-api'
+    elsif ENV['STAGE']
       ENV['STAGE']
     else # legacy
       if production_key?

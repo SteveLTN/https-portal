@@ -54,6 +54,7 @@ server {
       access_log off;
       return 200 "I am healthy!\n";
     }
+    resolver 172.33.1.2 valid=30s;
 
     <% if domain.upstream %>
     location / {

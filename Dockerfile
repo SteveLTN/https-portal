@@ -14,7 +14,7 @@ RUN rm -rf node_modules && yarn install --production
 
 
 
-FROM nginx:1.17.3
+FROM nginx:1.19.6
 ARG  ARCH=amd64
 
 # Delete sym links from nginx image, install logrotate
