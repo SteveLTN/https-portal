@@ -80,11 +80,15 @@ class Domain
   end
 
   def global
-      if ENV['PUBLIC_DOMAIN']
-        ENV['PUBLIC_DOMAIN']
-      else
-        get_dappnode_domain
-      end
+    if ENV['PUBLIC_DOMAIN']
+      ENV['PUBLIC_DOMAIN']
+    else
+      get_dappnode_domain
+    end
+  end
+  
+  def env_format_name
+    name.upcase.tr('^A-Z0-9', '_')
   end
 
   def upstream_backend_name

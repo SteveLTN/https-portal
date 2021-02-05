@@ -28,26 +28,39 @@ module Commands
     end
   end
 
-  def generate_dummy_certificate_for_default_server
-    OpenSSL.generate_dummy_certificate(
-      File.join(NAConfig.portal_base_dir, "default_server"),
-      File.join(NAConfig.portal_base_dir, "default_server/default_server.crt"),
-      File.join(NAConfig.portal_base_dir, "default_server/default_server.key")
-    )
+  def ensure_dummy_certificate_for_default_server
+    base_dir = File.join(NAConfig.portal_base_dir, "default_server")
+    cert_path = File.join(NAConfig.portal_base_dir, "default_server/default_server.crt")
+    key_path = File.join(NAConfig.portal_base_dir, "default_server/default_server.key")
+
+    unless File.exist?(cert_path) && File.exist?(key_path)
+      OpenSSL.generate_dummy_certificate(
+        base_dir,
+        cert_path,
+        key_path
+      )
+    end
+  end
+
+  def get_dappnode_domain_once
+    response = RestClient.get('http://my.dappnode/global-envs/DOMAIN')
+    response.to_str if response.code == 200
+    nil
+  rescue
+    nil
   end
 
   def get_dappnode_domain
-    for i in 1..20 do
-      response = RestClient.get('http://my.dappnode/global-envs/DOMAIN')
-      return response.to_str if response.code == 200
+    for i in 1..30 do
+      domain = get_dappnode_domain_once
+      return domain unless domain?
 
       sleep 1
     end
     raise('Could not determine domain')
-  rescue => e
-    puts "An error occured during API call to DAPPMANAGER determine DAppnode domain"
-    puts e
-    Nginx.stop
+  rescue
+    puts 'An error occured during API call to DAPPMANAGER determine DAppNode domain'
+    system 's6-svscanctl -t /var/run/s6/services'
     exit
   end
 end

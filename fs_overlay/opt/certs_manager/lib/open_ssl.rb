@@ -73,7 +73,7 @@ module OpenSSL
     rescue => e
       puts "An error occured during API call to DAPPMANAGER /sign endpoint."
       puts e
-      Nginx.stop
+      system 's6-svscanctl -t /var/run/s6/services'
       exit
     end
   end
@@ -95,7 +95,7 @@ module OpenSSL
     rescue => e
       puts "An error occured during API call to the signing service."
       puts e
-      Nginx.stop
+      system 's6-svscanctl -t /var/run/s6/services'
       exit
     end
     puts "Certificate signed!"
@@ -103,6 +103,8 @@ module OpenSSL
   end
 
   def self.generate_dummy_certificate(dir, out_path, keyout_path)
+    puts "Generating dummy certificate for default fallback server"
+
     command = <<-EOC
       mkdir -p #{dir} && \
       openssl req -x509 -newkey \
