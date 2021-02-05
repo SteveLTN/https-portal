@@ -1,4 +1,4 @@
-FROM ruby:2.5.3-alpine AS ruby-builder
+FROM ruby:2.7.2-alpine AS ruby-builder
 
 # Nokogiri's build dependencies
 RUN apk add --update \
@@ -48,13 +48,14 @@ RUN tar xzf /tmp/s6-overlay-$ARCH.tar.gz -C / && \
     rm /etc/nginx/conf.d/default.conf && \
     apk add --update \
     # From original image
-    python2 ruby iproute2 apache2-utils logrotate openssl \
+    python2 ruby=2.7.2-r0 iproute2 apache2-utils logrotate openssl \
     # For Typescript app
     nodejs \
     && \
     mkdir -p /src/api
 
-ENV GEM_PATH="$GEM_PATH:/usr/local/bundle/"
+ENV GEM_PATH="${GEM_PATH}${GEM_PATH:+:}/usr/local/bundle/"
+
 COPY --from=ruby-builder /usr/local/bundle/ /usr/local/bundle/
 COPY ./fs_overlay /
 COPY --from=node-builder /src/api/node_modules /src/api/node_modules
