@@ -1,6 +1,5 @@
 require 'open-uri'
 require 'rest-client'
-require_relative 'nginx'
 
 module Commands
   def chain_certs(domain)
@@ -44,7 +43,8 @@ module Commands
 
   def get_dappnode_domain_once
     response = RestClient.get('http://my.dappnode/global-envs/DOMAIN')
-    response.to_str if response.code == 200
+    return response.to_str if response.code == 200
+
     nil
   rescue
     nil
@@ -53,7 +53,7 @@ module Commands
   def get_dappnode_domain
     for i in 1..30 do
       domain = get_dappnode_domain_once
-      return domain unless domain?
+      return domain unless domain.nil?
 
       sleep 1
     end
