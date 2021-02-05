@@ -36,7 +36,7 @@ RUN tar xzf /tmp/s6-overlay-$ARCH.tar.gz -C / && \
     rm /etc/nginx/conf.d/default.conf && \
     apk add --update \
     # From original image
-    ruby-dev build-base iproute2 apache2-utils logrotate openssl \
+    python ruby-dev build-base iproute2 apache2-utils logrotate openssl \
     # For Typescript app
     nodejs \
     && \
