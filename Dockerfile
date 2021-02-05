@@ -1,14 +1,11 @@
 FROM ruby:2.7.2-alpine AS ruby-builder
 
-# Nokogiri's build dependencies
-RUN apk add --update \
-  build-base \
-  libxml2-dev \
-  libxslt-dev
+RUN apk add --update build-base 
 
 COPY ./Gemfile .
-
 RUN bundle install
+
+
 
 FROM node:12-alpine AS node-builder
 
