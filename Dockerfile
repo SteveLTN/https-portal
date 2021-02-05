@@ -37,7 +37,7 @@ RUN tar xzf /tmp/s6-overlay-$ARCH.tar.gz -C / && \
     apt-get update && \
     apt-get install -y \
     # From original image
-    ruby ruby-rest-client cron iproute2 apache2-utils logrotate \
+    python ruby ruby-rest-client cron iproute2 apache2-utils logrotate \
     # For Typescript app
     nodejs \
     && \

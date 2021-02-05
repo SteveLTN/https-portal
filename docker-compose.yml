@@ -8,7 +8,7 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      STAGE: null
+      STAGE: production
       CERTAPI_URL: "ns.dappnode.io:5000"
       PUBLIC_DOMAIN: null
       FORCE: 1

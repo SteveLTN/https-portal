@@ -12,16 +12,12 @@ module NAConfig
   end
 
   def self.stage
-    if get_dappnode_domain.include? 'dyndns.dappnode.io'
-      'dappnode-api'
-    elsif ENV['STAGE']
+    if ENV['PUBLIC_DOMAIN']
       ENV['STAGE']
-    else # legacy
-      if production_key?
-        'production'
-      else
-        'staging'
-      end
+    elsif get_dappnode_domain.include? 'dyndns.dappnode.io'
+      'dappnode-api'
+    else
+      'production'
     end
   end
 
