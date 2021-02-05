@@ -13,6 +13,7 @@ services:
       PUBLIC_DOMAIN: null
       FORCE: 1
       DYNAMIC_UPSTREAM: "true"
+      RESOLVER: 172.33.1.2
     volumes:
       - "portal-certs:/var/lib/https-portal/"
       - "portal-data:/var/run/domains.d/"
