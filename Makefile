@@ -11,7 +11,7 @@ REGISTRY	= steveltn
 # For version x.y.z, output "-t …:x.yz -t …:x.y -t …:x";
 # for anything else, output nothing
 BASETAG		= ${REGISTRY}/https-portal
-VERSIONTAGS	= $(shell git describe --tags | \
+VERSIONTAGS	= $(shell git describe --tags --exact-match | \
                   sed -n -e 's,^\(\(\([0-9]*\).[0-9]*\).[0-9]*\)\(.*\),-t ${BASETAG}:\1\4 -t ${BASETAG}:\2\4 -t ${BASETAG}:\3\4 -t ${BASETAG}:latest\4,p')
 
 # For platform compatibility/naming matrix, see `./fs_overlay/bin/archname`
