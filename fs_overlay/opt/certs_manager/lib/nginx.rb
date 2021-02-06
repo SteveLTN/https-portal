@@ -1,4 +1,6 @@
 module Nginx
+  class NginxReloadException < RuntimeError; end
+
   def self.setup
     compiled_basic_config = ERBBinding.new('/var/lib/nginx-conf/nginx.conf.erb').compile
 
@@ -28,11 +30,15 @@ module Nginx
   end
 
   def self.reload
-    system 'nginx -s reload'
+    raise NginxReloadException unless system 'nginx -s reload'
   end
 
   def self.stop
     system 'nginx -s stop'
+  end
+
+  def self.kill
+    system 'pkill -F /var/run/nginx.pid'
   end
 
   private

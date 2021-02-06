@@ -32,7 +32,7 @@ class CertsManager
     sleep 1 # Give Nginx some time to shutdown
   end
 
-  def renew
+  def renew(killOnFail = false)
     puts "Renewing ..."
     NAConfig.domains.each(&:print_debug_info) if NAConfig.debug_mode?
     with_lock do
@@ -42,10 +42,15 @@ class CertsManager
         end
 
         if OpenSSL.need_to_sign_or_renew? domain
-          ACME.sign(domain)
-          chain_certs(domain)
-          Nginx.reload
-          puts "Renewed certs for #{domain.name}"
+          begin
+            ACME.sign(domain)
+            chain_certs(domain)
+            Nginx.reload
+            puts "Renewed certs for #{domain.name}"
+          rescue Nginx::NginxReloadException
+            puts "Renewal failed for #{domain.name}"
+            Nginx.kill if killOnFail
+          end
         else
           puts "Renewal skipped for #{domain.name}, it expires at #{OpenSSL.expires_in_days(domain.signed_cert_path)} days from now."
         end
