@@ -35,7 +35,8 @@ RUN rm /etc/nginx/conf.d/default.conf /etc/crontab
 
 COPY ./fs_overlay /
 
-RUN chmod a+x /bin/*
+RUN chmod a+x /bin/* && \
+    chmod 0644 /etc/logrotate.d/nginx
 
 VOLUME /var/lib/https-portal
 VOLUME /var/log/nginx
