@@ -23,6 +23,7 @@ module OpenSSL
 
     skip_conditions = File.exist?(domain.key_path) &&
                       File.exist?(domain.signed_cert_path) &&
+                      (domain.stage == 'local' || !self_signed?(domain.signed_cert_path)) &&
                       expires_in_days(domain.signed_cert_path) > NAConfig.renew_margin_days
 
     !skip_conditions
@@ -71,6 +72,11 @@ module OpenSSL
   end
 
   private
+
+  def self_signed?(pem)
+    issuer = `openssl x509 -issuer -noout -in #{pem}`
+    issuer.include? "default-server.example.com"
+  end
 
   def self.expires_at(pem)
     date_str = `openssl x509 -enddate -noout -in #{pem}`.sub('notAfter=', '')
