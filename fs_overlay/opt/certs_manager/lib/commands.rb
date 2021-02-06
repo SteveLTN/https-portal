@@ -1,9 +1,12 @@
 require 'open-uri'
+require 'fileutils'
 
 module Commands
   def chain_certs(domain)
     # Keeping it for backward compatibility
-    system "test ! -e #{domain.chained_cert_path} && ln -s #{domain.signed_cert_path} #{domain.chained_cert_path}"
+    unless File.exist?(domain.chained_cert_path)
+      FileUtils.ln_s(domain.signed_cert_path, domain.chained_cert_path)
+    end
   end
 
   def mkdir(domain)

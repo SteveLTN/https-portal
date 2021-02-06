@@ -81,6 +81,8 @@ Here is a more real-world example: Create the file `docker-compose.yml` in anoth
 directory:
 
 ```yaml
+version: '3'
+
 https-portal:
   image: steveltn/https-portal:1
   ports:
@@ -93,6 +95,8 @@ https-portal:
     DOMAINS: 'wordpress.example.com -> http://wordpress:80'
     # STAGE: 'production' # Don't use production until staging works
     # FORCE_RENEW: 'true'
+  volumes: 
+    - https-portal-data:/var/lib/https-portal
 
 wordpress:
   image: wordpress
@@ -103,6 +107,9 @@ db:
   image: mariadb
   environment:
     MYSQL_ROOT_PASSWORD: '<a secure password>'
+
+volumes:
+  https-portal-data:
 ```
 
 Run the `docker-compose up -d` command. A moment later you'll get a WordPress

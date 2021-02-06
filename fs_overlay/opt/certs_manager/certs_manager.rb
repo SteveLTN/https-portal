@@ -1,5 +1,6 @@
 Dir[File.dirname(__FILE__) + '/lib/*.rb'].each { |file| require file }
 require_relative 'models/domain'
+require 'fileutils'
 
 class CertsManager
   include Commands
@@ -7,32 +8,37 @@ class CertsManager
   attr_accessor :lock
 
   def setup
-    add_dockerhost_to_hosts
-    ensure_crontab
+    with_lock do
+      add_dockerhost_to_hosts
+      ensure_crontab
 
-    NAConfig.domains.each do |domain|
-      if NAConfig.debug_mode?
-        domain.print_debug_info
+      NAConfig.domains.each do |domain|
+        if NAConfig.debug_mode?
+          domain.print_debug_info
+        end
+        domain.ensure_welcome_page
       end
-      domain.ensure_welcome_page
+
+      ensure_dummy_certificate_for_default_server
+      OpenSSL.ensure_dhparam
+      OpenSSL.ensure_account_key
+
+      generate_ht_access(NAConfig.domains)
+
+      ensure_keys_and_certs_exist(NAConfig.domains)
+      config_domains(NAConfig.domains)
+      Nginx.setup
+
+      Nginx.start
+
+      ensure_signed(NAConfig.domains, true)
+
+      Nginx.stop
     end
-
-    ensure_dummy_certificate_for_default_server
-    OpenSSL.ensure_dhparam
-    OpenSSL.ensure_account_key
-
-    generate_ht_access(NAConfig.domains)
-
-    Nginx.setup
-    Nginx.start
-
-    ensure_signed(NAConfig.domains)
-
-    Nginx.stop
     sleep 1 # Give Nginx some time to shutdown
   end
 
-  def renew(killOnFail = false)
+  def renew
     puts "Renewing ..."
     NAConfig.domains.each(&:print_debug_info) if NAConfig.debug_mode?
     with_lock do
@@ -42,15 +48,10 @@ class CertsManager
         end
 
         if OpenSSL.need_to_sign_or_renew? domain
-          begin
-            ACME.sign(domain)
-            chain_certs(domain)
-            Nginx.reload
-            puts "Renewed certs for #{domain.name}"
-          rescue Nginx::NginxReloadException
-            puts "Renewal failed for #{domain.name}"
-            Nginx.kill if killOnFail
-          end
+          ACME.sign(domain)
+          chain_certs(domain)
+          Nginx.reload
+          puts "Renewed certs for #{domain.name}"
         else
           puts "Renewal skipped for #{domain.name}, it expires at #{OpenSSL.expires_in_days(domain.signed_cert_path)} days from now."
         end
@@ -60,31 +61,57 @@ class CertsManager
   end
 
   def reconfig
-    ensure_signed(NAConfig.auto_discovered_domains)
+    with_lock do
+      ensure_keys_and_certs_exist(NAConfig.auto_discovered_domains)
+      config_domains(NAConfig.auto_discovered_domains)
+      ensure_signed(NAConfig.auto_discovered_domains, false)
+    end
   end
 
   private
 
-  def ensure_signed(domains)
-    with_lock do
-      domains.each do |domain|
-        Nginx.config_http(domain)
+  def config_domains(domains)
+    domains.each do |domain|
+      Nginx.config_domain(domain)
+    end
+  end
 
-        if OpenSSL.need_to_sign_or_renew? domain
-          mkdir(domain)
-          OpenSSL.ensure_domain_key(domain)
-          OpenSSL.create_csr(domain)
-          if ACME.sign(domain)
-            chain_certs(domain)
-            Nginx.config_ssl(domain)
-            puts "Signed key for #{domain.name}"
-          else
-            puts("Failed to obtain certs for #{domain.name}")
-          end
+  def ensure_keys_and_certs_exist(domains)
+    # Just to make sure there is some sort of certificate existing,
+    # whether being dummy or real,
+    # so Nginx can start
+    dummy_cert_path = File.join(NAConfig.portal_base_dir, "default_server/default_server.crt")
+    dummy_key_path = File.join(NAConfig.portal_base_dir, "default_server/default_server.key")
+
+    domains.each do |domain|
+      mkdir(domain)
+
+      if NAConfig.force_renew? || !OpenSSL.key_and_cert_exist?(domain)
+        Logger.debug "copying dummy key and cert for #{domain.name}"
+        FileUtils.cp(dummy_key_path, domain.key_path)
+        FileUtils.cp(dummy_cert_path, domain.signed_cert_path)
+        chain_certs(domain)
+      end
+    end
+  end
+
+  def ensure_signed(domains, exit_on_failure = false)
+    Logger.debug ("ensure_signed")
+    domains.each do |domain|
+      if OpenSSL.need_to_sign_or_renew? domain
+        mkdir(domain)
+        OpenSSL.create_domain_key(domain)
+        OpenSSL.create_csr(domain)
+        if ACME.sign(domain)
+          chain_certs(domain)
+          Nginx.reload || exit(1)
+          puts "Signed certificate for #{domain.name}"
         else
-          Nginx.config_ssl(domain)
-          puts "Signing skipped for #{domain.name}, it expires at #{OpenSSL.expires_in_days(domain.signed_cert_path)} days from now."
+          puts("Failed to obtain certs for #{domain.name}")
+          exit(1) if exit_on_failure
         end
+      else
+        puts "Signing skipped for #{domain.name}, it expires at #{OpenSSL.expires_in_days(domain.signed_cert_path)} days from now."
       end
     end
   end
