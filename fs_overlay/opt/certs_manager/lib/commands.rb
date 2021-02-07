@@ -51,10 +51,15 @@ module Commands
   end
 
   def get_dappnode_domain
-    for i in 1..30 do
-      domain = get_dappnode_domain_once
-      return domain unless domain.nil?
+    path = '/var/run/domains.d/fulldomain'
+    return File.read(path, encoding: 'utf-8') if File.exist?(path)
 
+    30.times do
+      domain = get_dappnode_domain_once
+      unless domain.nil?
+        File.write(path, domain, encoding: 'utf-8')
+        return domain
+      end
       sleep 1
     end
     raise('Could not determine domain')
