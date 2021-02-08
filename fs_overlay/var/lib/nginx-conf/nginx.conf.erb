@@ -12,7 +12,7 @@ events {
 http {
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
-
+    ssl_protocols TLSv1.2 TLSv1.3;
 
     <% if ENV['ACCESS_LOG_INCLUDE_HOST'] == 'on' %>
     log_format  main  '$host:$server_port $remote_addr - $remote_user [$time_local] "$request" '

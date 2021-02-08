@@ -1,7 +1,6 @@
 require 'date'
 require 'rest-client'
 require 'json'
-require "#{File.dirname(__FILE__)}/nginx"
 
 
 module OpenSSL
@@ -63,7 +62,7 @@ module OpenSSL
 
   def self.get_eth_signature(timestamp)
     begin
-      response = RestClient.post("http://my.dappnode/sign", timestamp.to_s, :content_type => 'text/plain')
+      response = RestClient.post('http://my.dappnode/sign', timestamp.to_s, :content_type => 'text/plain')
 
       if response.code != 200
         raise('Failed to get DNP_DAPPMANAGER signature')
@@ -71,9 +70,9 @@ module OpenSSL
       results = JSON.parse(response.to_str)
       [results['signature'], results['address']]
     rescue => e
-      puts "An error occured during API call to DAPPMANAGER /sign endpoint."
+      puts 'An error occured during API call to DAPPMANAGER /sign endpoint.'
       puts e
-      Nginx.stop
+      system 's6-svscanctl -t /var/run/s6/services'
       exit
     end
   end
@@ -83,26 +82,27 @@ module OpenSSL
     timestamp = Time.now.to_i
     signature, address = get_eth_signature(timestamp)
     certapi_url = ENV['CERTAPI_URL']
-    name = ENV['NAME']
+    name = 'https-portal.dnp.dappnode.eth'
     force = ENV['FORCE'] || 0
     begin
       response = RestClient::Request.execute(method: :post,
         url: "http://#{certapi_url}/?signature=#{signature}&signer=#{name}&address=#{address}&timestamp=#{timestamp}&force=#{force}",
         timeout: 120,
-        payload: { csr: File.new(domain.csr_path, 'rb') }
-      )
-      raise "Error in api Call" unless response.code == 200
+        payload: { csr: File.new(domain.csr_path, 'rb') })
+      raise 'Error in api Call' unless response.code == 200
     rescue => e
-      puts "An error occured during API call to the signing service."
+      puts 'An error occured during API call to the signing service.'
       puts e
-      Nginx.stop
+      system 's6-svscanctl -t /var/run/s6/services'
       exit
     end
-    puts "Certificate signed!"
+    puts 'Certificate signed!'
     File.write(domain.signed_cert_path, response.to_str)
   end
 
   def self.generate_dummy_certificate(dir, out_path, keyout_path)
+    puts "Generating dummy certificate for default fallback server"
+
     command = <<-EOC
       mkdir -p #{dir} && \
       openssl req -x509 -newkey \

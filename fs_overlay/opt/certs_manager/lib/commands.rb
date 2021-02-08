@@ -1,4 +1,5 @@
 require 'open-uri'
+require 'rest-client'
 
 module Commands
   def chain_certs(domain)
@@ -26,11 +27,45 @@ module Commands
     end
   end
 
-  def generate_dummy_certificate_for_default_server
-    OpenSSL.generate_dummy_certificate(
-      File.join(NAConfig.portal_base_dir, "default_server"),
-      File.join(NAConfig.portal_base_dir, "default_server/default_server.crt"),
-      File.join(NAConfig.portal_base_dir, "default_server/default_server.key")
-    )
+  def ensure_dummy_certificate_for_default_server
+    base_dir = File.join(NAConfig.portal_base_dir, "default_server")
+    cert_path = File.join(NAConfig.portal_base_dir, "default_server/default_server.crt")
+    key_path = File.join(NAConfig.portal_base_dir, "default_server/default_server.key")
+
+    unless File.exist?(cert_path) && File.exist?(key_path)
+      OpenSSL.generate_dummy_certificate(
+        base_dir,
+        cert_path,
+        key_path
+      )
+    end
+  end
+
+  def get_dappnode_domain_once
+    response = RestClient.get('http://my.dappnode/global-envs/DOMAIN')
+    return response.to_str if response.code == 200
+
+    nil
+  rescue
+    nil
+  end
+
+  def get_dappnode_domain
+    path = '/var/run/domains.d/fulldomain'
+    return File.read(path, encoding: 'utf-8') if File.exist?(path)
+
+    30.times do
+      domain = get_dappnode_domain_once
+      unless domain.nil?
+        File.write(path, domain, encoding: 'utf-8')
+        return domain
+      end
+      sleep 1
+    end
+    raise('Could not determine domain')
+  rescue
+    puts 'An error occured during API call to DAPPMANAGER determine DAppNode domain'
+    system 's6-svscanctl -t /var/run/s6/services'
+    exit
   end
 end

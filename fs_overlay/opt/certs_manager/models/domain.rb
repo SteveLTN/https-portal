@@ -1,8 +1,8 @@
 require 'fileutils'
-require 'rest-client'
-require "#{File.dirname(__FILE__)}/../lib/nginx"
+require_relative "#{File.dirname(__FILE__)}/../lib/commands"
 
 class Domain
+  include Commands
   STAGES = %w(production staging local dappnode-api).freeze
 
   attr_reader :descriptor
@@ -39,7 +39,7 @@ class Domain
   end
 
   def dir
-    return File.join(NAConfig.portal_base_dir, 'wildcard_certs/') if ENV['STAGE'] == 'dappnode-api'
+    return File.join(NAConfig.portal_base_dir, 'wildcard_certs/') if stage == 'dappnode-api'
 
     File.join(NAConfig.portal_base_dir, name, stage)
   end
@@ -80,24 +80,15 @@ class Domain
   end
 
   def global
-    begin
-      if ENV['PUBLIC_DOMAIN']
-        ENV['PUBLIC_DOMAIN']
-      else
-        for i in 1..20 do
-          response = RestClient.get('http://my.dappnode/global-envs/DOMAIN')
-          return response.to_str if response.code == 200
-
-          sleep 1
-        end
-        raise('Could not determine domain')
-      end
-    rescue => e
-      puts "An error occured during API call to DAPPMANAGER determine DAppnode domain"
-      puts e
-      Nginx.stop
-      exit
+    if ENV['PUBLIC_DOMAIN']
+      ENV['PUBLIC_DOMAIN']
+    else
+      get_dappnode_domain
     end
+  end
+  
+  def env_format_name
+    name.upcase.tr('^A-Z0-9', '_')
   end
 
   def upstream_backend_name

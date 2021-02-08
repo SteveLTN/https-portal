@@ -8,6 +8,8 @@ class CertsManager
 
   def setup
     add_dockerhost_to_hosts
+    ensure_crontab
+
     NAConfig.domains.each do |domain|
       if NAConfig.debug_mode?
         domain.print_debug_info
@@ -17,7 +19,7 @@ class CertsManager
 
     system 'mkdir -p /var/run/domains.d/'
 
-    generate_dummy_certificate_for_default_server
+    ensure_dummy_certificate_for_default_server
     # OpenSSL.ensure_dhparam
     OpenSSL.ensure_account_key
 
@@ -89,5 +91,19 @@ class CertsManager
       lock.flock File::LOCK_EX
       yield(block)
     end
+  end
+
+  def ensure_crontab
+    crontab = '/etc/crontab'
+
+    unless File.exist?(crontab)
+      File.open(crontab, 'w') do |file|
+        file.write compiled_crontab
+      end
+    end
+  end
+
+  def compiled_crontab
+    ERBBinding.new('/var/lib/crontab.erb', {}).compile
   end
 end
