@@ -32,10 +32,14 @@ RUN rm /var/log/nginx/access.log && \
 
 WORKDIR /root
 
-ENV S6_OVERLAY_VERSION v2.2.0.1
-ENV ACME_TINY_VERSION=4.1.0 
+ENV S6_OVERLAY_VERSION=v2.2.0.1  \
+    ACME_TINY_VERSION=4.1.0  \
 # API volume to store domain .txt and .json files
-ENV DOMAINS_DIR=/var/run/domains.d/
+    DOMAINS_DIR=/var/run/domains.d/  \
+#
+    DAPPMANAGER_SIGN=http://172.33.1.7/sign  \
+    DAPPMANAGER_DOMAIN=http://172.33.1.7/global-envs/DOMAIN
+
 
 ADD https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-$ARCH.tar.gz /tmp/
 ADD https://raw.githubusercontent.com/diafygi/acme-tiny/$ACME_TINY_VERSION/acme_tiny.py /bin/acme_tiny

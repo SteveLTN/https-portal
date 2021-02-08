@@ -42,7 +42,7 @@ module Commands
   end
 
   def get_dappnode_domain_once
-    response = RestClient.get('http://172.33.1.7/global-envs/DOMAIN')
+    response = RestClient.get(ENV['DAPPMANAGER_DOMAIN'])
     return response.to_str if response.code == 200
 
     nil
@@ -52,7 +52,7 @@ module Commands
   end
 
   def get_dappnode_domain
-    path = '/var/run/domains.d/fulldomain'
+    path =  File.join(ENV['DOMAINS_DIR'], 'fulldomain')
     return File.read(path, encoding: 'utf-8') if File.exist?(path)
 
     puts 'Trying to determine DAppNode domain..'

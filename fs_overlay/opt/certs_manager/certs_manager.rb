@@ -17,7 +17,7 @@ class CertsManager
       domain.ensure_welcome_page
     end
 
-    system 'mkdir -p /var/run/domains.d/'
+    system "mkdir -p #{ENV['DOMAINS_DIR']}"
 
     ensure_dummy_certificate_for_default_server
     # OpenSSL.ensure_dhparam
