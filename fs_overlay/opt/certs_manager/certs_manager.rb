@@ -72,7 +72,6 @@ class CertsManager
     end
     ensure_signed(domains)
   rescue => e
-    war
     warn e
     exit 1
   end
