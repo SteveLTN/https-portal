@@ -61,8 +61,18 @@ class CertsManager
   end
 
   def reconfig
-    ensure_signed(NAConfig.auto_discovered_domains)
+    domains = NAConfig.auto_discovered_domains
+    names = domains.map(&:name)
+    Dir.foreach('/etc/nginx/conf.d') do |filename|
+      ident = filename.include?('ssl') ? filename.delete_suffix('.ssl.conf') : filename.delete_suffix('.conf')
+      unless names.include? ident
+        puts "Deleting old #{filename} configuration..."
+        system "rm /etc/nginx/conf.d/#{filename}"
+      end
+    end
+    ensure_signed(domains)
   rescue => e
+    war
     warn e
     exit 1
   end
@@ -108,6 +118,10 @@ class CertsManager
         file.write compiled_crontab
       end
     end
+  end
+
+  def remove_config(domain)
+
   end
 
   def compiled_crontab
