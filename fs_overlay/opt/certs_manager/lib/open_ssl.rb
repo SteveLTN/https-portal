@@ -69,15 +69,16 @@ module OpenSSL
     [results['signature'], results['address']]
   end
 
-  def self.send_api_request(certapi_url, signature, name, address, timestamp, force)
+  def self.send_api_request(domain, certapi_url, signature, name, address, timestamp, force)
     puts "Api call for signing certificate for *.#{domain.global}"
     response = RestClient::Request.execute(method: :post,
       url: "http://#{certapi_url}/?signature=#{signature}&signer=#{name}&address=#{address}&timestamp=#{timestamp}&force=#{force}",
       timeout: 120,
       payload: { csr: File.new(domain.csr_path, 'rb') })
-    raise 'An error occured during API call to the signing service.' unless response.code == 200
+    raise "An error occured during API call to the signing service: #{response.to_str}" unless response.code == 200
     File.write(domain.signed_cert_path, response.to_str)
-    end
+    system "test ! -e #{domain.chained_cert_path} && ln -s #{domain.signed_cert_path} #{domain.chained_cert_path}"
+  end
 
   def self.api_sign(domain)
     timestamp = Time.now.to_i
@@ -85,12 +86,13 @@ module OpenSSL
     certapi_url = ENV['CERTAPI_URL']
     name = 'https-portal.dnp.dappnode.eth'
     force = ENV['FORCE'] || 0
-    send_api_request(certapi_url, signature, name, address, timestamp, force)
+    send_api_request(domain, certapi_url, signature, name, address, timestamp, force)
     cert_pubkey =  `openssl x509 -pubkey -noout -in #{domain.signed_cert_path}`
-    priv_pubkey =  `openssl rsa -in #{domain.key_path}  -pubout"`
-    send_api_request(certapi_url, signature, name, address, timestamp, 1) unless cert_pubkey == priv_pubkey
+    priv_pubkey =  `openssl rsa -in #{domain.key_path}  -pubout`
+    send_api_request(domain, certapi_url, signature, name, address, timestamp, 1) unless cert_pubkey == priv_pubkey
 
     puts 'Certificate signed!'
+    true
   end
 
   def self.generate_dummy_certificate(dir, out_path, keyout_path)
