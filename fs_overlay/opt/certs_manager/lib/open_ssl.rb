@@ -69,7 +69,7 @@ module OpenSSL
   def self.get_eth_signature(timestamp)
     response = RestClient.post('http://172.33.1.7/sign', timestamp.to_s, :content_type => 'text/plain')
 
-    raise('Failed to get DNP_DAPPMANAGER signature') if response.code != 200
+    raise("Failed to get DNP_DAPPMANAGER signature: #{response.to_str}") unless response.code == 200
 
     results = JSON.parse(response.to_str)
     [results['signature'], results['address']]
