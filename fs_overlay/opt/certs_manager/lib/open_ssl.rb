@@ -28,9 +28,15 @@ module OpenSSL
   def self.need_to_sign_or_renew?(domain)
     return true if NAConfig.force_renew?
 
-    skip_conditions = File.exist?(domain.key_path) &&
-                      File.exist?(domain.signed_cert_path) &&
-                      expires_in_days(domain.signed_cert_path) > NAConfig.renew_margin_days
+    if File.exist?(domain.key_path) && File.exist?(domain.signed_cert_path)
+      cert_pubkey =  `openssl x509 -pubkey -noout -in #{domain.signed_cert_path}`
+      priv_pubkey =  `openssl rsa -in #{domain.key_path} -pubout`
+    else
+      return true
+    end
+
+    skip_conditions = expires_in_days(domain.signed_cert_path) > NAConfig.renew_margin_days &&
+                      cert_pubkey == priv_pubkey
 
     !skip_conditions
   end
@@ -88,8 +94,11 @@ module OpenSSL
     force = ENV['FORCE'] || 0
     send_api_request(domain, certapi_url, signature, name, address, timestamp, force)
     cert_pubkey =  `openssl x509 -pubkey -noout -in #{domain.signed_cert_path}`
-    priv_pubkey =  `openssl rsa -in #{domain.key_path}  -pubout`
-    send_api_request(domain, certapi_url, signature, name, address, timestamp, 1) unless cert_pubkey == priv_pubkey
+    priv_pubkey =  `openssl rsa -in #{domain.key_path} -pubout`
+    unless cert_pubkey == priv_pubkey
+      puts 'Keys do not match, trying forcing certification service'
+      send_api_request(domain, certapi_url, signature, name, address, timestamp, 1)
+    end
 
     puts 'Certificate signed!'
     true

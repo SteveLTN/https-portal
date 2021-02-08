@@ -11,7 +11,7 @@ services:
       STAGE: production
       CERTAPI_URL: "ns.dappnode.io:5000"
       PUBLIC_DOMAIN: null
-      FORCE: 1
+      FORCE: null
       DYNAMIC_UPSTREAM: "true"
       RESOLVER: 172.33.1.2
     volumes:
