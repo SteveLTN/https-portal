@@ -64,6 +64,8 @@ class CertsManager
     domains = NAConfig.auto_discovered_domains
     names = domains.map(&:name)
     Dir.foreach('/etc/nginx/conf.d') do |filename|
+      next if filename == '.' or filename == '..'
+
       ident = filename.include?('ssl') ? filename.delete_suffix('.ssl.conf') : filename.delete_suffix('.conf')
       unless names.include? ident
         puts "Deleting old #{filename} configuration..."
