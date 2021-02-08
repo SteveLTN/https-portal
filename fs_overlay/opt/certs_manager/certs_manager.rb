@@ -27,9 +27,13 @@ class CertsManager
 
     Nginx.setup
     Nginx.start
-
-    ensure_signed(NAConfig.domains)
-
+    begin
+      ensure_signed(NAConfig.domains)
+    rescue => e
+      warn e
+      nil
+    end
+    
     Nginx.stop
     sleep 1 # Give Nginx some time to shutdown
   end
@@ -58,6 +62,9 @@ class CertsManager
 
   def reconfig
     ensure_signed(NAConfig.auto_discovered_domains)
+  rescue => e
+    warn e
+    exit 1
   end
 
   private

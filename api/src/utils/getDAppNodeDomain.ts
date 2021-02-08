@@ -13,12 +13,15 @@ export async function getDAppNodeDomain(): Promise<string> {
     return fs.readFileSync(path, 'utf-8');
   }
   for (let i = 0; i < maxRetries; i++) {
-    const response = await axios.get(config.dappmanager_domain_url);
-    if (response.status === 200) {
-      fs.writeFileSync(path, response.data, 'utf-8');
-      return response.data;
-    }
+    try {
+      const response = await axios.get(config.dappmanager_domain_url);
+      if (response.status === 200) {
+        fs.writeFileSync(path, response.data, 'utf-8');
+        return response.data;
+      }
+    } finally {
     await new Promise(r => setTimeout(r, 1000));
+    }
   }
 
   throw Error("Max polls exceeded");

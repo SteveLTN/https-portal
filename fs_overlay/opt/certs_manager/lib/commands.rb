@@ -46,7 +46,8 @@ module Commands
     return response.to_str if response.code == 200
 
     nil
-  rescue
+  rescue => e
+    puts e
     nil
   end
 
@@ -54,12 +55,16 @@ module Commands
     path = '/var/run/domains.d/fulldomain'
     return File.read(path, encoding: 'utf-8') if File.exist?(path)
 
+    puts 'Trying to determine DAppNode domain..'
+
     30.times do
       domain = get_dappnode_domain_once
       unless domain.nil?
         File.write(path, domain, encoding: 'utf-8')
+        puts ' OK'
         return domain
       end
+      puts '.'
       sleep 1
     end
     raise('Could not determine domain')
