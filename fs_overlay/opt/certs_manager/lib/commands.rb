@@ -42,7 +42,7 @@ module Commands
   end
 
   def get_dappnode_domain_once
-    response = RestClient.get('http://my.dappnode/global-envs/DOMAIN')
+    response = RestClient.get('http://172.33.1.7/global-envs/DOMAIN')
     return response.to_str if response.code == 200
 
     nil
