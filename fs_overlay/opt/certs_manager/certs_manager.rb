@@ -121,10 +121,6 @@ class CertsManager
     end
   end
 
-  def remove_config(domain)
-
-  end
-
   def compiled_crontab
     ERBBinding.new('/var/lib/crontab.erb', {}).compile
   end
