@@ -39,7 +39,7 @@ class Domain
   end
 
   def dir
-    return File.join(NAConfig.portal_base_dir, 'wildcard_certs/') if stage == 'dappnode-api'
+    return File.join(NAConfig.portal_base_dir, 'wildcard_certs/') if ENV['STAGE'] == 'dappnode-api'
 
     File.join(NAConfig.portal_base_dir, name, stage)
   end
