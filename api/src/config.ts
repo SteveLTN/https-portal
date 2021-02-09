@@ -8,5 +8,6 @@ export const config = {
   dappmanager_domain_url: "http://172.33.1.7/global-envs/DOMAIN",
   maximum_domain_length: parseInt(
     process.env.SERVER_NAMES_HASH_BUCKET_SIZE || "128"
-  )
+  ),
+  fulldomainPath: process.env.FULLDOMAIN_PATH || "./fulldomain"
 };

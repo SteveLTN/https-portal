@@ -52,15 +52,15 @@ module Commands
   end
 
   def get_dappnode_domain
-    path =  File.join(ENV['DOMAINS_DIR'], 'fulldomain')
-    return File.read(path, encoding: 'utf-8') if File.exist?(path)
+    fulldomain_path = ENV['FULLDOMAIN_PATH'] 
+    return File.read(fulldomain_path, encoding: 'utf-8') if File.exist?(fulldomain_path)
 
     puts 'Trying to determine DAppNode domain..'
 
     30.times do
       domain = get_dappnode_domain_once
       unless domain.nil?
-        File.write(path, domain, encoding: 'utf-8')
+        File.write(fulldomain_path, domain, encoding: 'utf-8')
         puts ' OK'
         return domain
       end
