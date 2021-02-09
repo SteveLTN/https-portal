@@ -28,9 +28,15 @@ module OpenSSL
   def self.need_to_sign_or_renew?(domain)
     return true if NAConfig.force_renew?
 
-    skip_conditions = File.exist?(domain.key_path) &&
-                      File.exist?(domain.signed_cert_path) &&
-                      expires_in_days(domain.signed_cert_path) > NAConfig.renew_margin_days
+    if File.exist?(domain.key_path) && File.exist?(domain.signed_cert_path)
+      cert_pubkey =  `openssl x509 -pubkey -noout -in #{domain.signed_cert_path}`
+      priv_pubkey =  `openssl rsa -in #{domain.key_path} -pubout`
+    else
+      return true
+    end
+
+    skip_conditions = expires_in_days(domain.signed_cert_path) > NAConfig.renew_margin_days &&
+                      cert_pubkey == priv_pubkey
 
     !skip_conditions
   end
@@ -61,43 +67,40 @@ module OpenSSL
   end
 
   def self.get_eth_signature(timestamp)
-    begin
-      response = RestClient.post('http://my.dappnode/sign', timestamp.to_s, :content_type => 'text/plain')
+    response = RestClient.post(ENV['DAPPMANAGER_SIGN'], timestamp.to_s, :content_type => 'text/plain')
 
-      if response.code != 200
-        raise('Failed to get DNP_DAPPMANAGER signature')
-      end
-      results = JSON.parse(response.to_str)
-      [results['signature'], results['address']]
-    rescue => e
-      puts 'An error occured during API call to DAPPMANAGER /sign endpoint.'
-      puts e
-      system 's6-svscanctl -t /var/run/s6/services'
-      exit
-    end
+    raise("Failed to get DNP_DAPPMANAGER signature: #{response.to_str}") unless response.code == 200
+
+    results = JSON.parse(response.to_str)
+    [results['signature'], results['address']]
+  end
+
+  def self.send_api_request(domain, certapi_url, signature, address, timestamp, force)
+    puts "Api call for signing certificate for *.#{domain.global}"
+    response = RestClient::Request.execute(method: :post,
+      url: "http://#{certapi_url}/?signature=#{signature}&address=#{address}&timestamp=#{timestamp}&force=#{force}",
+      timeout: 120,
+      payload: { csr: File.new(domain.csr_path, 'rb') })
+    raise "An error occured during API call to the signing service: #{response.to_str}" unless response.code == 200
+    File.write(domain.signed_cert_path, response.to_str)
+    system "test ! -e #{domain.chained_cert_path} && ln -s #{domain.signed_cert_path} #{domain.chained_cert_path}"
   end
 
   def self.api_sign(domain)
-    puts "Api call for signing certificate for *.#{domain.global}"
     timestamp = Time.now.to_i
     signature, address = get_eth_signature(timestamp)
     certapi_url = ENV['CERTAPI_URL']
-    name = 'https-portal.dnp.dappnode.eth'
     force = ENV['FORCE'] || 0
-    begin
-      response = RestClient::Request.execute(method: :post,
-        url: "http://#{certapi_url}/?signature=#{signature}&signer=#{name}&address=#{address}&timestamp=#{timestamp}&force=#{force}",
-        timeout: 120,
-        payload: { csr: File.new(domain.csr_path, 'rb') })
-      raise 'Error in api Call' unless response.code == 200
-    rescue => e
-      puts 'An error occured during API call to the signing service.'
-      puts e
-      system 's6-svscanctl -t /var/run/s6/services'
-      exit
+    send_api_request(domain, certapi_url, signature, address, timestamp, force)
+    cert_pubkey =  `openssl x509 -pubkey -noout -in #{domain.signed_cert_path}`
+    priv_pubkey =  `openssl rsa -in #{domain.key_path} -pubout`
+    unless cert_pubkey == priv_pubkey
+      puts 'Keys do not match, trying forcing certification service'
+      send_api_request(domain, certapi_url, signature, address, timestamp, 1)
     end
+
     puts 'Certificate signed!'
-    File.write(domain.signed_cert_path, response.to_str)
+    true
   end
 
   def self.generate_dummy_certificate(dir, out_path, keyout_path)

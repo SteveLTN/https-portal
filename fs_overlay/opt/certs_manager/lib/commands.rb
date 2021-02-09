@@ -42,24 +42,29 @@ module Commands
   end
 
   def get_dappnode_domain_once
-    response = RestClient.get('http://my.dappnode/global-envs/DOMAIN')
+    response = RestClient.get(ENV['DAPPMANAGER_DOMAIN'])
     return response.to_str if response.code == 200
 
     nil
-  rescue
+  rescue => e
+    puts e
     nil
   end
 
   def get_dappnode_domain
-    path = '/var/run/domains.d/fulldomain'
-    return File.read(path, encoding: 'utf-8') if File.exist?(path)
+    fulldomain_path = ENV['FULLDOMAIN_PATH'] 
+    return File.read(fulldomain_path, encoding: 'utf-8') if File.exist?(fulldomain_path)
+
+    puts 'Trying to determine DAppNode domain..'
 
     30.times do
       domain = get_dappnode_domain_once
       unless domain.nil?
-        File.write(path, domain, encoding: 'utf-8')
+        File.write(fulldomain_path, domain, encoding: 'utf-8')
+        puts ' OK'
         return domain
       end
+      puts '.'
       sleep 1
     end
     raise('Could not determine domain')

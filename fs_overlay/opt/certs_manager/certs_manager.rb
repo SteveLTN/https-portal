@@ -17,7 +17,7 @@ class CertsManager
       domain.ensure_welcome_page
     end
 
-    system 'mkdir -p /var/run/domains.d/'
+    system "mkdir -p #{ENV['DOMAINS_DIR']}"
 
     ensure_dummy_certificate_for_default_server
     # OpenSSL.ensure_dhparam
@@ -27,9 +27,13 @@ class CertsManager
 
     Nginx.setup
     Nginx.start
-
-    ensure_signed(NAConfig.domains)
-
+    begin
+      ensure_signed(NAConfig.domains)
+    rescue => e
+      warn e
+      nil
+    end
+    
     Nginx.stop
     sleep 1 # Give Nginx some time to shutdown
   end
@@ -57,7 +61,21 @@ class CertsManager
   end
 
   def reconfig
-    ensure_signed(NAConfig.auto_discovered_domains)
+    domains = NAConfig.auto_discovered_domains
+    names = domains.map(&:name)
+    Dir.foreach('/etc/nginx/conf.d') do |filename|
+      next if filename == '.' or filename == '..'
+
+      ident = filename.include?('ssl') ? filename.delete_suffix('.ssl.conf') : filename.delete_suffix('.conf')
+      unless names.include? ident
+        puts "Deleting old #{filename} configuration..."
+        system "rm /etc/nginx/conf.d/#{filename}"
+      end
+    end
+    ensure_signed(domains)
+  rescue => e
+    warn e
+    exit 1
   end
 
   private

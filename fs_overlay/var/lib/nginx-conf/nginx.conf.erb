@@ -74,9 +74,7 @@ http {
 
     server_names_hash_max_size <%= ENV['SERVER_NAMES_HASH_MAX_SIZE'] || 4096 %>;
 
-    <% if ENV['SERVER_NAMES_HASH_BUCKET_SIZE'] %>
     server_names_hash_bucket_size <%= ENV['SERVER_NAMES_HASH_BUCKET_SIZE'] || 128 %>;
-    <% end %>
 
     <% if ENV['CLIENT_MAX_BODY_SIZE'] %>
     client_max_body_size <%= ENV['CLIENT_MAX_BODY_SIZE'] %>;

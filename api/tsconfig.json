@@ -10,7 +10,8 @@
     "strict": true,
     "types": ["mocha", "node"],
     "outDir": "dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "strictNullChecks": true
   },
   "include": ["src/**/*", "test/**/*"],
   "exclude": ["node_modules"]
