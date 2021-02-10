@@ -38,7 +38,9 @@ ENV S6_OVERLAY_VERSION=v2.2.0.1  \
     DOMAINS_DIR=/var/run/domains.d/  \
     FULLDOMAIN_PATH=/var/run/domains.d/fulldomain \
     DAPPMANAGER_SIGN=http://172.33.1.7/sign  \
-    DAPPMANAGER_DOMAIN=http://172.33.1.7/global-envs/DOMAIN
+    DAPPMANAGER_DOMAIN=http://172.33.1.7/global-envs/DOMAIN \
+    DYNAMIC_UPSTREAM=true \
+    RESOLVER=172.0.0.11
 
 ADD https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-$ARCH.tar.gz /tmp/
 ADD https://raw.githubusercontent.com/diafygi/acme-tiny/$ACME_TINY_VERSION/acme_tiny.py /bin/acme_tiny
