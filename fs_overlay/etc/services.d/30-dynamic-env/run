@@ -10,14 +10,13 @@ inotifywait -qm -e close_write,move,delete $dir | while read line
 do
 	if echo "$line" | grep -q ' [_A-Z]*$'
 	then
-		echo "[dynamic-env] All-uppercase file modified in $dir" >&2
+		echo "[dynamic-env] All-uppercase file modified in $dir"
 
-		echo -n "[dynamic-env] Wait for activity to cease..." >&2
+		echo "[dynamic-env] Wait for activity to cease..."
 		while inotifywait -qq -t 1 -e close_write,move,delete $dir
 		do
-			echo -n . >&2
+			:
 		done
-		echo " -- ceased" >&2
 
 		# Apply new configuration; but only, if anything actually
 		# changed (top-level "while" loop will continue getting
@@ -27,11 +26,11 @@ do
 			# Remember when we started (tiny race condition window)
 			touch $dir.stamp # Outside of watched dir!
 
-			echo "[dynamic-env] File changed since last run: Applying new configuration..." >&2
+			echo "[dynamic-env] File changed since last run: Applying new configuration..."
 			/usr/bin/justc-envdir $dir /bin/reconfig
 			echo "[dynamic-env] Configuration applied" >&2
 		else
-			echo "[dynamic-env] No file changed since last run -- suppressing" >&2
+			echo "[dynamic-env] No file changed since last run -- suppressing"
 		fi
 	fi
 done
