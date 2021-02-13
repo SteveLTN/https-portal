@@ -1,4 +1,2 @@
-#!/usr/bin/with-contenv ruby
-require '/opt/certs_manager/certs_manager'
-
-CertsManager.new.setup
+#!/usr/bin/with-contenv /usr/bin/execlineb
+/usr/bin/justc-envdir -I /var/lib/https-portal/dynamic-env /bin/setup

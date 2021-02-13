@@ -8,8 +8,16 @@ class CertsManager
   attr_accessor :lock
 
   def setup
+    setup_config(true)
+  end
+
+  def reconfig
+    setup_config(false)
+  end
+
+  def setup_config(initial)
     with_lock do
-      add_dockerhost_to_hosts
+      ensure_dockerhost_in_hosts
       ensure_crontab
 
       NAConfig.domains.each do |domain|
@@ -29,13 +37,23 @@ class CertsManager
       config_domains(NAConfig.domains)
       Nginx.setup
 
-      Nginx.start
+      if initial
+        Nginx.start
+      else
+        Nginx.reload
+      end
 
       ensure_signed(NAConfig.domains, true)
 
-      Nginx.stop
+      if initial
+        Nginx.stop
+      else
+        Nginx.reload
+      end
     end
-    sleep 1 # Give Nginx some time to shutdown
+    if initial
+      sleep 1 # Give Nginx some time to shutdown
+    end
   end
 
   def renew
@@ -60,17 +78,10 @@ class CertsManager
     puts "Renewal done."
   end
 
-  def reconfig
-    with_lock do
-      ensure_keys_and_certs_exist(NAConfig.auto_discovered_domains)
-      config_domains(NAConfig.auto_discovered_domains)
-      ensure_signed(NAConfig.auto_discovered_domains, false)
-    end
-  end
-
   private
 
   def config_domains(domains)
+    Dir['/etc/nginx/conf.d/*.conf'].each { |file| File.delete file }
     domains.each do |domain|
       Nginx.config_domain(domain)
     end

@@ -33,6 +33,7 @@ Docker Hub page:
     - [Other configurations](#other-configurations)
   - [Advanced Usage](#advanced-usage)
     - [Configure Nginx through Environment Variables](#configure-nginx-through-environment-variables)
+    - [Change Configuration Dynamically](#change-configuration-dynamically)
     - [Override Nginx Configuration Files](#override-nginx-configuration-files)
   - [How It Works](#how-it-works)
   - [About Rate Limits of Let's Encrypt](#about-rate-limits-of-lets-encrypt)
@@ -572,6 +573,14 @@ server {
 	}
 }
 ```
+
+### Change Configuration Dynamically
+
+Environment variables may be dynamically overridden by modifying files
+`/var/lib/https-portal/dynamic-env`. The file's name and contents will create
+an environment variable with that name and contents, respectively. About 1s
+after the last modification, the configuration will be updated to reflect the
+new configuration. This allows modifying the configuration without downtime.
 
 ### Override Nginx Configuration Files
 
