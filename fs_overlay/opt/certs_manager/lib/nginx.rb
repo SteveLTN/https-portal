@@ -36,7 +36,7 @@ module Nginx
 
     unless success
       puts "Nginx failed to start, exiting ..."
-      exit(1)
+      Commands.fail_and_shutdown
     end
   end
 

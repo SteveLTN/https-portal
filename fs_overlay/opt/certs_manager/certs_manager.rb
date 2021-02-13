@@ -115,11 +115,11 @@ class CertsManager
         OpenSSL.create_csr(domain)
         if ACME.sign(domain)
           chain_certs(domain)
-          Nginx.reload || exit(1)
+          Nginx.reload || fail_and_shutdown
           puts "Signed certificate for #{domain.name}"
         else
           puts("Failed to obtain certs for #{domain.name}")
-          exit(1) if exit_on_failure
+          fail_and_shutdown if exit_on_failure
         end
       else
         puts "Signing skipped for #{domain.name}, it expires at #{OpenSSL.expires_in_days(domain.signed_cert_path)} days from now."

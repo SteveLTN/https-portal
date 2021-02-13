@@ -44,4 +44,9 @@ module Commands
       )
     end
   end
+
+  def fail_and_shutdown
+    Nginx.stop
+    exit(1)
+  end
 end
