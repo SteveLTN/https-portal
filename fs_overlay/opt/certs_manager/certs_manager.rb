@@ -111,7 +111,7 @@ class CertsManager
     domains.each do |domain|
       if OpenSSL.need_to_sign_or_renew? domain
         mkdir(domain)
-        OpenSSL.create_domain_key(domain)
+        OpenSSL.create_ongoing_domain_key(domain)
         OpenSSL.create_csr(domain)
         if ACME.sign(domain)
           chain_certs(domain)

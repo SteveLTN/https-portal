@@ -8,14 +8,14 @@ module OpenSSL
     end
   end
 
-  def self.create_domain_key(domain)
-    Logger.debug "create_domain_key for #{domain.name}"
-    system "openssl genrsa #{NAConfig.key_length} > #{domain.key_path}"
+  def self.create_ongoing_domain_key(domain)
+    Logger.debug "create_ongoing_domain_key for #{domain.name}"
+    system "openssl genrsa #{NAConfig.key_length} > #{domain.ongoing_key_path}"
   end
 
   def self.create_csr(domain)
     Logger.debug "create_csr for #{domain.name}"
-    system "openssl req -new -sha256 -key #{domain.key_path} -subj '/CN=#{domain.name}' > #{domain.csr_path}"
+    system "openssl req -new -sha256 -key #{domain.ongoing_key_path} -subj '/CN=#{domain.name}' > #{domain.csr_path}"
   end
 
   def self.key_and_cert_exist?(domain)
@@ -46,16 +46,16 @@ module OpenSSL
   def self.self_sign(domain)
     puts "Self-signing test certificate for #{domain.name}"
 
-    create_domain_key(domain)
+    create_ongoing_domain_key(domain)
 
     command = <<-EOC
     openssl x509 -req -days 90 \
       -in #{domain.csr_path} \
-      -signkey #{domain.key_path} \
+      -signkey #{domain.ongoing_key_path} \
       -out #{domain.signed_cert_path}
     EOC
 
-    system command
+    system command && ACME.rename_ongoing_cert_and_key(domain)
   end
 
   def self.generate_dummy_certificate(dir, out_path, keyout_path)
