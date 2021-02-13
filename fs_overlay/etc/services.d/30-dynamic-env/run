@@ -1,21 +1,19 @@
 #!/bin/sh
-env=/var/lib/https-portal/dynamic-env
-dom=/var/lib/https-portal/dynamic-domains
-mkdir -p $env $dom
+dir=/var/lib/https-portal/dynamic-env
+mkdir -p $dir
 
 # Remember when we started (tiny race condition window)
-touch $env.stamp # Outside of watched dirs!
+touch $dir.stamp # Outside of watched dir!
 
 # Wait for a modification to an all-uppercase file (ignore temp/swp files)
-inotifywait -qm -e close_write,move,delete $env $dom | while read line
+inotifywait -qm -e close_write,move,delete $dir | while read line
 do
-	echo "[dynamic-env] read $line"
-	if echo "$line" | egrep -q '( [_A-Z]*|\.dom)$'
+	if echo "$line" | grep -q ' [_A-Z]*$'
 	then
-		echo "[dynamic-env] All-uppercase or .dom file modified"
+		echo "[dynamic-env] All-uppercase file modified in $dir"
 
 		echo "[dynamic-env] Wait for activity to cease..."
-		while inotifywait -qq -t 1 -e close_write,move,delete $env $dom
+		while inotifywait -qq -t 1 -e close_write,move,delete $dir
 		do
 			:
 		done
@@ -23,13 +21,13 @@ do
 		# Apply new configuration; but only, if anything actually
 		# changed (top-level "while" loop will continue getting
 		# potentially old events)
-		if find $env $dom -newer $env.stamp | grep -q .
+		if find $dir -newer $dir.stamp | grep -q .
 		then
 			# Remember when we started (tiny race condition window)
-			touch $env.stamp # Outside of watched dirs!
+			touch $dir.stamp # Outside of watched dir!
 
 			echo "[dynamic-env] File changed since last run: Applying new configuration..."
-			/usr/bin/justc-envdir $env /bin/reconfig
+			/usr/bin/justc-envdir $dir /bin/reconfig
 			echo "[dynamic-env] Configuration applied" >&2
 		else
 			echo "[dynamic-env] No file changed since last run -- suppressing"

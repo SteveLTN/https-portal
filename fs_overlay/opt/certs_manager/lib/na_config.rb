@@ -40,11 +40,11 @@ module NAConfig
   end
 
   def self.auto_discovered_domains
-    doms = []
-    Dir['/var/run/domains', "#{NAConfig.portal_base_dir}/dynamic-domains/*.dom"].each do |file|
-      doms.concat(parse File.read(file))
+    if File.exist? '/var/run/domains'
+      parse File.read('/var/run/domains')
+    else
+      []
     end
-    doms
   end
 
   def self.debug_mode?
