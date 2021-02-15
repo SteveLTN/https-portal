@@ -6,11 +6,11 @@
   "author": "Shardlabs",
   "categories": ["Developer tools"],
   "links": {
-    "homepage": "https://github.com/Shard-Labs/https-portal"
+    "homepage": "https://github.com/dappnode/DAppNodePackage-https-portal"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Shard-Labs/https-portal"
+    "url": "https://github.com/dappnode/DAppNodePackage-https-portal"
   },
   "license": "GLP-3.0"
 }
