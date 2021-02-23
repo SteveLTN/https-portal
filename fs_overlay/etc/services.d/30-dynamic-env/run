@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/with-contenv sh
 dir=/var/lib/https-portal/dynamic-env
 mkdir -p $dir
 
