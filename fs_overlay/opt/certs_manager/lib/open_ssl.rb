@@ -8,14 +8,18 @@ module OpenSSL
     end
   end
 
-  def self.ensure_domain_key(domain)
-    unless File.exist?(domain.key_path) && system("openssl rsa --in #{domain.key_path} --noout --check")
-      system "openssl genrsa #{NAConfig.key_length} > #{domain.key_path}"
-    end
+  def self.create_ongoing_domain_key(domain)
+    Logger.debug "create_ongoing_domain_key for #{domain.name}"
+    system "openssl genrsa #{NAConfig.key_length} > #{domain.ongoing_key_path}"
   end
 
   def self.create_csr(domain)
-    system "openssl req -new -sha256 -key #{domain.key_path} -subj '/CN=#{domain.name}' > #{domain.csr_path}"
+    Logger.debug "create_csr for #{domain.name}"
+    system "openssl req -new -sha256 -key #{domain.ongoing_key_path} -subj '/CN=#{domain.name}' > #{domain.csr_path}"
+  end
+
+  def self.key_and_cert_exist?(domain)
+    File.exist?(domain.key_path) && File.exist?(domain.signed_cert_path)
   end
 
   def self.need_to_sign_or_renew?(domain)
@@ -23,6 +27,7 @@ module OpenSSL
 
     skip_conditions = File.exist?(domain.key_path) &&
                       File.exist?(domain.signed_cert_path) &&
+                      (domain.stage == 'local' || !self_signed?(domain.signed_cert_path)) &&
                       expires_in_days(domain.signed_cert_path) > NAConfig.renew_margin_days
 
     !skip_conditions
@@ -41,16 +46,16 @@ module OpenSSL
   def self.self_sign(domain)
     puts "Self-signing test certificate for #{domain.name}"
 
-    ensure_domain_key(domain)
+    create_ongoing_domain_key(domain)
 
     command = <<-EOC
     openssl x509 -req -days 90 \
       -in #{domain.csr_path} \
-      -signkey #{domain.key_path} \
+      -signkey #{domain.ongoing_key_path} \
       -out #{domain.signed_cert_path}
     EOC
 
-    system command
+    system command && ACME.rename_ongoing_cert_and_key(domain)
   end
 
   def self.generate_dummy_certificate(dir, out_path, keyout_path)
@@ -71,6 +76,11 @@ module OpenSSL
   end
 
   private
+
+  def self.self_signed?(pem)
+    issuer = `openssl x509 -issuer -noout -in #{pem}`
+    issuer.include? "default-server.example.com"
+  end
 
   def self.expires_at(pem)
     date_str = `openssl x509 -enddate -noout -in #{pem}`.sub('notAfter=', '')

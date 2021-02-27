@@ -1,4 +1,6 @@
 module Nginx
+  class NginxReloadException < RuntimeError; end
+
   def self.setup
     compiled_basic_config = ERBBinding.new('/var/lib/nginx-conf/nginx.conf.erb').compile
 
@@ -11,28 +13,50 @@ module Nginx
     File.open("/etc/nginx/conf.d/#{domain.name}.conf", 'w') do |f|
       f.write compiled_domain_config(domain, false)
     end
-
-    reload
   end
 
   def self.config_ssl(domain)
     File.open("/etc/nginx/conf.d/#{domain.name}.ssl.conf", 'w') do |f|
       f.write compiled_domain_config(domain, true)
     end
-
-    reload
   end
 
-  def self.start
-    system 'nginx -q'
+  def self.config_domain(domain)
+    config_http(domain)
+    config_ssl(domain)
   end
 
-  def self.reload
-    system 'nginx -s reload'
+  def self.start(daemon = true)
+    Logger.debug "Starting Nginx, daemon mode = #{daemon}"
+    if daemon
+      success = system 'nginx -q'
+    else
+      success = system 'nginx -q -g "daemon off;"'
+    end
+
+    unless success
+      puts "Nginx failed to start, exiting ..."
+      Commands.fail_and_shutdown
+    end
+  end
+
+  def self.reload(kill_on_failure = false)
+    Logger.debug "Reloading Nginx, kill_on_failure = #{kill_on_failure}"
+    success = system 'nginx -s reload'
+
+    if (!success && kill_on_failure)
+      kill
+    end
+
+    success
   end
 
   def self.stop
     system 'nginx -s stop'
+  end
+
+  def self.kill
+    system 'pkill -F /var/run/nginx.pid'
   end
 
   private

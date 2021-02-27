@@ -31,7 +31,7 @@ module ACME
 
       raise FailedToSignException unless system(command)
 
-      rename_ongoing_cert(domain)
+      rename_ongoing_cert_and_key(domain)
     end
   rescue Exception => e
     puts <<-HERE
@@ -45,7 +45,8 @@ machine. Sometimes that takes a while.
     raise e
   end
 
-  def self.rename_ongoing_cert(domain)
+  def self.rename_ongoing_cert_and_key(domain)
     FileUtils.mv(domain.ongoing_cert_path, domain.signed_cert_path, force: true)
+    FileUtils.mv(domain.ongoing_key_path, domain.key_path, force: true)
   end
 end

@@ -1,5 +1,6 @@
 Dir[File.dirname(__FILE__) + '/lib/*.rb'].each { |file| require file }
 require_relative 'models/domain'
+require 'fileutils'
 
 class CertsManager
   include Commands
@@ -7,29 +8,52 @@ class CertsManager
   attr_accessor :lock
 
   def setup
-    add_dockerhost_to_hosts
-    ensure_crontab
+    setup_config(true)
+  end
 
-    NAConfig.domains.each do |domain|
-      if NAConfig.debug_mode?
-        domain.print_debug_info
+  def reconfig
+    setup_config(false)
+  end
+
+  def setup_config(initial)
+    with_lock do
+      ensure_dockerhost_in_hosts
+      ensure_crontab
+
+      NAConfig.domains.each do |domain|
+        if NAConfig.debug_mode?
+          domain.print_debug_info
+        end
+        domain.ensure_welcome_page
       end
-      domain.ensure_welcome_page
+
+      ensure_dummy_certificate_for_default_server
+      OpenSSL.ensure_dhparam
+      OpenSSL.ensure_account_key
+
+      generate_ht_access(NAConfig.domains)
+
+      ensure_keys_and_certs_exist(NAConfig.domains)
+      config_domains(NAConfig.domains)
+      Nginx.setup
+
+      if initial
+        Nginx.start
+      else
+        Nginx.reload
+      end
+
+      ensure_signed(NAConfig.domains, true)
+
+      if initial
+        Nginx.stop
+      else
+        Nginx.reload
+      end
     end
-
-    ensure_dummy_certificate_for_default_server
-    OpenSSL.ensure_dhparam
-    OpenSSL.ensure_account_key
-
-    generate_ht_access(NAConfig.domains)
-
-    Nginx.setup
-    Nginx.start
-
-    ensure_signed(NAConfig.domains)
-
-    Nginx.stop
-    sleep 1 # Give Nginx some time to shutdown
+    if initial
+      sleep 1 # Give Nginx some time to shutdown
+    end
   end
 
   def renew
@@ -54,32 +78,51 @@ class CertsManager
     puts "Renewal done."
   end
 
-  def reconfig
-    ensure_signed(NAConfig.auto_discovered_domains)
-  end
-
   private
 
-  def ensure_signed(domains)
-    with_lock do
-      domains.each do |domain|
-        Nginx.config_http(domain)
+  def config_domains(domains)
+    Dir['/etc/nginx/conf.d/*.conf'].each { |file| File.delete file }
+    domains.each do |domain|
+      Nginx.config_domain(domain)
+    end
+  end
 
-        if OpenSSL.need_to_sign_or_renew? domain
-          mkdir(domain)
-          OpenSSL.ensure_domain_key(domain)
-          OpenSSL.create_csr(domain)
-          if ACME.sign(domain)
-            chain_certs(domain)
-            Nginx.config_ssl(domain)
-            puts "Signed key for #{domain.name}"
-          else
-            puts("Failed to obtain certs for #{domain.name}")
-          end
+  def ensure_keys_and_certs_exist(domains)
+    # Just to make sure there is some sort of certificate existing,
+    # whether being dummy or real,
+    # so Nginx can start
+    dummy_cert_path = File.join(NAConfig.portal_base_dir, "default_server/default_server.crt")
+    dummy_key_path = File.join(NAConfig.portal_base_dir, "default_server/default_server.key")
+
+    domains.each do |domain|
+      mkdir(domain)
+
+      if NAConfig.force_renew? || !OpenSSL.key_and_cert_exist?(domain)
+        Logger.debug "copying dummy key and cert for #{domain.name}"
+        FileUtils.cp(dummy_key_path, domain.key_path)
+        FileUtils.cp(dummy_cert_path, domain.signed_cert_path)
+        chain_certs(domain)
+      end
+    end
+  end
+
+  def ensure_signed(domains, exit_on_failure = false)
+    Logger.debug ("ensure_signed")
+    domains.each do |domain|
+      if OpenSSL.need_to_sign_or_renew? domain
+        mkdir(domain)
+        OpenSSL.create_ongoing_domain_key(domain)
+        OpenSSL.create_csr(domain)
+        if ACME.sign(domain)
+          chain_certs(domain)
+          Nginx.reload || fail_and_shutdown
+          puts "Signed certificate for #{domain.name}"
         else
-          Nginx.config_ssl(domain)
-          puts "Signing skipped for #{domain.name}, it expires at #{OpenSSL.expires_in_days(domain.signed_cert_path)} days from now."
+          puts("Failed to obtain certs for #{domain.name}")
+          fail_and_shutdown if exit_on_failure
         end
+      else
+        puts "Signing skipped for #{domain.name}, it expires at #{OpenSSL.expires_in_days(domain.signed_cert_path)} days from now."
       end
     end
   end

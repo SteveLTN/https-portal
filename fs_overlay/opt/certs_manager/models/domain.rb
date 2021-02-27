@@ -28,6 +28,10 @@ class Domain
     File.join(dir, 'signed.ongoing.crt')
   end
 
+  def ongoing_key_path
+    File.join(dir, 'domain.ongoing.key')
+  end
+
   def key_path
     File.join(dir, 'domain.key')
   end
