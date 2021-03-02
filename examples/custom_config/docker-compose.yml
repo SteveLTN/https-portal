@@ -12,6 +12,9 @@ services:
       DOMAINS: 'example.com -> https://letsencrypt.org'
       STAGE: local
     volumes:
+      - https-portal-data:/var/lib/https-portal
       - ./nginx-conf/example.com.conf.erb:/var/lib/nginx-conf/example.com.conf.erb:ro
       - ./nginx-conf/example.com.ssl.conf.erb:/var/lib/nginx-conf/example.com.ssl.conf.erb:ro
 
+volumes:
+  https-portal-data:

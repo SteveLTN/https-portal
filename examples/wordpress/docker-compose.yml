@@ -18,6 +18,8 @@ services:
       # Using staging server by default, for there is a rate limit on production.
       # Uncomment to use Let's Encrypt production server.
       # STAGE: production
+    volumes:
+      - https-portal-data:/var/lib/https-portal
 
   wordpress:
     image: wordpress
@@ -28,3 +30,6 @@ services:
     image: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: '<a secure password>'
+
+volumes:
+  https-portal-data:

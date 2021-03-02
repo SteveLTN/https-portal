@@ -4,8 +4,14 @@ services:
   https-portal:
     image: steveltn/https-portal:1
     ports:
-      - 80:80
-      - 443:443
+      - '80:80'
+      - '443:443'
     environment:
       DOMAINS: 'example.com'
-      STAGE: local
+      # STAGE: 'production' # Don't use production until staging works
+    volumes:
+      - https-portal-data:/var/lib/https-portal
+
+volumes:
+    https-portal-data: # Recommended, to avoid re-signing when upgrading HTTPS-PORTAL
+   

@@ -62,14 +62,22 @@ Create a `docker-compose.yml` file with the following content in any directory
 of your choice:
 
 ```yaml
-https-portal:
-  image: steveltn/https-portal:1
-  ports:
-    - '80:80'
-    - '443:443'
-  environment:
-    DOMAINS: 'example.com'
-    # STAGE: 'production' # Don't use production until staging works
+version: '3'
+
+services:
+  https-portal:
+    image: steveltn/https-portal:1
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      DOMAINS: 'example.com'
+      # STAGE: 'production' # Don't use production until staging works
+    volumes:
+      - https-portal-data:/var/lib/https-portal
+
+volumes:
+    https-portal-data: # Recommended, to avoid re-signing when upgrading HTTPS-PORTAL
 ```
 
 Run the `docker-compose up` command in the same directory. A moment later you'll
@@ -317,6 +325,7 @@ https-portal:
   environment:
     DOMAINS: 'hexo.example.com, octopress.example.com'
   volumes:
+    - https-portal-data:/var/lib/https-portal
     - /data/https-portal/vhosts:/var/www/vhosts
 ```
 
@@ -424,6 +433,7 @@ By default no Nginx access logs are written, and error logs are written to stdou
       ERROR_LOG: default
       ACCESS_LOG: default
     volumes:
+      - https-portal-data:/var/lib/https-portal
       - /path/to/log/directory:/var/log/nginx/
       - /path/to/logrotate/state/directory:/var/lib/logrotate/
   ```
@@ -445,6 +455,7 @@ By default no Nginx access logs are written, and error logs are written to stdou
       ERROR_LOG: /var/log/custom-logs/error.log
       ACCESS_LOG: /var/log/custom-logs/access.log
     volumes:
+      - https-portal-data:/var/lib/https-portal
       - /path/to/log/directory:/var/log/custom-logs/
   ```
 
@@ -602,6 +613,7 @@ you can launch HTTPS-PORTAL by:
 https-portal:
   # ...
   volumes:
+    - https-portal-data:/var/lib/https-portal
     - /path/to/http_config:/var/lib/nginx-conf/my.example.com.conf.erb:ro
     - /path/to/https_config:/var/lib/nginx-conf/my.example.com.ssl.conf.erb:ro
 ```
@@ -668,6 +680,8 @@ everything is good, you can switch to production mode with `STAGE:
 
 ## Troubleshooting
 
+### Force renew
+
 If you find your certificates are not chained correctly, please run the container
 again with the follow setting once:
 
@@ -683,6 +697,15 @@ This is because with ACME v2 returns the full chain instead of a partial chain
 with ACME v1. If you have old certificates stored, HTTPS-PORTAL may not be able 
 to handle the case correctly. If you run into this issue, just `FORCE_RENEW` to 
 obtain a new set of certificates.
+
+### Reset the data volume
+
+If you find HTTPS-PORTAL is not behaving as expected, try to reset the data volume:
+
+```
+docker-compose down -v
+docker-compose up
+```
 
 ## Credits
 
