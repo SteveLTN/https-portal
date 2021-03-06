@@ -325,7 +325,7 @@ https-portal:
   environment:
     DOMAINS: 'hexo.example.com, octopress.example.com'
   volumes:
-    - https-portal-data:/var/lib/https-portal
+    - https-portal-data:/var/lib/https-portal
     - /data/https-portal/vhosts:/var/www/vhosts
 ```
 
@@ -433,7 +433,7 @@ By default no Nginx access logs are written, and error logs are written to stdou
       ERROR_LOG: default
       ACCESS_LOG: default
     volumes:
-      - https-portal-data:/var/lib/https-portal
+      - https-portal-data:/var/lib/https-portal
       - /path/to/log/directory:/var/log/nginx/
       - /path/to/logrotate/state/directory:/var/lib/logrotate/
   ```
@@ -455,7 +455,7 @@ By default no Nginx access logs are written, and error logs are written to stdou
       ERROR_LOG: /var/log/custom-logs/error.log
       ACCESS_LOG: /var/log/custom-logs/access.log
     volumes:
-      - https-portal-data:/var/lib/https-portal
+      - https-portal-data:/var/lib/https-portal
       - /path/to/log/directory:/var/log/custom-logs/
   ```
 
@@ -613,7 +613,7 @@ you can launch HTTPS-PORTAL by:
 https-portal:
   # ...
   volumes:
-    - https-portal-data:/var/lib/https-portal
+    - https-portal-data:/var/lib/https-portal
     - /path/to/http_config:/var/lib/nginx-conf/my.example.com.conf.erb:ro
     - /path/to/https_config:/var/lib/nginx-conf/my.example.com.ssl.conf.erb:ro
 ```
