@@ -2,7 +2,7 @@
   "name": "https-portal.dnp.dappnode.eth",
   "version": "0.1.0",
   "description": "HTTPS portal for DAppNode",
-  "type": "service",
+  "type": "dncore",
   "author": "Shardlabs",
   "categories": ["Developer tools"],
   "links": {
