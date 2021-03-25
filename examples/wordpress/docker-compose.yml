@@ -1,3 +1,9 @@
+# Note: Recent version of Wordpress doesn't respect `X_FORWARDED_PROTO`
+# header sent by HTTPS-PORTAL.
+# Please refer to Section "Fixing protocol errors" to fix it after installing
+
+# https://www.nan-labs.com/blog/dockerize-secure-wordpress-behind-proxy
+
 version: '3'
 
 services:
@@ -13,8 +19,8 @@ services:
     environment:
       # Forward wordpress.example.com to the WordPress container.
       # You can set up multiple domains at once.
-      DOMAINS: 'example.com -> http://wordpress'
-      STAGE: local
+      DOMAINS: 'https-portal-test.steveltn.me -> http://wordpress'
+      STAGE: production
       # Using staging server by default, for there is a rate limit on production.
       # Uncomment to use Let's Encrypt production server.
       # STAGE: production
