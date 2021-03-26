@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.5"
 services:
   https-portal.dnp.dappnode.eth:
     build: .
@@ -12,9 +12,17 @@ services:
       CERTAPI_URL: "ns.dappnode.io:5000"
       PUBLIC_DOMAIN: null
       FORCE: null
+    networks:
+      dncore_network:
+        aliases:
+          - https-portal.dappnode
     volumes:
       - "portal-certs:/var/lib/https-portal/"
       - "portal-data:/var/run/domains.d/"
 volumes:
   portal-certs: {}
   portal-data: {}
+networks:
+  dncore_network:
+    name: dncore_network
+    external: true
