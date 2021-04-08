@@ -35,6 +35,7 @@ Docker Hub page:
     - [Configure Nginx through Environment Variables](#configure-nginx-through-environment-variables)
     - [Change Configuration Dynamically](#change-configuration-dynamically)
     - [Override Nginx Configuration Files](#override-nginx-configuration-files)
+    - [Manually Set Private Key Length/Type](#manually-set-private-key-length-type)
   - [How It Works](#how-it-works)
   - [About Rate Limits of Let's Encrypt](#about-rate-limits-of-lets-encrypt)
   - [Troubleshooting](#troubleshooting)
@@ -629,7 +630,7 @@ If you want to make an Nginx configuration that will be used by all sites, you c
 
 Since the config files will be used on all your sites, please keep using the variables already in the file and don't hard-code anything.
 
-### Manually Set RSA Private Key Length
+### Manually Set Private Key Length/Type
 
 By default, HTTPS-PORTAL generate `2048` bits long RSA private key.  
 However, you can manually set RSA private key length (`numbits` of `openssl genrsa` command) through `NUMBITS` environment variable.
@@ -640,6 +641,10 @@ https-portal:
   environment:
     NUMBITS: '4096'
 ```
+
+Alternatively, you can set the `CERTIFICATE_ALGORITHM` environment variable to `prime256v1`, as [recommended by Mozilla](https://wiki.mozilla.org/Security/Server_Side_TLS#Modern_compatibility). Note however, that this setting prevents some older clients/systems from connecting.
+
+Both settings apply to newly generated keys only. If you would like to update existing keys, remove the existing keys stored under `/var/lib/https-portal` and restart `https-portal`.
 
 ## How It Works
 

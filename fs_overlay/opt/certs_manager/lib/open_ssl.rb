@@ -9,8 +9,13 @@ module OpenSSL
   end
 
   def self.create_ongoing_domain_key(domain)
-    Logger.debug "create_ongoing_domain_key for #{domain.name}"
-    system "openssl genrsa #{NAConfig.key_length} > #{domain.ongoing_key_path}"
+    algo = NAConfig.certificate_algorithm
+    Logger.debug "create_ongoing_domain_key #{algo} for #{domain.name}"
+    if algo == "rsa"
+      system "openssl genrsa #{NAConfig.key_length} > #{domain.ongoing_key_path}"
+    else
+      system "openssl ecparam -genkey -name #{algo} -noout -out #{domain.ongoing_key_path}"
+    end
   end
 
   def self.create_csr(domain)
