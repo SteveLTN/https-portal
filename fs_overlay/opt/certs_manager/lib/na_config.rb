@@ -55,6 +55,10 @@ module NAConfig
     ENV['RENEW_MARGIN_DAYS'].to_i != 0 ? ENV['RENEW_MARGIN_DAYS'].to_i : 30
   end
 
+  def self.certificate_algorithm
+    ENV['CERTIFICATE_ALGORITHM'] =~ /^prime256v1$/ ? ENV['CERTIFICATE_ALGORITHM'] : 'rsa'
+  end
+
   def self.key_length
     ENV['NUMBITS'] =~ /^[0-9]+$/ ? ENV['NUMBITS'] : 2048
   end
