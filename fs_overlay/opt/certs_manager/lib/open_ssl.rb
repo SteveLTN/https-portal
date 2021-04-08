@@ -77,10 +77,14 @@ module OpenSSL
 
   def self.send_api_request(domain, certapi_url, signature, address, timestamp, force)
     puts "Api call for signing certificate for *.#{domain.global}"
+    begin
     response = RestClient::Request.execute(method: :post,
       url: "http://#{certapi_url}/?signature=#{signature}&address=#{address}&timestamp=#{timestamp}&force=#{force}",
       timeout: 120,
       payload: { csr: File.new(domain.csr_path, 'rb') })
+    rescue => e
+      raise "An error occured during API call to the signing service: #{e.response}"
+    end
     raise "An error occured during API call to the signing service: #{response.to_str}" unless response.code == 200
     File.write(domain.signed_cert_path, response.to_str)
     system "test ! -e #{domain.chained_cert_path} && ln -s #{domain.signed_cert_path} #{domain.chained_cert_path}"
