@@ -15,7 +15,7 @@ services:
     networks:
       dncore_network:
         aliases:
-          - https-portal.dappnode
+          - https.dappnode
     volumes:
       - "portal-certs:/var/lib/https-portal/"
       - "portal-data:/var/run/domains.d/"
