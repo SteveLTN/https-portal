@@ -1,8 +1,8 @@
 version: "3.5"
 services:
-  https-portal.dnp.dappnode.eth:
+  https.dnp.dappnode.eth:
     build: .
-    image: "https-portal.dnp.dappnode.eth:0.1.0"
+    image: "https.dnp.dappnode.eth:0.1.0"
     restart: always
     ports:
       - "80:80"
