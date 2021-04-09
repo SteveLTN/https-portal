@@ -1,16 +1,16 @@
 {
-  "name": "https-portal.dnp.dappnode.eth",
+  "name": "https.dnp.dappnode.eth",
   "version": "0.1.0",
   "description": "HTTPS portal for DAppNode",
   "type": "dncore",
   "author": "Shardlabs",
   "categories": ["Developer tools"],
   "links": {
-    "homepage": "https://github.com/dappnode/DNP_HTTPS-PORTAL"
+    "homepage": "https://github.com/dappnode/DNP_HTTPS"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dappnode/DNP_HTTPS-PORTAL"
+    "url": "https://github.com/dappnode/DNP_HTTPS"
   },
   "license": "GLP-3.0"
 }
