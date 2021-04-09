@@ -6,11 +6,11 @@
   "author": "Shardlabs",
   "categories": ["Developer tools"],
   "links": {
-    "homepage": "https://github.com/dappnode/DAppNodePackage-https-portal"
+    "homepage": "https://github.com/dappnode/DNP_HTTPS-PORTAL"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/dappnode/DAppNodePackage-https-portal"
+    "url": "https://github.com/dappnode/DNP_HTTPS-PORTAL"
   },
   "license": "GLP-3.0"
 }
