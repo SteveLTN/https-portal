@@ -114,7 +114,7 @@ http {
     server {
         server_name   ~(?<domain>\w+.dappnode).local;
         listen        80;
-        resolver <% ENV['GLOBAL_RESOLVER'] %>;
+        resolver <%= ENV['GLOBAL_RESOLVER'] %>;
         location      / {
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
