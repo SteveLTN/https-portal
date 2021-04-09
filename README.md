@@ -1,4 +1,4 @@
-# HTTPS-PORTAL
+# HTTPS
 
 This is a fork of a original [https-portal](https://github.com/SteveLTN/https-portal), with additional features intended to use in [DAppNode](https://github.com/dappnode/DAppNode) as one of the core packages. All of its existing features should remain functional.
 
