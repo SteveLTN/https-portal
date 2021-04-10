@@ -7,7 +7,7 @@ export async function reconfigureNGINX(): Promise<void> {
   const dappnodeDomain = await getDAppNodeDomain();
 
   // Write domain mapping file
-  writeDomainsFile(entriesDb.get(), dappnodeDomain);
+  writeDomainsFile(entriesDb.read(), dappnodeDomain);
 
   // reconfig NGINX
   const reconfigOutput = await shell("reconfig");
