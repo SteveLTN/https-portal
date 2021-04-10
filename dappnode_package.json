@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "description": "HTTPS portal for DAppNode",
   "type": "dncore",
+  "author": "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
+  "contributors": ["Shardlabs <info@shardlabs.io> (https://shardlabs.io/)"],
   "author": "Shardlabs",
   "categories": ["Developer tools"],
+  "keywords": ["DAppNodeCore"],
   "links": {
     "homepage": "https://github.com/dappnode/DNP_HTTPS"
   },
