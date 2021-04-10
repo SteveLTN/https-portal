@@ -17,7 +17,7 @@ app.get(
     const from = await sanitizeFrom(req.query.from as string);
     const to = sanitizeTo(req.query.to as string);
 
-    const entries = entriesDb.get();
+    const entries = entriesDb.read();
     if (entries.some(entry => entry.from === from)) {
       throw new BadRequestError("External endpoint already exists");
     }
@@ -32,7 +32,7 @@ app.get(
     }
 
     entries.push({ from, to });
-    entriesDb.set(entries);
+    entriesDb.write(entries);
 
     await reconfigureNGINX();
   })
@@ -43,8 +43,8 @@ app.get(
   asyncHandler(async req => {
     const from = await sanitizeFrom(req.query.from as string);
 
-    const entries = entriesDb.get();
-    entriesDb.set(entries.filter(e => e.from !== from));
+    const entries = entriesDb.read();
+    entriesDb.write(entries.filter(e => e.from !== from));
 
     await reconfigureNGINX();
   })
@@ -52,7 +52,7 @@ app.get(
 
 app.get(
   "/",
-  asyncHandler(async () => entriesDb.get())
+  asyncHandler(async () => entriesDb.read())
 );
 
 app.get(
@@ -63,7 +63,7 @@ app.get(
 app.get(
   "/clear",
   asyncHandler(async () => {
-    entriesDb.clear();
+    entriesDb.write([]);
     await reconfigureNGINX();
   })
 );
