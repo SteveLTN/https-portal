@@ -23,8 +23,8 @@ RUN rm -rf node_modules && yarn install --production
 
 
 
-FROM nginx:1.19.6-alpine
-ARG  ARCH=amd64
+FROM nginx:1.19.6-alpine AS final-stage
+ARG TARGETPLATFORM
 
 # Delete sym links from nginx image, install logrotate
 RUN rm /var/log/nginx/access.log && \
@@ -43,11 +43,13 @@ ENV S6_OVERLAY_VERSION=v2.2.0.1  \
     RESOLVER=127.0.0.11 \
     GLOBAL_RESOLVER=172.33.1.2
 
-ADD https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-$ARCH.tar.gz /tmp/
+ADD https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-amd64.tar.gz /tmp/
+ADD https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-aarch64.tar.gz /tmp/
 ADD https://raw.githubusercontent.com/diafygi/acme-tiny/$ACME_TINY_VERSION/acme_tiny.py /bin/acme_tiny
 
-RUN tar xzf /tmp/s6-overlay-$ARCH.tar.gz -C / && \
-    rm /tmp/s6-overlay-$ARCH.tar.gz && \
+RUN export ARCH=$(echo $TARGETPLATFORM | cut -d'/' -f2 | sed 's/arm64/aarch64/') && \
+    tar xzf /tmp/s6-overlay-$ARCH.tar.gz -C / && \
+    rm /tmp/s6-overlay-*.tar.gz && \
     rm /etc/nginx/conf.d/default.conf && \
     apk add --update \
     # From original image
