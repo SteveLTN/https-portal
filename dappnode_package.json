@@ -5,7 +5,7 @@
   "type": "dncore",
   "author": "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
   "contributors": ["Shardlabs <info@shardlabs.io> (https://shardlabs.io/)"],
-  "author": "Shardlabs",
+  "architectures": ["linux/amd64", "linux/arm64"],
   "categories": ["Developer tools"],
   "keywords": ["DAppNodeCore"],
   "links": {
