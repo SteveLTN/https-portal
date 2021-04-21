@@ -1,4 +1,4 @@
-FROM ruby:2.7.2-alpine AS ruby-builder
+FROM ruby:2.7.3-alpine AS ruby-builder
 
 RUN apk add --update build-base 
 
@@ -53,7 +53,7 @@ RUN export ARCH=$(echo $TARGETPLATFORM | cut -d'/' -f2 | sed 's/arm64/aarch64/')
     rm /etc/nginx/conf.d/default.conf && \
     apk add --update \
     # From original image
-    python2 ruby=2.7.2-r1 iproute2 apache2-utils logrotate openssl \
+    python2 ruby=2.7.3-r0 iproute2 apache2-utils logrotate openssl \
     # For Typescript app
     nodejs \
     && \
