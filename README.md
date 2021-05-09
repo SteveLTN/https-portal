@@ -601,7 +601,7 @@ nginx.conf containing a valid `server` block. The custom nginx configurations
 are [ERB](http://www.stuartellis.eu/articles/erb/) templates and will be
 rendered before usage.
 
-You can either override just override one single site's config or all sites' configs.
+You can either just override one single site's config or all sites' configs.
 
 #### Override just one single site's config
 
