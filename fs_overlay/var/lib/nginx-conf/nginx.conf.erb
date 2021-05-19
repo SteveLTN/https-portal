@@ -111,6 +111,22 @@ http {
         deny all;
     <% end %>
 
+
+    <% if ENV['LOCAL_PROXYING'].downcase == 'true' && subnet != nil %>
+    server {
+        server_name   ~(?<domain>\w+.dappnode).local;
+        listen        80;
+        resolver <%= ENV['GLOBAL_RESOLVER'] %>;
+        allow <%= subnet %>;
+        deny all;
+        location      / {
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_pass http://$domain;
+        }
+    }
+    <% end %>
+
     include /etc/nginx/conf.d/*.conf;
 
     # Prevent Nginx from leaking other server configurations on the same machine

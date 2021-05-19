@@ -10,6 +10,7 @@ services:
     environment:
       STAGE: production
       CERTAPI_URL: "ns.dappnode.io:5000"
+      LOCAL_PROXYING: "true"
       PUBLIC_DOMAIN: null
       FORCE: null
     networks:

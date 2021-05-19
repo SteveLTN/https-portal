@@ -37,11 +37,12 @@ ENV S6_OVERLAY_VERSION=v2.2.0.1  \
 # API volume to store domain .txt and .json files
     DOMAINS_DIR=/var/run/domains.d/  \
     FULLDOMAIN_PATH=/var/run/domains.d/fulldomain \
-    DAPPMANAGER_SIGN=http://172.33.1.7/sign  \
-    DAPPMANAGER_DOMAIN=http://172.33.1.7/global-envs/DOMAIN \
+    DAPPMANAGER_SIGN=http://my.dappnode/sign  \
+    DAPPMANAGER_DOMAIN=http://my.dappnode/global-envs/DOMAIN \
     DYNAMIC_UPSTREAM=true \
     RESOLVER=127.0.0.11 \
-    GLOBAL_RESOLVER=172.33.1.2
+    GLOBAL_RESOLVER=172.33.1.2 \
+    DAPPMANAGER_INTERNAL_IP=http://my.dappnode/global-envs/INTERNAL_IP
 
 ADD https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-amd64.tar.gz /tmp/
 ADD https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-aarch64.tar.gz /tmp/
