@@ -3,6 +3,7 @@ services:
   https.dnp.dappnode.eth:
     build: .
     image: "https.dnp.dappnode.eth:0.1.0"
+    container_name: "DAppNodeCore-https.dnp.dappnode.eth"
     restart: always
     ports:
       - "80:80"
