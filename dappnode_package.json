@@ -1,6 +1,6 @@
 {
   "name": "https.dnp.dappnode.eth",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "HTTPS portal for DAppNode",
   "type": "dncore",
   "author": "DAppNode Association <admin@dappnode.io> (https://github.com/dappnode)",
