@@ -114,7 +114,7 @@ http {
 
     <% if ENV['LOCAL_PROXYING'].downcase == 'true' && subnet != nil %>
     server {
-        server_name   ~(?<domain>\w+.dappnode).local;
+        server_name   dappnode.local;
         listen        80;
         resolver <%= ENV['GLOBAL_RESOLVER'] %>;
         allow <%= subnet %>;
@@ -122,7 +122,7 @@ http {
         location      / {
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
-            proxy_pass http://$domain;
+            proxy_pass http://my.dappnode;
         }
     }
     <% end %>
