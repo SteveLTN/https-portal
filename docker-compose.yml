@@ -1,6 +1,6 @@
 version: "3.5"
 services:
-  https:
+  https.dnp.dappnode.eth:
     build: .
     image: "https.dnp.dappnode.eth:0.1.1"
     container_name: DAppNodeCore-https.dnp.dappnode.eth
