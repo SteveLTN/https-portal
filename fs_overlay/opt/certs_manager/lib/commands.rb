@@ -46,7 +46,10 @@ module Commands
   end
 
   def fail_and_shutdown
+    Logger.debug ("Fail and Shutdown")
     Nginx.stop
     exit(1)
   end
+
+  module_function :fail_and_shutdown
 end

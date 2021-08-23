@@ -1,3 +1,5 @@
+require_relative './commands'
+
 module Nginx
   class NginxReloadException < RuntimeError; end
 
