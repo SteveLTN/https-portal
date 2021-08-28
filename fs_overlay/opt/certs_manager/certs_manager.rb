@@ -66,7 +66,7 @@ class CertsManager
         end
 
         if OpenSSL.need_to_sign_or_renew? domain
-          ACME.sign(domain)
+          ACME.sign(domain) # CSR is preserved
           chain_certs(domain)
           Nginx.reload
           puts "Renewed certs for #{domain.name}"

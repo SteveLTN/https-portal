@@ -51,14 +51,16 @@ module OpenSSL
   def self.self_sign(domain)
     puts "Self-signing test certificate for #{domain.name}"
 
-    create_ongoing_domain_key(domain)
-
     command = <<-EOC
-    openssl x509 -req \
+    openssl req -x509 \
+      -newkey rsa:#{NAConfig.key_length} \
+      -nodes \
+      -out #{domain.ongoing_cert_path} \
+      -keyout #{domain.ongoing_key_path} \
       -days 90 \
-      -signkey #{domain.ongoing_key_path} \
-      -in #{domain.csr_path} \
-      -out #{domain.signed_cert_path}
+      -batch \
+      -subj "/CN=#{domain.name}" \
+      -addext "extendedKeyUsage = serverAuth"
     EOC
 
     (system command) && ACME.rename_ongoing_cert_and_key(domain)
