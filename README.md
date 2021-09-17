@@ -31,7 +31,7 @@ Docker Hub page:
     - [Logging configuration](#logging-configuration)
     - [Debugging](#debugging)
     - [Other Configurations](#other-configurations)
-    - [Internationalized Domain Names (IDN)](#internationalized-domain-names)
+    - [Internationalized Domain Names (IDN)](#internationalized-domain-names-idn)
   - [Advanced Usage](#advanced-usage)
     - [Configure Nginx through Environment Variables](#configure-nginx-through-environment-variables)
     - [Change Configuration Dynamically](#change-configuration-dynamically)
