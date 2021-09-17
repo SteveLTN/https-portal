@@ -66,8 +66,10 @@ module NAConfig
   private
 
   def self.parse(domain_desc)
-    domain_desc.split(',').map(&:strip).delete_if { |s| s == '' }.map do |descriptor|
-      Domain.new(descriptor)
-    end
+    domain_desc.
+      split(',').map(&:strip).
+      delete_if { |s| s == '' }.map do |descriptor|
+        Domain.new(descriptor.force_encoding(Encoding::UTF_8))
+      end
   end
 end
