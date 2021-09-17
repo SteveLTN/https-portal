@@ -12,7 +12,6 @@ RSpec.describe Domain do
 
     domain_configs = [
       ['example.com', 'example.com', 'EXAMPLE_COM', nil, [], nil, 'local', nil, nil, nil],
-      ['eßåmple.com', 'eßåmple.com', 'ESSÅMPLE_COM', nil, [], nil, 'local', nil, nil, nil],
       ['4example.com', '4example.com', '4EXAMPLE_COM', nil, [], nil, 'local', nil, nil, nil],
       [' example.com ', 'example.com', 'EXAMPLE_COM', nil, [], nil, 'local', nil, nil, nil],
       ['example.com #staging', 'example.com', 'EXAMPLE_COM', nil, [], nil, 'staging', nil, nil, nil],
