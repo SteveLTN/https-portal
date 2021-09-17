@@ -78,7 +78,7 @@ class Domain
   end
 
   def env_format_name
-    name.upcase.tr('^A-Z0-9', '_')
+    name.upcase.gsub(/[^A-Z0-9\u00C0-\u00FF]/, '_')
   end
 
   def upstream_backend_name
@@ -190,7 +190,7 @@ class Domain
       regex = %r{
         ^
         (?:\[(?<ips>[0-9.:\/, ]*)\]\s*)?
-        (?:(?<user>[^:@\[\]]+)(?::(?<pass>[^@]*))?@)?(?<domain>[a-z0-9._\-]+?)
+        (?:(?<user>[^:@\[\]]+)(?::(?<pass>[^@]*))?@)?(?<domain>[a-z0-9\u00C0-\u00FF._\-]+?)
         (?:
           \s*(?<mode>[-=]>)\s*
           (?<upstream_proto>https?:\/\/)?
