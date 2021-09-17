@@ -30,7 +30,8 @@ Docker Hub page:
     - [Access Restriction](#access-restriction)
     - [Logging configuration](#logging-configuration)
     - [Debugging](#debugging)
-    - [Other configurations](#other-configurations)
+    - [Other Configurations](#other-configurations)
+    - [Internationalized Domain Names (IDN)](#internationalized-domain-names)
   - [Advanced Usage](#advanced-usage)
     - [Configure Nginx through Environment Variables](#configure-nginx-through-environment-variables)
     - [Change Configuration Dynamically](#change-configuration-dynamically)
@@ -483,6 +484,10 @@ By default, HTTPS-PORTAL renews the certificate about 30 days before the expiry.
 ```
 RENEW_MARGIN_DAYS=30
 ```
+
+### Internationalized Domain Names (IDN)
+
+If you have non-ASCII characters in your domain, [convert it to an ASCII-Compatible Encoding (ACE) form](https://www.verisign.com/en_US/channel-resources/domain-registry-products/idn/idn-conversion-tool/index.xhtml) before using HTTPS-PORTAL.
 
 ## Advanced Usage
 
