@@ -291,8 +291,7 @@ You can specify multiple domains by splitting them with commas:
 https-portal:
   # ...
   environment:
-    DOMAINS: 'wordpress.example.com -> http://wordpress:80, gitlab.example.com
-    -> http://gitlab'
+    DOMAINS: 'wordpress.example.com -> http://wordpress:80, gitlab.example.com -> http://gitlab'
 ```
 
 You can also specify the stage (`local`, `staging`, or `production`) for each individual site, note that stages of individual sites overrides the global stage:
