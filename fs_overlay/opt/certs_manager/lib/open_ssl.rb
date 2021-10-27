@@ -66,6 +66,23 @@ module OpenSSL
     (system command) && ACME.rename_ongoing_cert_and_key(domain)
   end
 
+  def self.generate_dummy_certificate(dir, out_path, keyout_path)
+    puts "Generating dummy certificate for default fallback server"
+
+    command = <<-EOC
+      mkdir -p #{dir} && \
+      openssl req -x509 -newkey \
+        rsa:#{NAConfig.key_length} -nodes \
+        -out #{out_path} \
+        -keyout #{keyout_path} \
+        -days 36500 \
+        -batch \
+        -subj "/CN=default-server.example.com"
+    EOC
+
+    system command
+  end
+
   private
 
   def self.dummy?(pem)
