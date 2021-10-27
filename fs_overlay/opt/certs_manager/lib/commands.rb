@@ -31,7 +31,7 @@ module Commands
     end
   end
 
-  def ensure_dummy_certificate_for_default_server
+  def ensure_dummy_certificate
     base_dir = File.join(NAConfig.portal_base_dir, "default_server")
     cert_path = File.join(NAConfig.portal_base_dir, "default_server/default_server.crt")
     key_path = File.join(NAConfig.portal_base_dir, "default_server/default_server.key")
