@@ -31,6 +31,9 @@ http {
     }
     <% end %>
 
+    <% if ENV['CUSTOM_NGINX_GLOBAL_HTTP_CONFIG_BLOCK'] %>
+        <%= ENV['CUSTOM_NGINX_GLOBAL_HTTP_CONFIG_BLOCK'] %>
+    <% end %>
     <% if !ENV['ACCESS_LOG'] || ENV['ACCESS_LOG'] == '' || ENV['ACCESS_LOG'] == 'off'  %>
     access_log off;
     <% elsif ENV['ACCESS_LOG'] == 'stdout' %>
@@ -115,14 +118,18 @@ http {
 
     include /etc/nginx/conf.d/*.conf;
 
-    # Prevent Nginx from leaking other server configurations on the same machine
-    server {
-        listen      80 default_server;
-        server_name _;
-        return      444;
-    }
-    server {
-        listen      443 ssl default_server;
-        ssl_reject_handshake on;
-    }
+    <% if ENV['DEFAULT_SERVER_BLOCK'] %>
+      <%= ENV['DEFAULT_SERVER_BLOCK'] %>
+    <% else %>
+        # Prevent Nginx from leaking other server configurations on the same machine
+        server {
+            listen      80 default_server;
+            server_name _;
+            return      444;
+        }
+        server {
+            listen      443 ssl default_server;
+            ssl_reject_handshake on;
+        }
+    <% end %>
 }

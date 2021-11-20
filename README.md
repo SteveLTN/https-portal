@@ -590,6 +590,10 @@ server {
 }
 ```
 
+The variables `CUSTOM_NGINX_GLOBAL_HTTP_CONFIG_BLOCK` and `CUSTOM_NGINX_SERVER_PLAIN_CONFIG_BLOCK` can be used to add your own Nginx statements to the global `http` block or to the plaintext (non-SSL) `server` blocks.
+
+In the rare case that you want to change the handling of `/.well-known/acme-challenge/` requets, setting `ACME_CHALLENGE_BLOCK` will override the default configuration.
+
 ### Change Configuration Dynamically
 
 Environment variables may be dynamically overridden by modifying files
