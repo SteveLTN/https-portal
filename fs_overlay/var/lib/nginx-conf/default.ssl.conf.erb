@@ -69,7 +69,7 @@ server {
     }
     <% elsif domain.redirect_target_url %>
     location / {
-      return    301 <%= domain.redirect_target_url %>$request_uri;
+        return    <%= ENV['REDIRECT_CODE'] || 307 %> <%= domain.redirect_target_url %>$request_uri;
     }
     <% else %>
     location / {
