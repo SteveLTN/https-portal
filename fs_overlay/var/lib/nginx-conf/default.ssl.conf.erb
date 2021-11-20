@@ -74,7 +74,7 @@ server {
     <% else %>
     location / {
         root   <%= domain.www_root %>;
-        index  index.html;
+        index  <%= ENV['INDEX_FILES'] || 'index.html' %>;
     }
     <% end %>
 }
