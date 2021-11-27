@@ -498,6 +498,7 @@ They correspond to the configuration options that you would normally put in `ngi
 The following are the available params with their default values:
 
 ```
+INDEX_FILES=index.html                  # A space-separated list of index file names to look for
 WORKER_PROCESSES=1
 WORKER_CONNECTIONS=1024
 KEEPALIVE_TIMEOUT=65
