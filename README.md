@@ -514,6 +514,7 @@ PROXY_SEND_TIMEOUT=60;
 PROXY_READ_TIMEOUT=60;
 ACCESS_LOG=off;
 ACCESS_LOG_INCLUDE_HOST=off;            # include vhost in access log (useful for goaccess => use log-format=VCOMBINED)
+REDIRECT_CODE=307                       # Was 301 by default until 1.20.1
 ```
 
 #### Websocket
