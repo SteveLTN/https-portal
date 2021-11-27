@@ -178,7 +178,9 @@ https-portal:
     DOMAINS: 'example.com => https://target.example.com' # Notice it's "=>" instead of the normal "->"
 ```
 
-All paths will be redirected to the target. E.g. `https://example.com/foo/bar` will be 301 redirected to `https://target.example.com/foo/bar`.
+All paths will be redirected to the target. E.g. `https://example.com/foo/bar` will be 307 redirected to `https://target.example.com/foo/bar`.
+
+If you want a permanent redirection, set the environment variable `REDIRECT_CODE=301`.
 
 A common use case is to redirect `www.example.com` to `example.com`. Configure your DNS, make both `www.example.com` and `example.com` resolve to the HTTPS-PORTAL host, and use the following compose:
 
