@@ -10,4 +10,9 @@ server {
     }
 
     <%= acme_challenge_location %>
+
+    <% if ENV['CUSTOM_NGINX_SERVER_PLAIN_CONFIG_BLOCK'] %>
+      <%= ENV['CUSTOM_NGINX_SERVER_PLAIN_CONFIG_BLOCK'] %>
+    <% end %>
+
 }

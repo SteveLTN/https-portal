@@ -87,7 +87,7 @@ module Nginx
   end
 
   def self.acme_challenge_location_snippet
-    <<-SNIPPET
+    ENV['ACME_CHALLENGE_BLOCK'] || <<-SNIPPET
       location /.well-known/acme-challenge/ {
           allow all;
           alias /var/www/default/challenges/;
