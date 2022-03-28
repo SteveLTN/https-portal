@@ -576,6 +576,14 @@ You can also make it multi-line:
     	add_header Strict-Transport-Security "max-age=60" always;
     	auth_basic "Password";	
 ```
+When using variables, you need to escape them with $:
+
+```yaml
+  environment:
+    ...
+    CUSTOM_NGINX_GLOBAL_HTTP_CONFIG_BLOCK: |
+        limit_req_zone $$binary_remote_addr zone=one:10m rate=1000r/m;
+```
 
 The `CUSTOM_NGINX_SERVER_CONFIG_BLOCK` will be inserted after all other configuration blocks listed in section "Configure Nginx through Environment Variables", and it might conflict with other configurations.
 
