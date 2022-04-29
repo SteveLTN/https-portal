@@ -625,7 +625,7 @@ You can either just override one single site's config or all sites' configs.
 
 #### Override just one single site's config
 
-In this case, you provide `<your-domain>.conf.erb` and `<your-domain>.conf.ssl.erb`. The former one takes care of the ownership verification from Let's Encrypt, and redirection to https URL. The latter one handles https connections.
+In this case, you provide `<your-domain>.conf.erb` and `<your-domain>.ssl.conf.erb`. The former one takes care of the ownership verification from Let's Encrypt, and redirection to https URL. The latter one handles https connections.
 
 For instance, to override both HTTPS and HTTP settings for `my.example.com`,
 you can launch HTTPS-PORTAL by:
