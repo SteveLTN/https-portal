@@ -17,7 +17,7 @@ module ACME
   private
 
   def self.le_sign(domain)
-    Timeout.timeout(60) do
+    Timeout.timeout(120) do
       puts "Signing certificates from #{domain.ca} ..."
 
       command = <<-EOC
