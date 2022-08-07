@@ -37,7 +37,7 @@ module ACME
     puts <<-HERE
 ================================================================================
 Failed to sign #{domain.name}.
-Make sure you DNS is configured correctly and is propagated to this host 
+Make sure your DNS is configured correctly and is propagated to this host
 machine. Sometimes that takes a while.
 ================================================================================
     HERE
