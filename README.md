@@ -159,11 +159,15 @@ stack.
 Note that HTTPS-PORTAL only listens to `example.com`, as you specified in the compose file.
 In order to make HTTPS-PORTAL respond to your connection, you need to either:
 
-* modify your `hosts` file to have `example.com` resolving to your docker host,
+* modify your `hosts` file to have `example.com` resolving to your docker host to 127.0.0.1,
 
 or
 
 * set up DNSMasq on your computer/router. This method provides more flexibility.
+
+or
+
+* configure `DOMAINS: 'mysite.lvh.me` in docker-compose.yml instead of `example.com` (lvh.me has a wildcard DNS entry that resolves any second level name to 127.0.0.1) so than you can access https://mysite.lvh.me.
 
 Once you are done testing, you can deploy your application stack to the server.
 
