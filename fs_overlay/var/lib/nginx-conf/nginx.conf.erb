@@ -132,4 +132,12 @@ http {
             ssl_reject_handshake on;
         }
     <% end %>
+
+    <% unless ENV['NGINX_STATS'] == 'off' %>
+        server {
+            listen 8080 default_server;
+            access_log off;
+            stub_status;
+        }
+    <% end %>
 }
