@@ -53,13 +53,11 @@ module OpenSSL
 
     command = <<-EOC
     openssl req -x509 \
-      -newkey rsa:#{NAConfig.key_length} \
-      -nodes \
+      -in #{domain.csr_path} \
+      -key #{domain.ongoing_key_path} \
       -out #{domain.ongoing_cert_path} \
-      -keyout #{domain.ongoing_key_path} \
       -days 90 \
       -batch \
-      -subj "/CN=#{domain.name}" \
       -addext "extendedKeyUsage = serverAuth"
     EOC
 
