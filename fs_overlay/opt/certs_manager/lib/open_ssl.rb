@@ -28,6 +28,15 @@ module OpenSSL
   end
 
   def self.need_to_sign_or_renew?(domain)
+    if NAConfig.debug_mode? 
+      puts "NAConfig.force_renew: #{NAConfig.force_renew}"
+      puts "File.exist?(domain.key_path): #{File.exist?(domain.key_path)}"
+      puts "File.exist?(domain.signed_cert_path): #{File.exist?(domain.signed_cert_path)}"
+      puts "dummy?(domain.signed_cert_path): #{dummy?(domain.signed_cert_path)}"
+      puts "expires_in_days(domain.signed_cert_path): #{expires_in_days(domain.signed_cert_path)}"
+      puts "NAConfig.renew_margin_days: #{NAConfig.renew_margin_days}"
+    end
+
     return true if NAConfig.force_renew?
 
     skip_conditions = File.exist?(domain.key_path) &&
