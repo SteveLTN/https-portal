@@ -45,4 +45,9 @@ RUN chmod a+x /bin/* && \
 VOLUME /var/lib/https-portal
 VOLUME /var/log/nginx
 
+
+# HEALTHCHECK --interval=5s --timeout=3s --start-period=10s --retries=3 CMD wget -q -O /dev/null http://localhost:80/ || exit 1
+
+HEALTHCHECK --interval=5s --timeout=1s --start-period=2s --retries=20 CMD   service nginx status || exit 1
+
 ENTRYPOINT ["/init"]
