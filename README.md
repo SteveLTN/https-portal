@@ -99,8 +99,6 @@ https-portal:
   ports:
     - '80:80'
     - '443:443'
-  links:
-    - wordpress
   restart: always
   environment:
     DOMAINS: 'wordpress.example.com -> http://wordpress:80'
@@ -111,8 +109,6 @@ https-portal:
 
 wordpress:
   image: wordpress
-  links:
-    - db:mysql
 
 db:
   image: mariadb
