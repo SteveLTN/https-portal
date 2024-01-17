@@ -26,7 +26,7 @@ module Commands
   def generate_ht_access(domains)
     domains.each do |domain|
       if domain.basic_auth_enabled?
-        system "htpasswd -bc #{domain.htaccess_path} #{domain.basic_auth_username} #{domain.basic_auth_password}"
+        system "htpasswd -bc '#{domain.htaccess_path}' '#{domain.basic_auth_username}' '#{domain.basic_auth_password}'"
       end
     end
   end
