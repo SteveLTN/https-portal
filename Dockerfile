@@ -23,6 +23,10 @@ ENV S6_OVERLAY_VERSION v3.2.0.0
 ENV DOCKER_GEN_VERSION 0.14.0
 ENV ACME_TINY_VERSION 4.1.0
 
+RUN sh -c "wget -q https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-noarch.tar.xz -O /tmp/s6-overlay-noarch.tar.xz" && \
+    tar -xf /tmp/s6-overlay-noarch.tar.xz -C / && \
+    rm -rf /tmp/s6-overlay-noarch.tar.xz
+
 RUN sh -c "wget -q https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-`archname s6-overlay`.tar.xz -O /tmp/s6-overlay.tar.xz" && \
     tar -xf /tmp/s6-overlay.tar.xz -C / && \
     rm -rf /tmp/s6-overlay.tar.xz
