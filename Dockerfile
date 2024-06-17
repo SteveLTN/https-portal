@@ -17,7 +17,7 @@ RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Need this already now, but cannot copy remainder of fs_overlay yet
-COPY ./fs_overlay/bin/archname /bin/
+COPY ./fs_overlay/usr/bin/archname /usr/bin/
 
 ENV S6_OVERLAY_VERSION v3.2.0.0
 ENV DOCKER_GEN_VERSION 0.14.0
