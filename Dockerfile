@@ -12,21 +12,21 @@ WORKDIR /root
 
 RUN apt-get clean && \
     apt-get update && \
-    apt-get install -y python-is-python3 ruby cron iproute2 apache2-utils logrotate wget inotify-tools && \
+    apt-get install -y python-is-python3 ruby cron iproute2 apache2-utils logrotate wget inotify-tools xz-utils && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # Need this already now, but cannot copy remainder of fs_overlay yet
 COPY ./fs_overlay/bin/archname /bin/
 
-ENV S6_OVERLAY_VERSION v2.1.0.2
+ENV S6_OVERLAY_VERSION v3.2.0.0
 ENV DOCKER_GEN_VERSION 0.7.4
 ENV ACME_TINY_VERSION 4.1.0
 
-RUN sh -c "wget -q https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-`archname s6-overlay`.tar.gz -O /tmp/s6-overlay.tar.gz" && \
-    tar xzf /tmp/s6-overlay.tar.gz -C / && \
-    rm -rf /tmp/s6-overlay.tar.gz
-RUN sh -c "wget -q https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-linux-`archname docker-gen`-$DOCKER_GEN_VERSION.tar.gz -O /tmp/docker-gen.tar.gz" && \
+RUN sh -c "wget -q https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-`archname s6-overlay`.tar.xz -O /tmp/s6-overlay.tar.xz" && \
+    tar -xf /tmp/s6-overlay.tar.xz -C / && \
+    rm -rf /tmp/s6-overlay.tar.xz
+RUN sh -c "wget -q https://github.com/jwilder/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-linux-`archname docker-gen`-$DOCKER_GEN_VERSION.tar.gz -O /tmp/docker-gen.tar.gz" && \               
     tar xzf /tmp/docker-gen.tar.gz -C /bin && \
     rm -rf /tmp/docker-gen.tar.gz
 
