@@ -12,7 +12,7 @@ WORKDIR /root
 
 RUN apt-get clean && \
     apt-get update && \
-    apt-get install -y python-is-python3 ruby cron iproute2 apache2-utils logrotate wget inotify-tools xz-utils && \
+    apt-get install -y python3 ruby cron iproute2 apache2-utils logrotate wget inotify-tools xz-utils && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
