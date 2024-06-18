@@ -44,7 +44,8 @@ RUN rm /etc/nginx/conf.d/default.conf /etc/crontab
 COPY ./fs_overlay /
 
 RUN chmod a+x /bin/* && \
-    chmod 0644 /etc/logrotate.d/nginx
+    chmod 0644 /etc/logrotate.d/nginx && \
+    chmod a+x /etc/cont-init.d/*
 
 VOLUME /var/lib/https-portal
 VOLUME /var/log/nginx
