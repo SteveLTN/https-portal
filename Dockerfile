@@ -30,7 +30,7 @@ RUN sh -c "wget -q https://github.com/just-containers/s6-overlay/releases/downlo
 RUN sh -c "wget -q https://github.com/just-containers/s6-overlay/releases/download/$S6_OVERLAY_VERSION/s6-overlay-`archname s6-overlay`.tar.xz -O /tmp/s6-overlay.tar.xz" && \
     tar -xf /tmp/s6-overlay.tar.xz -C / && \
     rm -rf /tmp/s6-overlay.tar.xz
-RUN sh -c "wget -q https://github.com/nginx-proxy/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-linux-`archname docker-gen`-$DOCKER_GEN_VERSION.tar.gz -O /tmp/docker-gen.tar.gz" && \               
+RUN sh -c "wget -q https://github.com/nginx-proxy/docker-gen/releases/download/$DOCKER_GEN_VERSION/docker-gen-linux-`archname docker-gen`-$DOCKER_GEN_VERSION.tar.gz -O /tmp/docker-gen.tar.gz" && \
     tar xzf /tmp/docker-gen.tar.gz -C /bin && \
     rm -rf /tmp/docker-gen.tar.gz
 
