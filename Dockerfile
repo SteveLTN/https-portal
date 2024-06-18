@@ -45,7 +45,8 @@ COPY ./fs_overlay /
 
 RUN chmod a+x /bin/* && \
     chmod 0644 /etc/logrotate.d/nginx && \
-    chmod a+x /etc/cont-init.d/*
+    chmod a+x /etc/cont-init.d/* && \
+    chmod a+x /etc/services.d/**/*
 
 VOLUME /var/lib/https-portal
 VOLUME /var/log/nginx
