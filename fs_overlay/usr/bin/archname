@@ -57,8 +57,8 @@ fi
 case "$1" in
   s6-overlay)
     case "$TARGETPLATFORM" in
-      linux/386)	echo x86;;
-      linux/amd64)	echo amd64;;
+      linux/386)	echo i486;;
+      linux/amd64)	echo x86_64;;
       linux/arm/v5)	echo arm;;
       linux/arm/v6)	echo arm;;
       linux/arm/v7)	echo armhf;;

@@ -55,7 +55,7 @@ ${BUILDXDETECT}:
 
 docker-multiarch-builder:	qemu buildx
 	if ! docker buildx ls | grep -w docker-multiarch > /dev/null; then \
-		docker buildx create --name docker-multiarch && \
+		docker buildx create --name docker-multiarch --driver docker-container && \
 		docker buildx inspect --builder docker-multiarch --bootstrap; \
 	fi
 
