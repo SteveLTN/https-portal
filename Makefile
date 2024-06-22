@@ -22,17 +22,26 @@ VERSIONTAGS	= $(shell git describe --tags --exact-match | \
 
 PLATFORMS	= linux/386,linux/amd64,linux/arm/v7,linux/arm64/v8
 
-docker-multiarch: buildx docker-multiarch-builder
+docker-multiarch:	qemu buildx docker-multiarch-builder
 	docker login
 	docker buildx build --builder docker-multiarch --pull \
 		--platform ${PLATFORMS} \
 		${VERSIONTAGS} .
 
-docker-multiarch-push: buildx docker-multiarch-builder
+docker-multiarch-push: qemu buildx docker-multiarch-builder
 	docker login
 	docker buildx build --builder docker-multiarch --pull --push \
 		--platform ${PLATFORMS} \
 		${VERSIONTAGS} .
+
+qemu:		${QEMUDETECT}
+${QEMUDETECT}:
+	docker pull multiarch/qemu-user-static
+	docker run --privileged multiarch/qemu-user-static --reset -p yes
+	docker ps -a | sed -n 's, *multiarch/qemu-user-static.*,,p' \
+	  | (xargs docker rm 2>&1 || \
+	    echo "Cannot remove docker container on ZFS; retry after next reboot") \
+	  | grep -v 'dataset is busy'
 
 buildx:		${BUILDXDETECT}
 ${BUILDXDETECT}:
@@ -44,10 +53,10 @@ ${BUILDXDETECT}:
 	@echo
 	@exit 1
 
-docker-multiarch-builder:	buildx
+docker-multiarch-builder:	qemu buildx
 	if ! docker buildx ls | grep -w docker-multiarch > /dev/null; then \
 		docker buildx create --name docker-multiarch && \
 		docker buildx inspect --builder docker-multiarch --bootstrap; \
 	fi
 
-.PHONY:	 buildx docker-multiarch docker-multiarch-builder
+.PHONY:		qemu buildx docker-multiarch docker-multiarch-builder
