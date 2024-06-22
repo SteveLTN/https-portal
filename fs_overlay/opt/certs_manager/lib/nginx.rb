@@ -4,7 +4,7 @@ module Nginx
   class NginxReloadException < RuntimeError; end
 
   def self.setup
-    compiled_basic_config = ERBBinding.new('/var/lib/nginx-conf/nginx.conf.erb').compile
+    compiled_basic_config = ERBBinding.new('/var/lib/nginx-conf/nginx.conf.erb', {}).compile
 
     File.open('/etc/nginx/nginx.conf', 'w') do |f|
       f.write compiled_basic_config

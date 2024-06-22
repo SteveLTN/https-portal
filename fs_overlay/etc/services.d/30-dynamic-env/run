@@ -1,4 +1,4 @@
-#!/usr/bin/with-contenv sh
+#!/command/with-contenv sh
 dir=/var/lib/https-portal/dynamic-env
 mkdir -p $dir
 
@@ -27,7 +27,7 @@ do
 			touch $dir.stamp # Outside of watched dir!
 
 			echo "[dynamic-env] File changed since last run: Applying new configuration..."
-			/usr/bin/justc-envdir $dir /bin/reconfig
+			/command/s6-envdir $dir /bin/reconfig
 			echo "[dynamic-env] Configuration applied" >&2
 		else
 			echo "[dynamic-env] No file changed since last run -- suppressing"

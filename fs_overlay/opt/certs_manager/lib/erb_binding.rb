@@ -13,7 +13,7 @@ class ERBBinding
     end
   end
 
-  def initialize(template_path, **binding_hash)
+  def initialize(template_path, binding_hash)
     @template = File.read(template_path)
     @binding_hash = binding_hash
   end
