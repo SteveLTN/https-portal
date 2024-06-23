@@ -586,7 +586,7 @@ LISTEN_IPV6=true
 ```
 # generated Nginx config:
 server {
-	listen 443 ssl http2;
+	listen 443 ssl;
 	... # (other configurations)
 	<%= CUSTOM_NGINX_SERVER_CONFIG_BLOCK %>
 	<%= CUSTOM_NGINX_<DOMAIN_NAME>_CONFIG_BLOCK %>

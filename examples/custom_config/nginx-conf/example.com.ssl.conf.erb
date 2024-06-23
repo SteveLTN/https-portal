@@ -2,7 +2,8 @@
 # Mount this file as "/var/lib/nginx-conf/my.example.com.ssl.conf.erb"
 
 server {
-    listen 443 ssl http2;
+    listen 443 ssl;
+    http2 on;
 
     # domain.name will be "my.example.com", you can also hard-code it.
     server_name <%= domain.name %>;

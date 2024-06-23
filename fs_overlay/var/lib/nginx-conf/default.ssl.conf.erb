@@ -7,9 +7,10 @@ upstream <%= domain.upstream_backend_name %> {
 <% end %>
 
 server {
-    listen 443 ssl http2;
+    listen 443 ssl;
     <% if ENV['LISTEN_IPV6'] && ENV['LISTEN_IPV6'].downcase == 'true' %>
-    listen [::]:443 ssl http2;
+    listen [::]:443 ssl;
+    http2 on;
     <% end %>
     server_name <%= domain.name %>;
 
