@@ -22,8 +22,8 @@
 #
 # Nginx (Docker) | `arch` output | S6 Overlay | Docker-Gen | ACME-Tiny
 # ---------------+---------------+------------+------------+----------
-# linux/386      | x86_64*       | x86        | i386       | *
-# linux/amd64    | x86_64        | amd64      | amd64      | *
+# linux/386      | x86_64*       | i486       | i386       | *
+# linux/amd64    | x86_64        | x86_64     | amd64      | *
 # linux/arm/v5   | armv7l*       | arm        | armel      | *
 # linux/arm/v6*  | armv7l*       | arm        | armel      | *
 # linux/arm/v7   | armv7l        | armhf      | armhf      | *
