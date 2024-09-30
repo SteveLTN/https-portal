@@ -10,7 +10,7 @@
 # that none of the other crontabs do.
 
 SHELL=/bin/sh
-PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+PATH=/command:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 # m h dom mon dow user  command
 <%= rand 60 %> <%= rand 24 %> * * * root  /bin/sleep <%= '%.3f' % (rand * 60) %>; /command/with-contenv /command/s6-envdir -I /var/lib/https-portal/dynamic-env /bin/renew_certs > /proc/$(cat /var/run/crond.pid)/fd/1 2>&1
