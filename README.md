@@ -639,8 +639,8 @@ https-portal:
   # ...
   volumes:
     - https-portal-data:/var/lib/https-portal
-    - /path/to/http_config:/var/lib/nginx-conf/my.example.com.conf.erb:ro
-    - /path/to/https_config:/var/lib/nginx-conf/my.example.com.ssl.conf.erb:ro
+    - /path/to/http_config_file:/var/lib/nginx-conf/my.example.com.conf.erb:ro
+    - /path/to/https_config_file:/var/lib/nginx-conf/my.example.com.ssl.conf.erb:ro
 ```
 
 [This file](/fs_overlay/var/lib/nginx-conf/default.conf.erb) and [this file](/fs_overlay/var/lib/nginx-conf/default.ssl.conf.erb) are the default configuration files used by HTTPS-PORTAL.
