@@ -4,7 +4,7 @@ module NAConfig
   end
 
   def self.domains
-    (env_domains + auto_discovered_domains).uniq(&:name)
+    (env_domains + auto_discovered_domains).uniq {|d| d.name + ':' + d.port }
   end
 
   def self.stage
