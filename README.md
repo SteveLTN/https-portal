@@ -765,7 +765,8 @@ obtain a new set of certificates.
 If you find HTTPS-PORTAL is not behaving as expected, try to reset the data volume:
 
 ```
-docker-compose down -v
+docker-compose down
+docker volume ls -q | grep https-portal-data # Delete the volume used by HTTPS-PORTAL
 docker-compose up
 ```
 
