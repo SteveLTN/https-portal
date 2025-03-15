@@ -108,7 +108,7 @@ class CertsManager
 
   def ensure_signed(domains, exit_on_failure = false)
     Logger.debug ("ensure_signed")
-    domains.each do |domain|
+    domains.uniq(&:name).each do |domain|
       if OpenSSL.need_to_sign_or_renew? domain
         mkdir(domain)
         OpenSSL.create_ongoing_domain_key(domain)
