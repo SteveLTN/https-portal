@@ -58,7 +58,8 @@ module OpenSSL
       -out #{domain.ongoing_cert_path} \
       -days 90 \
       -batch \
-      -addext "extendedKeyUsage = serverAuth"
+      -addext "extendedKeyUsage = serverAuth" \
+      -addext "subjectAltName = DNS:#{domain.name}"
     EOC
 
     (system command) && ACME.rename_ongoing_cert_and_key(domain)
