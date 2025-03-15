@@ -18,7 +18,7 @@ module Nginx
   end
 
   def self.config_ssl(domain)
-    File.open("/etc/nginx/conf.d/#{domain.name}_#{domain.port}.ssl.conf", 'w') do |f|
+    File.open("/etc/nginx/conf.d/#{domain.name}.ssl.conf", 'w') do |f|
       f.write compiled_domain_config(domain, true)
     end
   end
