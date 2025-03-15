@@ -170,6 +170,7 @@ class Domain
   def print_debug_info
     puts "----------- BEGIN DOMAIN CONFIG -------------"
     puts "name: #{name}"
+    puts "port: #{port}"
     puts "stage: #{stage}"
     puts "upstream: #{upstream}"
     puts "upstreams: #{upstreams.inspect}"
