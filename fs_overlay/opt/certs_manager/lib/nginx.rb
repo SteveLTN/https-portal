@@ -18,7 +18,13 @@ module Nginx
   end
 
   def self.config_ssl(domain)
-    File.open("/etc/nginx/conf.d/#{domain.name}_#{domain.port}.ssl.conf", 'w') do |f|
+    if domain.port == "443"
+      file_path = "/etc/nginx/conf.d/#{domain.name}.ssl.conf" # Backwards compatibility
+    else
+      file_path = "/etc/nginx/conf.d/#{domain.name}_#{domain.port}.ssl.conf"
+    end
+
+    File.open(file_path, 'w') do |f|
       f.write compiled_domain_config(domain, true)
     end
   end
