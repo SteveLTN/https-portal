@@ -306,6 +306,19 @@ You can also specify the stage (`local`, `staging`, or `production`) for each in
 DOMAINS: 'wordpress.example.com -> http://wordpress #local, gitlab.example.com #staging'
 ```
 
+If you have multiple domains, consider using YAML multiline folding operator '>':
+```yaml
+https-portal:
+  # ...
+  environment:
+    DOMAINS: >
+      wordpress.example.com -> http://wordpress:80,
+      gitlab.example.com -> http://gitlab
+    OTHER_VARS: ...
+```
+
+It will make reading and managing multiple domains easier.
+
 ### Multiple Upstreams
 
 It's possible to define multiple upstreams for a domain for the purpose of load-balancing and/or HA.
