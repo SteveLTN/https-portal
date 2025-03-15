@@ -329,12 +329,13 @@ https-portal:
   # ...
   ports:
     - '80:80'
-    - '4343:4343'
+    - '4343:4343' # Make sure to add the other ports you want to listen to
     - '443:443'
   environment:
+    # You can combine the same domain with different ports.
     DOMAINS: >
       wordpress.example.com:4343 -> http://wordpress:80,
-      wordpress.example.com:443 -> http://wordpress:80, # You can combine the same domain with different ports.
+      wordpress.example.com:443 -> http://gitlab:80, 
     OTHER_VARS: ...
 ```
 
