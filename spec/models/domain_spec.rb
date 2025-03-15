@@ -8,34 +8,35 @@ RSpec.describe Domain do
   end
 
   it 'returns correct names, upstream. redirect_target_url, stage etc.' do
-    keys = [:descriptor, :name, :env_format_name, :upstream_proto, :upstreams, :redirect_target_url, :stage, :basic_auth_username, :basic_auth_password, :access_restriction]
+    keys = [:descriptor, :name, :env_format_name, :upstream_proto, :upstreams, :redirect_target_url, :stage, :basic_auth_username, :basic_auth_password, :access_restriction, :port]
 
     domain_configs = [
-      ['example.com', 'example.com', 'EXAMPLE_COM', nil, [], nil, 'local', nil, nil, nil],
-      ['4example.com', '4example.com', '4EXAMPLE_COM', nil, [], nil, 'local', nil, nil, nil],
-      [' example.com ', 'example.com', 'EXAMPLE_COM', nil, [], nil, 'local', nil, nil, nil],
-      ['example.com #staging', 'example.com', 'EXAMPLE_COM', nil, [], nil, 'staging', nil, nil, nil],
-      ['example.com -> http://target ', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'local', nil, nil, nil],
-      ["example.com \n-> http://target \n", 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'local', nil, nil, nil],
-      ["example.com\n-> http://target ", 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'local', nil, nil, nil],
-      ['example.com -> http://target:8000', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target:8000', :parameters => nil}], nil, 'local', nil, nil, nil],
-      ['example.com -> target:8000', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target:8000', :parameters => nil}], nil, 'local', nil, nil, nil],
-      ['example.com => http://target', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], 'http://target', 'local', nil, nil, nil],
-      ['example.com => https://target', 'example.com', 'EXAMPLE_COM', 'https://', [{:address => 'target', :parameters => nil}], 'https://target', 'local', nil, nil, nil],
-      ['example.com => target', 'example.com', 'EXAMPLE_COM', 'https://', [{:address => 'target', :parameters => nil}], 'https://target', 'local', nil, nil, nil],
-      ['example.com=>http://target', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], 'http://target', 'local', nil, nil, nil],
-      ['example.com -> http://target #staging', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'staging', nil, nil, nil],
-      ['example.com => http://target #staging', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], 'http://target', 'staging', nil, nil, nil],
-      ['example.com->http://target #staging', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'staging', nil, nil, nil],
-      ['exam-ple.com->http://tar-get #staging', 'exam-ple.com', 'EXAM_PLE_COM', 'http://', [{:address => 'tar-get', :parameters => nil}], nil, 'staging', nil, nil, nil],
-      ['example_.com->http://target #staging', 'example_.com', 'EXAMPLE__COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'staging', nil, nil, nil],
-      ['example.com->http://tar_get_ #staging', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'tar_get_', :parameters => nil}], nil, 'staging', nil, nil, nil],
-      ['username:password@example.com', 'example.com', 'EXAMPLE_COM', nil, [], nil, 'local', 'username', 'password', nil],
-      ['username:password@example.com -> http://target #staging', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'staging', 'username', 'password', nil],
-      ['[1.2.3.4/24]username:password@example.com -> http://target #staging', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'staging', 'username', 'password', %w(1.2.3.4/24)],
-      [' [ 1.2.3.4 4.3.2.1/24 ] username:password@example.com -> http://target #staging', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'staging', 'username', 'password', %w(1.2.3.4 4.3.2.1/24)],
-      ['example.com -> https://target1|target2:8000', 'example.com', 'EXAMPLE_COM', 'https://', [{:address => 'target1', :parameters => nil}, {:address => 'target2:8000', :parameters => nil}], nil, 'local', nil, nil, nil],
-      ['example.com -> http://target1:8000|target2:8001[backup max_conns=100]', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target1:8000', :parameters => nil}, {:address => 'target2:8001', :parameters => 'backup max_conns=100'}], nil, 'local', nil, nil, nil],
+      ['example.com', 'example.com', 'EXAMPLE_COM', nil, [], nil, 'local', nil, nil, nil, "443"],
+      ['example.com:4443', 'example.com', 'EXAMPLE_COM', nil, [], nil, 'local', nil, nil, nil, "4443"],
+      ['4example.com', '4example.com', '4EXAMPLE_COM', nil, [], nil, 'local', nil, nil, nil, "443"],
+      [' example.com ', 'example.com', 'EXAMPLE_COM', nil, [], nil, 'local', nil, nil, nil, "443"],
+      ['example.com #staging', 'example.com', 'EXAMPLE_COM', nil, [], nil, 'staging', nil, nil, nil, "443"],
+      ['example.com -> http://target ', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'local', nil, nil, nil, "443"],
+      ["example.com \n-> http://target \n", 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'local', nil, nil, nil, "443"],
+      ["example.com\n-> http://target ", 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'local', nil, nil, nil, "443"],
+      ['example.com -> http://target:8000', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target:8000', :parameters => nil}], nil, 'local', nil, nil, nil, "443"],
+      ['example.com -> target:8000', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target:8000', :parameters => nil}], nil, 'local', nil, nil, nil, "443"],
+      ['example.com => http://target', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], 'http://target', 'local', nil, nil, nil, "443"],
+      ['example.com => https://target', 'example.com', 'EXAMPLE_COM', 'https://', [{:address => 'target', :parameters => nil}], 'https://target', 'local', nil, nil, nil, "443"],
+      ['example.com => target', 'example.com', 'EXAMPLE_COM', 'https://', [{:address => 'target', :parameters => nil}], 'https://target', 'local', nil, nil, nil, "443"],
+      ['example.com=>http://target', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], 'http://target', 'local', nil, nil, nil, "443"],
+      ['example.com -> http://target #staging', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'staging', nil, nil, nil, "443"],
+      ['example.com => http://target #staging', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], 'http://target', 'staging', nil, nil, nil, "443"],
+      ['example.com->http://target #staging', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'staging', nil, nil, nil, "443"],
+      ['exam-ple.com->http://tar-get #staging', 'exam-ple.com', 'EXAM_PLE_COM', 'http://', [{:address => 'tar-get', :parameters => nil}], nil, 'staging', nil, nil, nil, "443"],
+      ['example_.com->http://target #staging', 'example_.com', 'EXAMPLE__COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'staging', nil, nil, nil, "443"],
+      ['example.com->http://tar_get_ #staging', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'tar_get_', :parameters => nil}], nil, 'staging', nil, nil, nil, "443"],
+      ['username:password@example.com', 'example.com', 'EXAMPLE_COM', nil, [], nil, 'local', 'username', 'password', nil, "443"],
+      ['username:password@example.com -> http://target #staging', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'staging', 'username', 'password', nil, "443"],
+      ['[1.2.3.4/24]username:password@example.com -> http://target #staging', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'staging', 'username', 'password', %w(1.2.3.4/24), "443"],
+      [' [ 1.2.3.4 4.3.2.1/24 ] username:password@example.com -> http://target #staging', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target', :parameters => nil}], nil, 'staging', 'username', 'password', %w(1.2.3.4 4.3.2.1/24), "443"],
+      ['example.com -> https://target1|target2:8000', 'example.com', 'EXAMPLE_COM', 'https://', [{:address => 'target1', :parameters => nil}, {:address => 'target2:8000', :parameters => nil}], nil, 'local', nil, nil, nil, "443"],
+      ['example.com -> http://target1:8000|target2:8001[backup max_conns=100]', 'example.com', 'EXAMPLE_COM', 'http://', [{:address => 'target1:8000', :parameters => nil}, {:address => 'target2:8001', :parameters => 'backup max_conns=100'}], nil, 'local', nil, nil, nil, "443"],
     ]
 
     domain_configs.map { |config|
@@ -52,6 +53,7 @@ RSpec.describe Domain do
       expect(domain.basic_auth_username).to eq(config[:basic_auth_username]), lambda { "Parsing failed on #{config[:descriptor].inspect} method :basic_auth_username, expected #{config[:basic_auth_username].inspect}, got #{domain.basic_auth_username.inspect}" }
       expect(domain.basic_auth_password).to eq(config[:basic_auth_password]), lambda { "Parsing failed on #{config[:descriptor].inspect} method :basic_auth_password, expected #{config[:basic_auth_password].inspect}, got #{domain.basic_auth_password.inspect}" }
       expect(domain.access_restriction).to eq(config[:access_restriction]), lambda { "Parsing failed on #{config[:descriptor].inspect} method :access_restriction, expected #{config[:access_restriction].inspect}, got #{domain.access_restriction.inspect}" }
+      expect(domain.port).to eq(config[:port]), lambda { "Parsing failed on #{config[:port].inspect} method :port, expected #{config[:port].inspect}, got #{domain.port.inspect}" }
     end
   end
 end

@@ -77,6 +77,10 @@ class Domain
     parsed_descriptor[:domain]
   end
 
+  def port
+    parsed_descriptor[:port] || '443'
+  end
+
   def env_format_name
     name.upcase.tr('^A-Z0-9', '_')
   end
@@ -166,6 +170,7 @@ class Domain
   def print_debug_info
     puts "----------- BEGIN DOMAIN CONFIG -------------"
     puts "name: #{name}"
+    puts "port: #{port}"
     puts "stage: #{stage}"
     puts "upstream: #{upstream}"
     puts "upstreams: #{upstreams.inspect}"
@@ -190,7 +195,7 @@ class Domain
       regex = %r{
         ^
         (?:\[(?<ips>[0-9.:\/, ]*)\]\s*)?
-        (?:(?<user>[^:@\[\]]+)(?::(?<pass>[^@]*))?@)?(?<domain>[a-z0-9._\-]+?)
+        (?:(?<user>[^:@\[\]]+)(?::(?<pass>[^@]*))?@)?(?<domain>[a-z0-9._\-]+?)(?:\:(?<port>\d+))?
         (?:
           \s*(?<mode>[-=]>)\s*
           (?<upstream_proto>https?:\/\/)?

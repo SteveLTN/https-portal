@@ -27,6 +27,7 @@ Thanks to [@yamada28go](https://github.com/yamada28go), there is a [Japanese ver
     - [Automatic Container Discovery](#automatic-container-discovery)
     - [Hybrid Setup with Non-Dockerized Apps](#hybrid-setup-with-non-dockerized-apps)
     - [Multiple Domains](#multiple-domains)
+    - [Custom Ports](#custom-ports)
     - [Multiple Upstreams](#multiple-upstreams)
     - [Serving Static Sites](#serving-static-sites)
     - [Share Certificates with Other Apps](#share-certificates-with-other-apps)
@@ -318,6 +319,25 @@ https-portal:
 ```
 
 It will make reading and managing multiple domains easier.
+
+### Custom Ports
+
+Due to Let's Encrypt's constraints, Port 80 must be used for verifying the domian. But you can use a different port than 443 for SSL traffic.
+
+```yaml
+https-portal:
+  # ...
+  ports:
+    - '80:80'
+    - '4343:4343' # Make sure to add the other ports you want to listen to
+    - '443:443'
+  environment:
+    # You can combine the same domain with different ports.
+    DOMAINS: >
+      wordpress.example.com:4343 -> http://wordpress:80,
+      wordpress.example.com:443 -> http://gitlab:80, 
+    OTHER_VARS: ...
+```
 
 ### Multiple Upstreams
 
