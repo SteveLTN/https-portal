@@ -43,7 +43,7 @@ class CertsManager
         Nginx.reload
       end
 
-      ensure_signed(NAConfig.domains, true)
+      ensure_signed(NAConfig.domains_w_unique_names, true)
 
       if initial
         Nginx.stop
@@ -60,7 +60,7 @@ class CertsManager
     puts "Renewing ..."
     NAConfig.domains.each(&:print_debug_info) if NAConfig.debug_mode?
     with_lock do
-      NAConfig.domains.each do |domain|
+      NAConfig.domains_w_unique_names.each do |domain|
         if NAConfig.debug_mode?
           domain.print_debug_info
         end
@@ -106,9 +106,9 @@ class CertsManager
     end
   end
 
-  def ensure_signed(domains, exit_on_failure = false)
+  def ensure_signed(domains_w_unique_names, exit_on_failure = false)
     Logger.debug ("ensure_signed")
-    domains.uniq(&:name).each do |domain|
+    domains_w_unique_names.each do |domain|
       if OpenSSL.need_to_sign_or_renew? domain
         mkdir(domain)
         OpenSSL.create_ongoing_domain_key(domain)
