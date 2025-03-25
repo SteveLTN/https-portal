@@ -15,6 +15,12 @@ Docker Hub page:
 
 Thanks to [@yamada28go](https://github.com/yamada28go), there is a [Japanese version of this README](/README-ja.md) available. However, due to my inability to understand Japanese, I can't guarantee that the Japanese version is up-to-date.
 
+## About Me  
+I’m a software engineer and an engineering manager with experience in cross-cultural development teams, particularly those with a presence in China. I specialize in bridging communication and culture gaps, optimizing workflows, and ensuring seamless collaboration across borders.  
+
+​**Interested in consulting?**  
+I’m available for tech consulting projects! Whether you need help with team alignment, process improvement, or technical guidance, I’d love to assist. Feel free to contact via [steve.wy.shao+consulting@gmail.com](mailto:steve.wy.shao+consulting@gmail.com) to discuss your needs.  
+
 ## Table of Contents
 
 - [HTTPS-PORTAL](#https-portal)
