@@ -73,7 +73,7 @@ case "$1" in
       linux/arm/v5)	echo armel;;
       linux/arm/v6)	echo armel;;
       linux/arm/v7)	echo armhf;;
-      linux/arm64*)	echo armhf;;
+      linux/arm64*)	echo arm64;;
       *)		echo "$0: Unsupported TARGETPLATFORM: $TARGETPLATFORM" >&2; exit 1;;
     esac
     ;;
