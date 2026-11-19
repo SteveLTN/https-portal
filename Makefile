@@ -1,10 +1,12 @@
 # Create multi-platform docker image. If you have native systems around, using
 # them will be much more efficient at build time. See e.g.
 # https://netfuture.ch/2020/05/multi-arch-docker-image-easy/
-BUILDXDETECT	= ${HOME}/.docker/cli-plugins/docker-buildx
-
-# Just one of the many files created
-QEMUDETECT	= /proc/sys/fs/binfmt_misc/qemu-m68k
+# Use Docker Desktop's local Linux VM by default. Override DOCKER_CONTEXT to
+# use another Docker host. A dedicated builder name avoids reusing builders
+# attached to a different context.
+DOCKER_CONTEXT	= desktop-linux
+DOCKER		= docker --context ${DOCKER_CONTEXT}
+BUILDER		= https-portal-multiarch
 
 # Override this, if you want to use your own registry
 REGISTRY	= steveltn
@@ -23,40 +25,31 @@ VERSIONTAGS	= $(shell git describe --tags --exact-match | \
 PLATFORMS	= linux/386,linux/amd64,linux/arm/v7,linux/arm64/v8
 
 docker-multiarch:	qemu buildx docker-multiarch-builder
-	docker login
-	docker buildx build --builder docker-multiarch --pull \
+	${DOCKER} login
+	${DOCKER} buildx build --builder ${BUILDER} --pull \
 		--platform ${PLATFORMS} \
 		${VERSIONTAGS} .
 
 docker-multiarch-push: qemu buildx docker-multiarch-builder
-	docker login
-	docker buildx build --builder docker-multiarch --pull --push \
+	${DOCKER} login
+	${DOCKER} buildx build --builder ${BUILDER} --pull --push \
 		--platform ${PLATFORMS} \
 		${VERSIONTAGS} .
 
-qemu:		${QEMUDETECT}
-${QEMUDETECT}:
-	docker pull multiarch/qemu-user-static
-	docker run --privileged multiarch/qemu-user-static --reset -p yes
-	docker ps -a | sed -n 's, *multiarch/qemu-user-static.*,,p' \
-	  | (xargs docker rm 2>&1 || \
-	    echo "Cannot remove docker container on ZFS; retry after next reboot") \
-	  | grep -v 'dataset is busy'
+qemu:
+	${DOCKER} run --privileged --rm tonistiigi/binfmt --install all
 
-buildx:		${BUILDXDETECT}
-${BUILDXDETECT}:
-	@echo
-# Output of `uname -m` is too different
-	@echo '*** `docker buildx` missing. Install binary for this machine architecture'
-	@echo '*** from `https://github.com/docker/buildx/releases/latest`'
-	@echo '*** to `~/.docker/cli-plugins/docker-buildx` and `chmod +x` it.'
-	@echo
-	@exit 1
+buildx:
+	@${DOCKER} buildx version > /dev/null 2>&1 || ( \
+		echo '*** `docker buildx` is missing.'; \
+		echo '*** Install Docker Desktop or the Docker Buildx plugin.'; \
+		exit 1; \
+	)
 
 docker-multiarch-builder:	qemu buildx
-	if ! docker buildx ls | grep -w docker-multiarch > /dev/null; then \
-		docker buildx create --name docker-multiarch --driver docker-container && \
-		docker buildx inspect --builder docker-multiarch --bootstrap; \
+	@if ! ${DOCKER} buildx inspect --builder ${BUILDER} > /dev/null 2>&1; then \
+		${DOCKER} buildx create --name ${BUILDER} --driver docker-container; \
 	fi
+	${DOCKER} buildx inspect --builder ${BUILDER} --bootstrap
 
-.PHONY:		qemu buildx docker-multiarch docker-multiarch-builder
+.PHONY:		qemu buildx docker-multiarch docker-multiarch-push docker-multiarch-builder

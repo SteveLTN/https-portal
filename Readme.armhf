@@ -16,8 +16,16 @@ Publish to your private docker registry, using the default set of platforms:
 For details on the supported platforms, see `./fs_overlay/bin/archname`.
 
 # Set-up
-In order to support cross-platform building, you need to install
-`docker-buildx`. It can be downloaded from
-https://github.com/docker/buildx/releases/latest and needs to be installed
-as `~/.docker/cli-plugins/docker-buildx` and `chmod +x`ed. See
-https://github.com/docker/buildx for more information.
+Docker with the `buildx` plugin is required. Docker Desktop includes it on
+macOS. The Makefile uses Docker Desktop's local `desktop-linux` context by
+default and creates a dedicated builder named `https-portal-multiarch`.
+QEMU/binfmt is installed in Docker Desktop's Linux VM automatically, allowing
+ARM-based Macs to build the x86 images as well as the ARM images.
+
+To use another Docker host, override the context and, optionally, builder name:
+
+`make docker-multiarch DOCKER_CONTEXT=default BUILDER=https-portal-multiarch`
+
+Build and push the multi-platform images with:
+
+`make docker-multiarch-push`
