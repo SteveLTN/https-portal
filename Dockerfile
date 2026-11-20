@@ -1,5 +1,14 @@
+ARG  RUBY_VERSION=3.3.14
 ARG  DIST=nginx:1.31.9
+
+FROM ruby:${RUBY_VERSION}-slim-trixie AS patched_ruby
+
+# The official image marks Ruby's auto-detected runtime dependencies as manual.
+RUN apt-mark showmanual > /tmp/ruby-runtime-packages
+
 FROM $DIST
+
+ARG  RUBY_VERSION
 
 # Set by `docker buildx build`
 ARG  TARGETPLATFORM
@@ -10,12 +19,21 @@ RUN rm /var/log/nginx/access.log && \
 
 WORKDIR /root
 
+COPY --from=patched_ruby /tmp/ruby-runtime-packages /tmp/ruby-runtime-packages
+
 RUN apt-get clean && \
     apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y python3 ruby cron iproute2 apache2-utils logrotate wget inotify-tools xz-utils && \
+    apt-get install -y python3 cron iproute2 apache2-utils logrotate wget inotify-tools xz-utils && \
+    xargs apt-get install -y --no-install-recommends < /tmp/ruby-runtime-packages && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* /tmp/ruby-runtime-packages
+
+COPY --from=patched_ruby /usr/local/ /usr/local/
+
+RUN ln -s /usr/local/bin/ruby /usr/bin/ruby && \
+    test "$(/usr/bin/ruby -e 'print RUBY_VERSION')" = "$RUBY_VERSION" && \
+    /usr/bin/ruby -e 'require "openssl"; require "yaml"; require "zlib"'
 
 # Need this already now, but cannot copy remainder of fs_overlay yet
 COPY ./fs_overlay/usr/bin/archname /usr/bin/
